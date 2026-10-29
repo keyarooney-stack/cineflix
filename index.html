@@ -277,21 +277,135 @@ body{
 }
 
 
-/* NAVBAR */
+/* =====================================================
+   CINEFLIX HEADER
+===================================================== */
 
-.navbar{
-    position:fixed;
-    top:0;
-    left:0;
-    right:0;
-    height:68px;
-    z-index:1000;
-    display:flex;
-    align-items:center;
-    padding:0 5%;
-    background:rgba(0,0,0,.96);
-    backdrop-filter:blur(12px);
-    border-bottom:1px solid #191919;
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: auto;
+
+    z-index: 1000;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    padding: 0;
+
+    background: rgba(0,0,0,.97);
+    backdrop-filter: blur(12px);
+
+    border-bottom: 1px solid #191919;
+}
+
+
+/* TOP ROW */
+
+.navbar-main {
+    width: min(1200px, 94%);
+    height: 64px;
+
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+
+    gap: clamp(30px, 5vw, 75px);
+}
+
+
+/* NAVIGATION */
+
+.navbar-main .nav {
+    display: flex;
+    align-items: center;
+
+    gap: clamp(20px, 2.5vw, 38px);
+}
+
+
+/* LARGE SEARCH ROW */
+
+.navbar-search-row {
+    width: 100%;
+    padding: 18px 4% 20px;
+
+    display: flex;
+    justify-content: center;
+
+    background: #080808;
+}
+
+/* SEARCH CONTAINER */
+
+.navbar-search-row .search {
+    position: relative;
+
+    width: min(1230px, 100%);
+
+    display: block;
+}
+
+/* SEARCH INPUT */
+
+.navbar-search-row .search input {
+    width: 100% !important;
+    height: 60px;
+
+    padding: 0 22px;
+
+    border: 1px solid #303030;
+    border-radius: 16px;
+
+    outline: none;
+
+    background: #151515;
+    color: #fff;
+
+    font-size: 15px;
+
+    transition: border-color .2s ease,
+                background .2s ease;
+}
+
+.navbar-search-row .search input::placeholder {
+    color: #777;
+}
+
+.navbar-search-row .search input:focus {
+    border-color: #555;
+    background: #181818;
+}
+
+/* SEARCH BUTTON */
+
+.navbar-search-row .search button {
+    height: 46px;
+
+    padding: 0 22px;
+
+    flex-shrink: 0;
+
+    border: 0;
+    border-radius: 5px;
+
+    background: #e50914;
+    color: #fff;
+
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+/* SEARCH FOCUS */
+
+.navbar-search-row .search input:focus {
+    border-color: #e50914;
 }
 
 .logo{
@@ -368,16 +482,155 @@ body{
 
 
 /* HERO */
+/* =====================================================
+   CINEFLIX — CINEMATIC FEATURED HERO
+===================================================== */
 
-.hero{
-    position:relative;
-    height:650px;
-    margin-top:68px;
-    background-size:cover;
-    background-position:center;
-    display:flex;
-    align-items:center;
-    overflow:hidden;
+.hero {
+    position: relative;
+
+    width: 100%;
+    height: clamp(520px, 48vw, 720px);
+
+    margin-top: 68px;
+
+    background-size: cover;
+    background-position: center 25%;
+    background-repeat: no-repeat;
+
+    display: flex;
+    align-items: center;
+
+    overflow: hidden;
+
+    isolation: isolate;
+}
+
+/* HERO - NO DARK GRADIENT */
+.hero::before {
+    content: none;
+}
+/* Content */
+.hero-content {
+    position: relative;
+    z-index: 2;
+
+    width: min(620px, 48vw);
+
+    margin-left: clamp(25px, 6vw, 100px);
+
+    color: #fff;
+}
+
+/* TRENDING NOW */
+.hero-badge {
+    display: inline-block;
+
+    margin-bottom: 14px;
+
+    color: #e50914;
+
+    font-size: clamp(12px, .9vw, 15px);
+    font-weight: 800;
+
+    letter-spacing: 2px;
+}
+
+/* Movie title */
+.hero-content h1 {
+    margin: 0 0 14px;
+
+    font-size: clamp(38px, 4.8vw, 76px) !important;
+    line-height: .98;
+
+    font-weight: 800;
+
+    letter-spacing: -1.5px;
+}
+
+/* Movie information */
+.hero-meta {
+    margin-bottom: 15px;
+
+    font-size: clamp(13px, 1vw, 16px);
+
+    color: #ddd;
+}
+
+/* Description */
+.hero-description {
+    max-width: 580px;
+
+    margin-bottom: 25px;
+
+    font-size: clamp(14px, 1vw, 17px);
+    line-height: 1.55;
+
+    color: #d0d0d0;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+}
+
+/* Buttons */
+.hero-buttons {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+}
+
+.hero-watch,
+.hero-info {
+    min-height: 46px;
+
+    padding: 0 22px;
+
+    border: 0;
+    border-radius: 6px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.hero-watch {
+    background: #e50914;
+    color: #fff;
+}
+
+.hero-watch:hover {
+    background: #ff1724;
+}
+
+.hero-info {
+    background: rgba(50,50,50,.75);
+    color: #fff;
+
+    backdrop-filter: blur(5px);
+}
+
+.hero-info:hover {
+    background: rgba(80,80,80,.9);
+}
+
+/* Hero navigation dots */
+.hero-dots {
+    position: absolute;
+
+    z-index: 3;
+
+    left: 50%;
+    bottom: 25px;
+
+    transform: translateX(-50%);
 }
 
 .hero::after{
@@ -1369,9 +1622,9 @@ footer{
         width:160px;
     }
 
-    .hero{
-        margin-top:60px;
-    }
+    .hero {
+    margin-top: 60px;
+}
 
     .hero-content h1{
         font-size:45px;
@@ -1393,16 +1646,6 @@ footer{
     .search input{
         width:190px;
     }
-
-    .hero-content h1{
-        font-size:45px;
-    }
-
-    .grid{
-        grid-template-columns:repeat(4,1fr);
-    }
-
-}
 
     .hero-content h1{
         font-size:45px;
@@ -1438,9 +1681,77 @@ footer{
         padding:9px;
     }
 
-    .hero{
-        height:570px;
-    }
+    .hero {
+    height: 540px;
+    min-height: 540px;
+}
+.hero-content {
+    width: auto;
+    max-width: 90%;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.hero-content h1 {
+    font-size: clamp(32px, 10vw, 48px) !important;
+    line-height: 1;
+}
+
+.hero-description {
+    font-size: 14px;
+    line-height: 1.45;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.hero-meta {
+    font-size: 13px;
+}
+
+.hero-badge {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+}
+
+.hero-buttons {
+    gap: 8px;
+}
+
+.hero-watch,
+.hero-info {
+    min-height: 42px;
+    padding: 0 16px;
+    font-size: 12px;
+}
+.hero-content {
+    width: auto;
+    max-width: 90%;
+
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.hero-content h1 {
+    font-size: clamp(32px, 10vw, 48px) !important;
+}
+
+.hero-description {
+    font-size: 14px;
+    line-height: 1.45;
+
+    -webkit-line-clamp: 3;
+}
+
+.hero-watch,
+.hero-info {
+    min-height: 42px;
+    padding: 0 16px;
+
+    font-size: 12px;
+}
 
     .hero-content{
         margin-left:20px;
@@ -1779,18 +2090,136 @@ footer{
     }
 
 
-    /* =================================================
-       LIVE SEARCH RESULTS
-    ================================================= */
+   /* =================================================
+   LIVE SEARCH RESULTS
+================================================= */
+
+#liveSearchResults {
+    position: absolute;
+
+    top: calc(100% + 10px);
+    left: 0;
+
+    width: 100%;
+    max-height: 430px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    box-sizing: border-box;
+
+    background: #111;
+    border: 1px solid #2b2b2b;
+    border-radius: 16px;
+
+    box-shadow: 0 15px 40px rgba(0,0,0,.65);
+
+    z-index: 2000;
+
+    scrollbar-width: thin;
+}
+
+/* Individual search result */
+#liveSearchResults .movie {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    width: 100%;
+
+    padding: 10px 14px;
+
+    box-sizing: border-box;
+
+    cursor: pointer;
+
+    background: transparent;
+
+    transition:
+        background .18s ease,
+        transform .18s ease;
+}
+
+/* Hover */
+#liveSearchResults .movie:hover {
+    background: #202020;
+}
+
+/* Poster */
+#liveSearchResults .movie img {
+    width: 48px;
+    height: 68px;
+
+    flex-shrink: 0;
+
+    object-fit: cover;
+
+    border-radius: 6px;
+}
+
+/* Result information */
+#liveSearchResults .movie-title {
+    color: #fff;
+
+    font-size: 15px !important;
+    font-weight: 600;
+
+    line-height: 1.3;
+
+    margin: 0;
+}
+
+#liveSearchResults .movie-year {
+    color: #888;
+
+    font-size: 12px !important;
+
+    margin-top: 4px;
+}
+
+/* Scrollbar */
+#liveSearchResults::-webkit-scrollbar {
+    width: 6px;
+}
+
+#liveSearchResults::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 10px;
+}
+
+#liveSearchResults::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+/* MOBILE */
+@media (max-width: 600px) {
 
     #liveSearchResults {
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
+        top: calc(100% + 8px);
 
-        overflow-x: hidden;
+        max-height: 350px;
+
+        border-radius: 12px;
     }
 
+    #liveSearchResults .movie {
+        gap: 10px;
+        padding: 8px 10px;
+    }
+
+    #liveSearchResults .movie img {
+        width: 40px;
+        height: 58px;
+    }
+
+    #liveSearchResults .movie-title {
+        font-size: 13px !important;
+    }
+
+}
 
   /* =================================================
    MOVIE DETAILS MODAL
@@ -2112,61 +2541,79 @@ footer{
 
 </div>
 
-
-<!-- NAVBAR -->
+<!-- =====================================================
+     CINEFLIX TOP HEADER
+===================================================== -->
 
 <header class="navbar">
 
-    <div
-        class="logo"
-        onclick="window.scrollTo({
-            top:0,
-            behavior:'smooth'
-        })">
+    <!-- TOP NAVIGATION ROW -->
+    <div class="navbar-main">
 
-        <div class="logo-icon">
-            <div class="logo-play">▶</div>
+        <div
+            class="logo"
+            onclick="window.scrollTo({
+                top:0,
+                behavior:'smooth'
+            })">
+
+            <div class="logo-icon">
+                <div class="logo-play">▶</div>
+            </div>
+
+            <span>CINEFLIX</span>
+
         </div>
 
-        <span>CINEFLIX</span>
+
+        <nav class="nav">
+
+            <a href="#">HOME</a>
+            <a href="#trending">TRENDING</a>
+            <a href="#latest">LATEST</a>
+            <a href="#popular">POPULAR</a>
+            <a href="#toprated">TOP RATED</a>
+
+        </nav>
 
     </div>
 
-    <nav class="nav">
 
-        <a href="#">Home</a>
-        <a href="#trending">Trending</a>
-        <a href="#latest">Latest</a>
-        <a href="#popular">Popular</a>
-        <a href="#toprated">Top Rated</a>
+    <!-- LARGE SEARCH ROW -->
+    <div class="navbar-search-row">
 
-    </nav>
+        <div class="search">
 
-    <div class="search" style="position:relative;">
+            <input
+                id="searchInput"
+                type="text"
+                placeholder="Search movies..."
+                autocomplete="off">
 
-    <input
-        id="searchInput"
-        type="text"
-        placeholder="Search movies..."
-        autocomplete="off">
+        
 
-    <button id="searchButton">
-        🔎 Search
-    </button>
+            <!-- Live search results -->
+            <div id="liveSearchResults"></div>
 
-    <!-- Live search results -->
-    <div id="liveSearchResults"></div>
+        </div>
 
-</div>
+    </div>
 
 </header>
 
-
-<!-- HERO -->
+<!-- =====================================================
+     CINEFLIX FEATURED HERO
+===================================================== -->
 
 <section class="hero" id="hero">
 
+    <div class="hero-overlay"></div>
+
     <div class="hero-content">
+
+        <div class="hero-badge">
+            TRENDING NOW
+        </div>
 
         <h1 id="heroTitle">
             Loading...
@@ -2186,17 +2633,27 @@ footer{
         <div class="hero-buttons">
 
             <button
+                class="hero-watch"
+                onclick="openHeroMovie()">
+
+                ▶ WATCH NOW
+
+            </button>
+
+            <button
                 class="hero-info"
                 onclick="openHeroMovie()">
 
-                MORE INFO
+                + MORE INFO
 
             </button>
-           
 
         </div>
 
     </div>
+
+
+    <!-- FEATURED MOVIE NAVIGATION -->
 
     <div
         class="hero-dots"
