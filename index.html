@@ -7109,6 +7109,120 @@ if (document.readyState === "loading") {
         overflow-x: hidden !important;
     }
 }
+/* =====================================================
+   CINEFLIX — LEFT MOVIE DETAILS
+===================================================== */
+
+.cineflix-player-info {
+    position: absolute !important;
+
+    left: 3vw !important;
+    top: 50% !important;
+
+    transform: translateY(-50%) !important;
+
+    width: min(280px, 22vw) !important;
+
+    color: #fff !important;
+
+    text-align: left !important;
+
+    z-index: 50 !important;
+}
+.cineflix-player-poster {
+    width: 150px !important;
+    height: 225px !important;
+
+    object-fit: cover !important;
+
+    display: block !important;
+
+    margin: 0 0 18px !important;
+
+    border-radius: 8px !important;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.65) !important;
+}
+
+.cineflix-player-info h1 {
+    margin: 0 0 16px !important;
+
+    font-size: clamp(24px, 2.2vw, 42px) !important;
+
+    font-weight: 700 !important;
+
+    line-height: 1.05 !important;
+
+    color: #fff !important;
+}
+
+.cineflix-player-meta {
+    display: flex !important;
+
+    align-items: center !important;
+
+    flex-wrap: wrap !important;
+
+    gap: 10px !important;
+
+    margin-bottom: 14px !important;
+
+    font-size: 14px !important;
+
+    color: #ddd !important;
+}
+
+.cineflix-player-meta span:first-child {
+    color: #e50914 !important;
+
+    font-weight: 700 !important;
+}
+
+.cineflix-player-genres {
+    display: flex !important;
+
+    flex-wrap: wrap !important;
+
+    gap: 7px !important;
+
+    margin-bottom: 18px !important;
+}
+
+.cineflix-player-genres span {
+    padding: 6px 11px !important;
+
+    border-radius: 20px !important;
+
+    background: #222 !important;
+
+    color: #fff !important;
+
+    font-size: 12px !important;
+}
+
+.cineflix-player-info p {
+    margin: 0 !important;
+
+    color: #ccc !important;
+
+    font-size: 14px !important;
+
+    line-height: 1.6 !important;
+}
+
+
+/* =====================================================
+   HIDE DETAILS WHEN THERE IS NOT ENOUGH SPACE
+===================================================== */
+
+@media (max-width: 1000px) {
+
+    .cineflix-player-info {
+        display: none !important;
+    }
+
+}
 
 </style>
 
@@ -8636,7 +8750,15 @@ function openCineflixPlayer(tmdbId) {
         return;
 
     }
+if (!modal || !player) {
 
+    console.error(
+        "CineFlix player HTML was not found."
+    );
+
+    return;
+
+}
 
     /* =================================================
        CHECK TMDB ID
@@ -8685,6 +8807,54 @@ function openCineflixPlayer(tmdbId) {
         "CineSrc URL:",
         embedUrl
     );
+    /* =================================================
+   LOAD TMDB MOVIE POSTER
+================================================= */
+
+const poster =
+    document.getElementById("cineflixPlayerPoster");
+
+if (poster) {
+
+    fetch(
+        "https://api.themoviedb.org/3/movie/" +
+        encodeURIComponent(tmdbId),
+        {
+            headers: {
+                Authorization:
+                    "Bearer " + TMDB_TOKEN
+            }
+        }
+    )
+    .then(response => {
+
+        if (!response.ok) {
+            throw new Error(
+                "TMDB movie request failed"
+            );
+        }
+
+        return response.json();
+
+    })
+    .then(movie => {
+
+        poster.src = getPoster(movie);
+
+    })
+    .catch(error => {
+
+        console.error(
+            "CineFlix poster error:",
+            error
+        );
+
+        poster.src =
+            "https://placehold.co/500x750/111/fff?text=No+Poster";
+
+    });
+
+}
 
 
     /* =================================================
@@ -9294,7 +9464,6 @@ h3 {
 }
 </style>
 
-
 <!-- =====================================================
      CINEFLIX MOVIE PLAYER
 ===================================================== -->
@@ -9303,6 +9472,60 @@ h3 {
     id="cineflixPlayerModal"
     class="cineflix-player-modal"
 >
+
+    <!-- =====================================================
+         LEFT MOVIE DETAILS
+    ===================================================== -->
+
+    <div
+        id="cineflixPlayerInfo"
+        class="cineflix-player-info"
+    >
+    <img
+    id="cineflixPlayerPoster"
+    class="cineflix-player-poster"
+    src=""
+    alt="Movie poster"
+>
+
+        <h1 id="cineflixPlayerTitle">
+            Movie Title
+        </h1>
+
+        <div class="cineflix-player-meta">
+
+            <span id="cineflixPlayerRating">
+                ★ 0.0
+            </span>
+
+            <span id="cineflixPlayerYear">
+                2026
+            </span>
+
+            <span id="cineflixPlayerRuntime">
+                Movie
+            </span>
+
+        </div>
+
+        <div
+            id="cineflixPlayerGenres"
+            class="cineflix-player-genres"
+        >
+            <span>Action</span>
+            <span>Drama</span>
+        </div>
+
+        <p id="cineflixPlayerOverview">
+            Movie description will appear here.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         CINEFLIX TOP BAR
+    ===================================================== -->
 
     <div class="cineflix-player-topbar">
 
@@ -9322,6 +9545,10 @@ h3 {
     </div>
 
 
+    <!-- =====================================================
+         PLAYER LOADING
+    ===================================================== -->
+
     <div
         id="cineflixPlayerLoading"
         class="cineflix-player-loading"
@@ -9329,6 +9556,10 @@ h3 {
         Loading movie...
     </div>
 
+
+    <!-- =====================================================
+         VIDEO PLAYER
+    ===================================================== -->
 
     <iframe
         id="cineflixPlayer"
@@ -9339,19 +9570,21 @@ h3 {
         frameborder="0"
         referrerpolicy="origin"
     ></iframe>
+
+
     <!-- =====================================================
-     RELATED MOVIES
-===================================================== -->
+         RELATED MOVIES
+    ===================================================== -->
 
-<section id="cineflixRelatedSection">
+    <section id="cineflixRelatedSection">
 
-    <h2>Related Movies</h2>
+        <h2>Related Movies</h2>
 
-    <div id="cineflixRelatedMovies">
-        <!-- Related movie cards will appear here -->
-    </div>
+        <div id="cineflixRelatedMovies">
+            <!-- Related movie cards will appear here -->
+        </div>
 
-</section>
+    </section>
 
 </div>
 
