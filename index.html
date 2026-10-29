@@ -9049,7 +9049,7 @@ document.addEventListener("keydown", function(event) {
 });
 
 /* =====================================================
-   CINEFLIX — MOBILE FULLSCREEN LANDSCAPE
+   CINEFLIX — MOBILE FULLSCREEN
 ===================================================== */
 
 (function () {
@@ -9059,63 +9059,27 @@ document.addEventListener("keydown", function(event) {
 
     if (!player) return;
 
-    /* MOBILE ONLY */
-    if (window.innerWidth > 1000) return;
-
-    /* WHEN FULLSCREEN STARTS */
     document.addEventListener(
         "fullscreenchange",
-        async function () {
+        function () {
 
-            if (document.fullscreenElement === player) {
+            /* MOBILE ONLY */
 
-                try {
-
-                    if (
-                        screen.orientation &&
-                        screen.orientation.lock
-                    ) {
-
-                        await screen.orientation.lock(
-                            "landscape"
-                        );
-
-                    }
-
-                } catch (error) {
-
-                    console.log(
-                        "Landscape lock unavailable:",
-                        error
-                    );
-
-                }
-
+            if (window.innerWidth > 1000) {
+                return;
             }
 
-            /* WHEN FULLSCREEN ENDS */
+            if (document.fullscreenElement) {
 
-            else {
+                document.body.classList.add(
+                    "cineflix-mobile-fullscreen"
+                );
 
-                try {
+            } else {
 
-                    if (
-                        screen.orientation &&
-                        screen.orientation.unlock
-                    ) {
-
-                        screen.orientation.unlock();
-
-                    }
-
-                } catch (error) {
-
-                    console.log(
-                        "Orientation unlock unavailable:",
-                        error
-                    );
-
-                }
+                document.body.classList.remove(
+                    "cineflix-mobile-fullscreen"
+                );
 
             }
 
@@ -9123,7 +9087,6 @@ document.addEventListener("keydown", function(event) {
     );
 
 })();
-
 </script>
 
 
