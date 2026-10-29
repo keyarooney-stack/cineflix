@@ -7226,6 +7226,41 @@ if (document.readyState === "loading") {
 
 }
 
+/* =====================================================
+   CINEFLIX — MOVIE BACKDROP BACKGROUND
+===================================================== */
+
+.cineflix-player-modal::before {
+    content: "";
+
+    position: absolute !important;
+
+    inset: 0 !important;
+
+    background-image:
+        linear-gradient(
+            to right,
+            rgba(0, 0, 0, 0.88),
+            rgba(0, 0, 0, 0.58),
+            rgba(0, 0, 0, 0.82)
+        ),
+        var(--cineflix-backdrop) !important;
+
+    background-size: cover !important;
+
+    background-position: center !important;
+
+    background-repeat: no-repeat !important;
+
+    filter: blur(3px) !important;
+
+    transform: scale(1.04) !important;
+
+    z-index: 0 !important;
+
+    pointer-events: none !important;
+}
+
 </style>
 
 
@@ -8839,19 +8874,38 @@ if (poster) {
         return response.json();
 
     })
-    .then(movie => {
+   .then(movie => {
 
     poster.src = getPoster(movie);
 
     const title =
         document.getElementById("cineflixPlayerTitle");
 
-     if (title) {
+    if (title) {
         title.textContent =
             movie.title || movie.name || "Unknown Movie";
-        }
+    }
 
-     })
+    /* =================================================
+       SET MOVIE BACKDROP
+    ================================================= */
+
+    const modal =
+        document.getElementById("cineflixPlayerModal");
+
+    if (modal && movie.backdrop_path) {
+
+        const backdrop =
+            BACKDROP + movie.backdrop_path;
+
+        modal.style.setProperty(
+            "--cineflix-backdrop",
+            `url("${backdrop}")`
+        );
+
+    }
+
+})
     .catch(error => {
 
         console.error(
