@@ -791,9 +791,12 @@ body{
     opacity: 1;
 }
 
-/* Movie details prompt above player */
+/* =====================================================
+   MOVIE DETAILS ABOVE CINEFLIX PLAYER
+===================================================== */
 
 #movieModal {
+    position: fixed !important;
     z-index: 2147483647 !important;
 }
 
@@ -2156,17 +2159,29 @@ function movieCard(movie){
    RELATED MOVIES
 ===================================================== */
 /* =====================================================
-   RELATED MOVIE CLICK
+   RELATED MOVIE → OPEN EXISTING DETAILS PROMPT
 ===================================================== */
 
 async function openRelatedMovie(id) {
 
-    console.log(
-        "Related movie clicked:",
-        id
-    );
+    console.log("Related movie clicked:", id);
 
+    // Open the existing movie details
     await openMovie(id);
+
+    // Force the existing details prompt to appear
+    const movieModal =
+        document.getElementById("movieModal");
+
+    if (!movieModal) {
+        console.error("movieModal was not found.");
+        return;
+    }
+
+    movieModal.style.display = "flex";
+    movieModal.style.visibility = "visible";
+    movieModal.style.opacity = "1";
+    movieModal.style.zIndex = "2147483647";
 
 }
 async function loadRelatedMovies(id) {
@@ -2815,6 +2830,10 @@ if (cineflixWatchButton) {
             id
         );
 
+        // Close the movie details prompt
+        modal.style.display = "none";
+
+        // Open the CineFlix player
         openCineflixPlayer(id);
 
         // Load related movies
@@ -7504,7 +7523,7 @@ document.addEventListener("keydown", function(event) {
 
     background: #000;
 
-    z-index: 2147483647;
+    z-index: 2147483646;
 
     align-items: center;
     justify-content: center;
