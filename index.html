@@ -8399,7 +8399,80 @@ h3 {
     object-fit: cover;
     display: block;
 }
-  
+@media (max-width: 600px) {
+
+    .cineflix-player-topbar {
+        top: 50% !important;
+        left: 50% !important;
+
+        width: 94vw !important;
+
+        height: 48px !important;
+        min-height: 48px !important;
+
+        transform:
+            translate(-50%, calc(-47vw - 24px)) !important;
+
+        padding: 0 12px !important;
+    }
+
+    .cineflix-player-topbar button {
+        font-size: 22px !important;
+        min-width: 36px !important;
+        min-height: 36px !important;
+    }
+}
+
+ /* =========================================================
+   CINEFLIX PLAYER TOP BAR — AUTOMATIC
+========================================================= */
+
+.cineflix-player-topbar {
+    position: absolute !important;
+
+    left: 50% !important;
+
+    /* Automatically matches the player width */
+    width: min(90vw, 850px) !important;
+
+    height: clamp(46px, 4vw, 54px) !important;
+    min-height: 46px !important;
+
+    top: 50% !important;
+
+    /* Automatically positions above the player */
+    transform:
+        translate(-50%, calc(-25.3125vw - 27px)) !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    padding: 0 clamp(10px, 2vw, 18px) !important;
+
+    box-sizing: border-box !important;
+
+    background: #080808 !important;
+    border-bottom: 1px solid #222 !important;
+
+    z-index: 100 !important;
+}
+
+/* CineFlix name */
+.cineflix-player-topbar .logo,
+.cineflix-player-topbar .brand {
+    font-size: clamp(16px, 1.5vw, 21px) !important;
+}
+
+/* X close button */
+.cineflix-player-topbar button {
+    font-size: clamp(20px, 2vw, 26px) !important;
+
+    flex-shrink: 0 !important;
+
+    position: relative !important;
+    z-index: 101 !important;
+}
 </style>
 
 
