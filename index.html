@@ -276,9 +276,8 @@ body{
     font-size: 16px;
 }
 
-
 /* =====================================================
-   CINEFLIX HEADER
+   CINEFLIX HEADER — GLASS / TRANSLUCENT
 ===================================================== */
 
 .navbar {
@@ -297,14 +296,19 @@ body{
 
     padding: 0;
 
-    background: rgba(0,0,0,.97);
-    backdrop-filter: blur(12px);
+    /* TRANSLUCENT GLASS */
+    background: rgba(5, 5, 5, 0.30) !important;
 
-    border-bottom: 1px solid #191919;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 
-/* TOP ROW */
+/* =====================================================
+   TOP ROW
+===================================================== */
 
 .navbar-main {
     width: min(1200px, 94%);
@@ -316,18 +320,27 @@ body{
     align-items: center;
 
     gap: clamp(30px, 5vw, 75px);
+
+    /* IMPORTANT — DON'T ADD SOLID BLACK HERE */
+    background: transparent;
 }
 
 
-/* NAVIGATION */
+/* =====================================================
+   NAVIGATION
+===================================================== */
 
 .navbar-main .nav {
     display: flex;
     align-items: center;
 
     gap: clamp(20px, 2.5vw, 38px);
-}
 
+    background: transparent;
+}
+/* =====================================================
+   CINEFLIX — TRANSLUCENT SEARCH HEADER
+===================================================== */
 
 /* LARGE SEARCH ROW */
 
@@ -338,8 +351,15 @@ body{
     display: flex;
     justify-content: center;
 
-    background: #080808;
+    /* Translucent glass background */
+    background: rgba(8, 8, 8, 0.58);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
+
 
 /* SEARCH CONTAINER */
 
@@ -349,7 +369,9 @@ body{
     width: min(1230px, 100%);
 
     display: block;
+    margin: 0;
 }
+
 
 /* SEARCH INPUT */
 
@@ -359,127 +381,104 @@ body{
 
     padding: 0 22px;
 
-    border: 1px solid #303030;
+    border: 1px solid rgba(255, 255, 255, 0.13);
     border-radius: 16px;
 
     outline: none;
 
-    background: #151515;
+    /* Glass search box */
+    background: rgba(20, 20, 20, 0.68);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
     color: #fff;
 
     font-size: 15px;
 
-    transition: border-color .2s ease,
-                background .2s ease;
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
 }
+
 
 .navbar-search-row .search input::placeholder {
-    color: #777;
+    color: rgba(255, 255, 255, 0.45);
 }
+
 
 .navbar-search-row .search input:focus {
-    border-color: #555;
-    background: #181818;
+    border-color: rgba(229, 9, 20, 0.8);
+
+    background: rgba(25, 25, 25, 0.78);
+
+    box-shadow:
+        0 0 0 2px rgba(229, 9, 20, 0.08);
 }
 
-/* SEARCH BUTTON */
 
-.navbar-search-row .search button {
-    height: 46px;
+/* =====================================================
+   CINEFLIX LOGO
+===================================================== */
 
-    padding: 0 22px;
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 
-    flex-shrink: 0;
+    color: #e50914;
 
-    border: 0;
-    border-radius: 5px;
+    font-size: 28px;
+    font-weight: 900;
 
-    background: #e50914;
-    color: #fff;
-
-    font-weight: 700;
     cursor: pointer;
 }
 
+.logo-icon {
+    width: 38px;
+    height: 38px;
 
-/* SEARCH FOCUS */
+    background: #e50914;
 
-.navbar-search-row .search input:focus {
-    border-color: #e50914;
+    border-radius: 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    color:#e50914;
-    font-size:28px;
-    font-weight:900;
-    cursor:pointer;
+.logo-play {
+    color: #fff;
+    font-size: 19px;
 }
 
-.logo-icon{
-    width:38px;
-    height:38px;
-    background:#e50914;
-    border-radius:9px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+.nav {
+    display: flex;
+    gap: 25px;
+
+    margin-left: 45px;
 }
 
-.logo-play{
-    color:white;
-    font-size:19px;
+.nav a {
+    color: #aaa;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    transition: color .2s ease;
 }
 
-.nav{
-    display:flex;
-    gap:25px;
-    margin-left:45px;
+.nav a:hover {
+    color: #fff;
 }
-
-.nav a{
-    color:#aaa;
-    text-decoration:none;
-    font-size:14px;
-    font-weight:bold;
-}
-
-.nav a:hover{
-    color:white;
-}
-
-.search{
-    margin-left:auto;
-    display:flex;
-    gap:8px;
-}
-
-.search input{
-    width:250px;
-    padding:11px 15px;
-    border:1px solid #333;
-    border-radius:6px;
-    background:#111;
-    color:white;
-    outline:none;
-}
-
-.search input:focus{
-    border-color:#e50914;
-}
-
-.search button{
-    border:0;
-    border-radius:6px;
-    padding:10px 14px;
-    background:#e50914;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-}
-
 
 /* HERO */
 /* =====================================================
