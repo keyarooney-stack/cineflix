@@ -9097,28 +9097,27 @@ overflow-y: auto;
 
 }
 
-    /* =================================================
-       PLAYER
-    ================================================= */
+   /* =================================================
+   PLAYER — 16:9
+================================================= */
 
-    #cineflixPlayer {
-        position: absolute !important;
+#cineflixPlayer {
+    position: absolute !important;
 
-        width: 94vw !important;
-        height: calc(94vw * 0.5625) !important;
+    width: 94vw !important;
+    max-width: 850px !important;
 
-        max-width: 850px !important;
-        max-height: none !important;
+    aspect-ratio: 16 / 9 !important;
+    height: auto !important;
 
-        top: 50% !important;
-        left: 50% !important;
+    top: 50% !important;
+    left: 50% !important;
 
-        transform: translate(-50%, -50%) !important;
+    transform: translate(-50%, -50%) !important;
 
-        border: 0 !important;
-        background: #000 !important;
-    }
-
+    border: 0 !important;
+    background: #000 !important;
+}
 
 
     /* =================================================
