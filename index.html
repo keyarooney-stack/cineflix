@@ -8124,7 +8124,6 @@ overflow-y: auto;
 /* =====================================================
    PLAYER IFRAME
 ===================================================== */
-
 #cineflixPlayer {
 
     position: absolute;
@@ -8134,11 +8133,12 @@ overflow-y: auto;
 
     transform: translate(-50%, -50%);
 
-    width: min(1000px, 90vw);
+    /* Smaller desktop player */
+    width: min(850px, 86vw);
 
-    height: min(562px, calc(90vw * 0.5625));
+    height: min(478px, calc(86vw * 0.5625));
 
-    max-height: calc(100vh - 130px);
+    max-height: calc(100vh - 170px);
 
     border: 0;
 
@@ -8147,7 +8147,6 @@ overflow-y: auto;
     z-index: 2;
 
     display: block;
-
 }
 /* =====================================================
    RELATED MOVIES
@@ -8240,35 +8239,12 @@ overflow-y: auto;
 
 }
 /* =====================================================
-   MOBILE
+   MOBILE — CINEFLIX
 ===================================================== */
 
 @media (max-width: 600px) {
 
-    .cineflix-player-topbar {
-
-        height: 50px;
-
-        min-height: 50px;
-
-    }
-
-    #cineflixPlayer {
-
-        top: 50px;
-
-        height: calc(100% - 50px);
-
-    }
-
-    .cineflix-player-loading {
-
-        top: 50px;
-
-    }
-
-}
- /* Keep the page inside the phone screen */
+    /* Keep page inside phone screen */
     html,
     body {
         width: 100%;
@@ -8278,12 +8254,10 @@ overflow-y: auto;
         overflow-x: hidden;
     }
 
-    /* Smaller general spacing */
     body {
         font-size: 14px;
     }
 
-    /* Smaller headings */
     h1 {
         font-size: 24px !important;
     }
@@ -8296,6 +8270,66 @@ overflow-y: auto;
         font-size: 16px !important;
     }
 
+
+    /* =================================================
+       PLAYER
+    ================================================= */
+
+    #cineflixPlayer {
+        position: absolute !important;
+
+        width: 94vw !important;
+        height: calc(94vw * 0.5625) !important;
+
+        max-width: 850px !important;
+        max-height: none !important;
+
+        top: 50% !important;
+        left: 50% !important;
+
+        transform: translate(-50%, -50%) !important;
+
+        border: 0 !important;
+        background: #000 !important;
+    }
+
+
+    /* =================================================
+       PLAYER TOP BAR
+    ================================================= */
+
+    .cineflix-player-topbar {
+        position: absolute !important;
+
+        width: 94vw !important;
+
+        height: 50px !important;
+        min-height: 50px !important;
+
+        top: 50% !important;
+        left: 50% !important;
+
+        transform:
+            translate(-50%, calc(-47vw - 25px)) !important;
+
+        padding: 0 12px !important;
+
+        box-sizing: border-box !important;
+    }
+
+
+    /* =================================================
+       PLAYER LOADING
+    ================================================= */
+
+    .cineflix-player-loading {
+        top: 50% !important;
+        left: 50% !important;
+
+        transform: translate(-50%, -50%) !important;
+    }
+
+}
 /* =================================================
    CINEFLIX — NETFLIX-STYLE TYPOGRAPHY
 ================================================= */
