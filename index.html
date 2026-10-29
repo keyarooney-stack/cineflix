@@ -1649,8 +1649,6 @@ footer{
         box-sizing: border-box;
     }
 
-}
-
 </style>
 
 </head>
@@ -8238,38 +8236,6 @@ overflow-y: auto;
     }
 
 }
-/* =====================================================
-   MOBILE — CINEFLIX
-===================================================== */
-
-@media (max-width: 600px) {
-
-    /* Keep page inside phone screen */
-    html,
-    body {
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-    }
-
-    body {
-        font-size: 14px;
-    }
-
-    h1 {
-        font-size: 24px !important;
-    }
-
-    h2 {
-        font-size: 19px !important;
-    }
-
-    h3 {
-        font-size: 16px !important;
-    }
-
 
     /* =================================================
        PLAYER
@@ -8328,65 +8294,7 @@ overflow-y: auto;
 
         transform: translate(-50%, -50%) !important;
     }
-    /* =====================================================
-   MOBILE LANDSCAPE — FULL PLAYER
-===================================================== */
-
-@media (max-width: 950px) and (orientation: landscape) {
-
-    #cineflixPlayerModal {
-        width: 100vw !important;
-        height: 100vh !important;
-
-        padding: 0 !important;
-        margin: 0 !important;
-
-        overflow: hidden !important;
-
-        background: #000 !important;
-    }
-
-    .cineflix-player-topbar {
-        position: absolute !important;
-
-        top: 0 !important;
-        left: 0 !important;
-
-        transform: none !important;
-
-        width: 100vw !important;
-
-        height: 48px !important;
-        min-height: 48px !important;
-
-        z-index: 10 !important;
-    }
-
-    #cineflixPlayer {
-        position: absolute !important;
-
-        top: 48px !important;
-        left: 0 !important;
-
-        transform: none !important;
-
-        width: 100vw !important;
-        height: calc(100vh - 48px) !important;
-
-        max-width: none !important;
-        max-height: none !important;
-
-        border: 0 !important;
-    }
-
-    .cineflix-player-loading {
-        top: 50% !important;
-        left: 50% !important;
-
-        transform: translate(-50%, -50%) !important;
-    }
-}
-
+   
 }
 /* =================================================
    CINEFLIX — NETFLIX-STYLE TYPOGRAPHY
@@ -8425,6 +8333,71 @@ h6 {
 
 .rating {
     font-family: Arial, Helvetica, sans-serif !important;
+}
+/* =========================================================
+   CINEFLIX — AUTOMATIC RESPONSIVE BASE
+========================================================= */
+
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* Everything uses predictable sizing */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Images never escape their containers */
+img {
+    max-width: 100%;
+}
+
+/* Automatic website font sizing */
+body {
+    font-size: clamp(14px, 0.4vw + 11px, 17px);
+}
+
+/* Section headings */
+h1 {
+    font-size: clamp(23px, 2vw, 36px);
+}
+
+h2 {
+    font-size: clamp(19px, 1.5vw, 28px);
+}
+
+h3 {
+    font-size: clamp(16px, 1.1vw, 22px);
+}
+
+/* Movie titles */
+.movie-title {
+    font-size: clamp(12px, 0.35vw + 10px, 15px) !important;
+    line-height: 1.35 !important;
+}
+
+/* Movie year */
+.movie-year {
+    font-size: clamp(11px, 0.25vw + 9px, 13px) !important;
+}
+
+/* Posters keep movie-poster shape */
+.poster {
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+}
+
+.poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
   
 </style>
