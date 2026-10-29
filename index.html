@@ -7146,15 +7146,17 @@ if (document.readyState === "loading") {
 }
 
 .cineflix-player-info h1 {
-    margin: 0 0 16px !important;
+    margin: 0 0 14px !important;
 
-    font-size: clamp(24px, 2.2vw, 42px) !important;
+    font-size: clamp(20px, 1.8vw, 34px) !important;
 
     font-weight: 700 !important;
 
-    line-height: 1.05 !important;
+    line-height: 1.1 !important;
 
     color: #fff !important;
+
+    word-break: normal !important;
 }
 
 .cineflix-player-meta {
@@ -8839,9 +8841,17 @@ if (poster) {
     })
     .then(movie => {
 
-        poster.src = getPoster(movie);
+    poster.src = getPoster(movie);
 
-    })
+    const title =
+        document.getElementById("cineflixPlayerTitle");
+
+     if (title) {
+        title.textContent =
+            movie.title || movie.name || "Unknown Movie";
+        }
+
+     })
     .catch(error => {
 
         console.error(
