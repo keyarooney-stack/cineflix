@@ -775,28 +775,27 @@ body{
     font-weight:bold;
     cursor:pointer;
 }
-.where-watch-button{
-    margin-left:10px;
-    background:#ff8c00 !important;
-    color:white !important;
+.where-watch-button {
+    margin-left: 10px;
+    background: #ff8c00 !important;
+    color: white !important;
 }
 
-.where-watch-button:hover{
-    background:#e67e00 !important;
+.where-watch-button:hover {
+    background: #e67e00 !important;
 }
 
-.where-watch-button:disabled{
-    background:#ff8c00 !important;
-    color:white !important;
-    opacity:1;
+.where-watch-button:disabled {
+    background: #ff8c00 !important;
+    color: white !important;
+    opacity: 1;
 }
 
-@media(max-width:600px){
+/* Movie details prompt above player */
 
-    .where-watch-button{
-        margin-left:0;
-        margin-top:10px;
-    }
+#movieModal {
+    z-index: 2147483647 !important;
+}
 
     /* MOVIE COLLECTION - MOBILE ONLY */
 
@@ -2116,45 +2115,156 @@ function movieCard(movie){
 
     const rating =
         movie.vote_average
-        ? Number(
-            movie.vote_average
-          ).toFixed(1)
+        ? Number(movie.vote_average).toFixed(1)
         : "N/A";
 
-    return `
+   return `
 
-        <div
-            class="movie"
-            onclick="openMovie(${movie.id})">
+    <div
+    class="movie"
+    onclick="openMovie(${movie.id})">
 
-            <div class="poster">
+        <div class="poster">
 
-                <img
-                    src="${getPoster(movie)}"
-                    alt="${escapeHTML(title)}"
-                    loading="lazy"
-                    onerror="
-                        this.src='https://placehold.co/500x750/111/fff?text=No+Poster'
-                    ">
+            <img
+                src="${getPoster(movie)}"
+                alt="${escapeHTML(title)}"
+                loading="lazy"
+                onerror="
+                    this.src='https://placehold.co/500x750/111/fff?text=No+Poster'
+                ">
 
-                <div class="rating">
-                    ★ ${rating}
-                </div>
-
-            </div>
-
-            <div class="movie-title">
-                ${escapeHTML(title)}
-            </div>
-
-            <div class="movie-year">
-                ${year}
+            <div class="rating">
+                ★ ${rating}
             </div>
 
         </div>
 
-    `;
+        <div class="movie-title">
+            ${escapeHTML(title)}
+        </div>
 
+        <div class="movie-year">
+            ${year}
+        </div>
+
+    </div>
+
+`;
+}
+/* =====================================================
+   RELATED MOVIES
+===================================================== */
+/* =====================================================
+   RELATED MOVIE CLICK
+===================================================== */
+
+async function openRelatedMovie(id) {
+
+    console.log(
+        "Related movie clicked:",
+        id
+    );
+
+    await openMovie(id);
+
+}
+async function loadRelatedMovies(id) {
+
+    const container =
+        document.getElementById("cineflixRelatedMovies");
+
+    if (!container) return;
+
+    container.innerHTML =
+        "<p style='color:#aaa;'>Loading related movies...</p>";
+
+    try {
+
+        const data =
+            await tmdb(
+                "/movie/" +
+                id +
+                "/similar?language=en-US&page=1"
+            );
+
+        const movies =
+            (data.results || [])
+                .filter(movie => movie.poster_path)
+                .slice(0, 10);
+
+
+        if (!movies.length) {
+
+            container.innerHTML =
+                "<p style='color:#aaa;'>No related movies found.</p>";
+
+            return;
+        }
+
+
+        container.innerHTML = movies.map(movie => {
+
+            const title =
+                movie.title ||
+                movie.original_title ||
+                "Unknown Movie";
+
+            const year =
+                movie.release_date
+                    ? movie.release_date.substring(0, 4)
+                    : "N/A";
+
+            const rating =
+                movie.vote_average
+                    ? Number(movie.vote_average).toFixed(1)
+                    : "N/A";
+
+
+            return `
+                <div
+                    class="movie"
+                    onclick="openMovie(${movie.id})">
+
+                    <div class="poster">
+
+                        <img
+                            src="${getPoster(movie)}"
+                            alt="${escapeHTML(title)}"
+                            loading="lazy"
+                            onerror="
+                                this.src='https://placehold.co/500x750/111/fff?text=No+Poster'
+                            ">
+
+                        <div class="rating">
+                            ★ ${rating}
+                        </div>
+
+                    </div>
+
+                    <div class="movie-title">
+                        ${escapeHTML(title)}
+                    </div>
+
+                    <div class="movie-year">
+                        ${year}
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
+
+    } catch (error) {
+
+        console.error(
+            "Related movies error:",
+            error
+        );
+
+        container.innerHTML =
+            "<p style='color:#aaa;'>Unable to load related movies.</p>";
+    }
 }
 
 
@@ -2706,6 +2816,9 @@ if (cineflixWatchButton) {
         );
 
         openCineflixPlayer(id);
+
+        // Load related movies
+        loadRelatedMovies(id);
 
     };
 
@@ -7396,6 +7509,9 @@ document.addEventListener("keydown", function(event) {
     align-items: center;
     justify-content: center;
 
+    overflow-x: hidden;
+overflow-y: auto;
+
 }
 /* =====================================================
    ACTIVE PLAYER
@@ -7558,6 +7674,96 @@ document.addEventListener("keydown", function(event) {
 
 }
 /* =====================================================
+   RELATED MOVIES
+===================================================== */
+
+#cineflixRelatedSection {
+    position: absolute;
+
+    top: calc(50% + 330px);
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: min(1000px, 90vw);
+
+    padding: 25px 0 60px;
+
+    box-sizing: border-box;
+
+    color: #fff;
+}
+
+#cineflixRelatedSection h2 {
+    margin: 0 0 20px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+#cineflixRelatedMovies {
+    display: grid;
+
+    grid-template-columns: repeat(5, 1fr);
+
+    gap: 16px;
+}
+
+/* Keep every related movie card the same size */
+
+#cineflixRelatedMovies .movie {
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* Keep poster sizes consistent */
+
+#cineflixRelatedMovies .poster {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+}
+
+/* Prevent long movie names from changing the layout */
+
+#cineflixRelatedMovies .movie-title {
+    height: 42px;
+
+    line-height: 21px;
+
+    overflow: hidden;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    text-overflow: ellipsis;
+
+    margin-top: 8px;
+}
+
+/* Year stays in the same position */
+
+#cineflixRelatedMovies .movie-year {
+    height: 20px;
+    margin-top: 3px;
+}
+
+@media (max-width: 800px) {
+
+    #cineflixRelatedMovies {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    #cineflixRelatedMovies {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+/* =====================================================
    MOBILE
 ===================================================== */
 
@@ -7634,6 +7840,19 @@ document.addEventListener("keydown", function(event) {
         frameborder="0"
         referrerpolicy="origin"
     ></iframe>
+    <!-- =====================================================
+     RELATED MOVIES
+===================================================== -->
+
+<section id="cineflixRelatedSection">
+
+    <h2>Related Movies</h2>
+
+    <div id="cineflixRelatedMovies">
+        <!-- Related movie cards will appear here -->
+    </div>
+
+</section>
 
 </div>
 
