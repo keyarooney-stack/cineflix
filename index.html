@@ -7261,6 +7261,32 @@ if (document.readyState === "loading") {
     pointer-events: none !important;
 }
 
+/* =====================================================
+   CINEFLIX — MOBILE PLAYER FULLSCREEN
+===================================================== */
+
+@media (max-width: 1000px) {
+
+    #cineflixPlayer:fullscreen {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: none !important;
+        max-height: none !important;
+
+        position: fixed !important;
+        inset: 0 !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+        border-radius: 0 !important;
+
+        background: #000 !important;
+    }
+
+}
+
 </style>
 
 
@@ -9023,6 +9049,98 @@ document.addEventListener("click", function(event) {
 
 });
 
+/* =====================================================
+   CINEFLIX — MOBILE FULLSCREEN DETECTION
+===================================================== */
+
+(function () {
+
+    const player =
+        document.getElementById("cineflixPlayer");
+
+    if (!player) {
+        return;
+    }
+
+
+    document.addEventListener(
+        "fullscreenchange",
+        async function () {
+
+            /* Desktop is completely ignored */
+            if (window.innerWidth > 1000) {
+                return;
+            }
+
+
+            const isFullscreen =
+                document.fullscreenElement === player;
+
+
+            if (isFullscreen) {
+
+                document.body.classList.add(
+                    "cineflix-mobile-fullscreen"
+                );
+
+
+                /* Request landscape on supported phones */
+                if (
+                    screen.orientation &&
+                    screen.orientation.lock
+                ) {
+
+                    try {
+
+                        await screen.orientation.lock(
+                            "landscape"
+                        );
+
+                    } catch (error) {
+
+                        console.log(
+                            "CineFlix: landscape lock unavailable.",
+                            error
+                        );
+
+                    }
+
+                }
+
+            } else {
+
+                document.body.classList.remove(
+                    "cineflix-mobile-fullscreen"
+                );
+
+
+                /* Return orientation control to the phone */
+                if (
+                    screen.orientation &&
+                    screen.orientation.unlock
+                ) {
+
+                    try {
+
+                        screen.orientation.unlock();
+
+                    } catch (error) {
+
+                        console.log(
+                            "CineFlix: orientation unlock unavailable.",
+                            error
+                        );
+
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+})();
 
 /* =====================================================
    ESC KEY CLOSES PLAYER
