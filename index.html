@@ -570,92 +570,495 @@ body{
 }
 
 
-/* GRID */
-
-.grid{
-    display:grid;
-    grid-template-columns:repeat(6,minmax(0,1fr));
-    gap:25px 15px;
-    align-items:start;
-}
-
-.grid .movie{
-    width:100%;
-    min-width:0;
-    margin:0;
-    flex:none;
-}
-
-.grid .poster{
-    width:100%;
-    height:300px;
-    display:block;
-    object-fit:cover;
-}
-
-.loading{
-    grid-column:1/-1;
-    text-align:center;
-    color:#aaa;
-    padding:50px;
-    line-height:1.7;
-}
-
-
-.movie-carousel .movie{
-    flex:0 0 calc((100% - 105px) / 8);
-    min-width:0;
-}
-
-.movie-carousel .poster{
-    width:100%;
-    height:300px;
-    object-fit:cover;
-    display:block;
-}
-
-.movie-carousel::-webkit-scrollbar{
-    height:6px;
-}
-
-.movie-carousel::-webkit-scrollbar-thumb{
-    background:#444;
-    border-radius:10px;
-}
-/* =====================================================
-   MOVIE COLLECTION - HORIZONTAL SCROLL
+ /* =====================================================
+   MOVIE COLLECTION 
 ===================================================== */
 
-.movie-scroll{
-    display:grid;
-    grid-auto-flow:column;
-    grid-auto-columns:calc((100% - 105px) / 8);
-    gap:15px;
-    overflow-x:auto;
-    overflow-y:hidden;
-    scroll-behavior:smooth;
-    padding-bottom:15px;
+.grid {
+    display: grid;
+
+    /* 6 large movie cards across desktop */
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+
+    column-gap: 30px;
+    row-gap: 32px;
+
+    width: 100%;
+
+    align-items: start;
 }
 
-.movie-scroll .movie{
-    width:100%;
-    min-width:0;
+/* Movie card */
+.grid .movie {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
 }
 
-.movie-scroll .poster{
-    width:100%;
-    height:300px;
-    display:block;
-    object-fit:cover;
+/* Poster */
+.grid .poster {
+    width: 100%;
+    height: auto;
+
+    aspect-ratio: 2 / 3;
+
+    object-fit: cover;
+
+    border-radius: 8px;
+
+    overflow: hidden;
 }
 
-.movie-scroll::-webkit-scrollbar{
-    height:6px;
+/* Poster image */
+.grid .poster img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
 }
 
-.movie-scroll::-webkit-scrollbar-thumb{
-    background:#444;
-    border-radius:10px;
+/* Movie title */
+.grid .movie-title {
+    margin-top: 10px;
+
+    font-size: 16px !important;
+    font-weight: 700 !important;
+
+    line-height: 20px !important;
+
+    color: #fff;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Year */
+.grid .movie-year {
+    margin-top: 4px;
+
+    font-size: 13px !important;
+    font-weight: 500;
+
+    color: #777 !important;
+}
+
+/* Tablet */
+@media (max-width: 1000px) {
+
+    .grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+
+        gap: 25px 16px;
+    }
+}
+
+/* Phone */
+@media (max-width: 600px) {
+
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 22px 12px;
+    }
+
+    .grid .movie-title {
+        font-size: 14px !important;
+    }
+
+    .grid .movie-year {
+        font-size: 12px !important;
+    }
+}
+
+
+/* =====================================================
+   MOVIE CARD
+===================================================== */
+
+.grid .movie {
+    position: relative;
+
+    width: 100%;
+    min-width: 0;
+
+    margin: 0;
+
+    cursor: pointer;
+
+    overflow: visible;
+}
+
+
+/* =====================================================
+   POSTER
+===================================================== */
+
+.grid .poster {
+    position: relative;
+
+    width: 100%;
+    height: auto;
+
+    aspect-ratio: 2 / 3;
+
+    overflow: hidden;
+
+    border-radius: 8px;
+
+    background: #111;
+}
+
+
+.grid .poster img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+
+    transition: transform 0.25s ease;
+}
+
+
+/* Small hover effect */
+
+.grid .movie:hover .poster img {
+    transform: scale(1.035);
+}
+
+
+/* =====================================================
+   RATING BADGE
+===================================================== */
+
+.grid .rating {
+    position: absolute;
+
+    top: 7px;
+    right: 7px;
+
+    padding: 4px 7px;
+
+    border-radius: 6px;
+
+    background: #f4c400;
+    color: #000;
+
+    font-size: 12px !important;
+    font-weight: 800;
+
+    line-height: 1;
+
+    z-index: 3;
+}
+
+
+/* =====================================================
+   MOVIE TITLE
+===================================================== */
+
+.grid .movie-title {
+    margin-top: 10px;
+
+    width: 100%;
+
+    font-size: clamp(14px, 1vw, 17px) !important;
+    font-weight: 700 !important;
+
+    line-height: 1.25 !important;
+
+    color: #fff;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* =====================================================
+   YEAR
+===================================================== */
+
+.grid .movie-year {
+    margin-top: 5px;
+
+    font-size: clamp(11px, 0.8vw, 13px) !important;
+    font-weight: 500;
+
+    color: #777 !important;
+
+    line-height: 1.2;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.loading {
+    grid-column: 1 / -1;
+
+    text-align: center;
+
+    color: #aaa;
+
+    padding: 50px;
+
+    line-height: 1.7;
+}
+
+
+/* =====================================================
+   VERY LARGE SCREEN
+===================================================== */
+
+@media (min-width: 1600px) {
+
+    .grid {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+
+        column-gap: 28px;
+    }
+
+}
+
+
+/* =====================================================
+   LAPTOP
+===================================================== */
+
+@media (max-width: 1200px) {
+
+    .grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+
+        column-gap: 20px;
+    }
+
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 900px) {
+
+    .grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+
+        gap: 25px 15px;
+    }
+
+}
+
+
+/* =====================================================
+   SMALL TABLET
+===================================================== */
+
+@media (max-width: 650px) {
+
+    .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+
+        gap: 22px 12px;
+    }
+
+}
+
+
+/* =====================================================
+   PHONE
+===================================================== */
+
+@media (max-width: 480px) {
+
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 22px 10px;
+    }
+
+    .grid .movie-title {
+        font-size: 14px !important;
+    }
+
+    .grid .movie-year {
+        font-size: 12px !important;
+    }
+
+    .grid .rating {
+        top: 5px;
+        right: 5px;
+
+        padding: 3px 5px;
+
+        font-size: 11px !important;
+    }
+
+}
+/* =====================================================
+   MOVIE COLLECTION — FLIXMOMO GRID
+===================================================== */
+
+.movie-scroll {
+    display: grid !important;
+
+    /* Desktop: 6 movies per row */
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    grid-auto-flow: row !important;
+    grid-auto-columns: auto !important;
+
+    gap: 30px 28px !important;
+
+    width: 100% !important;
+
+    overflow: visible !important;
+
+    padding-bottom: 15px;
+}
+
+
+/* MOVIE CARD */
+
+.movie-scroll .movie {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+}
+
+
+/* POSTER */
+
+.movie-scroll .poster {
+    position: relative;
+
+    width: 100% !important;
+    height: auto !important;
+
+    aspect-ratio: 2 / 3 !important;
+
+    overflow: hidden;
+
+    border-radius: 8px;
+
+    background: #111;
+}
+
+
+.movie-scroll .poster img {
+    width: 100% !important;
+    height: 100% !important;
+
+    display: block;
+
+    object-fit: cover !important;
+}
+
+
+/* TITLE */
+
+.movie-scroll .movie-title {
+    margin-top: 10px !important;
+
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    line-height: 20px !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    color: #fff;
+}
+
+
+/* YEAR */
+
+.movie-scroll .movie-year {
+    margin-top: 4px !important;
+
+    font-size: 13px !important;
+
+    color: #777 !important;
+}
+
+
+/* Remove old horizontal scrollbar */
+
+.movie-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* =====================================================
+   LAPTOP
+===================================================== */
+
+@media (max-width: 1100px) {
+
+    .movie-scroll {
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        gap: 26px 18px !important;
+    }
+
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 850px) {
+
+    .movie-scroll {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 24px 14px !important;
+    }
+
+}
+
+
+/* =====================================================
+   SMALL TABLET
+===================================================== */
+
+@media (max-width: 650px) {
+
+    .movie-scroll {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 22px 12px !important;
+    }
+
+}
+
+
+/* =====================================================
+   PHONE
+===================================================== */
+
+@media (max-width: 480px) {
+
+    .movie-scroll {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 20px 10px !important;
+    }
+
+    .movie-scroll .movie-title {
+        font-size: 14px !important;
+    }
+
+    .movie-scroll .movie-year {
+        font-size: 12px !important;
+    }
+
 }
 /* GENRES */
 
@@ -800,40 +1203,7 @@ body{
     z-index: 2147483647 !important;
 }
 
-    /* MOVIE COLLECTION - MOBILE ONLY */
-
-    #movieGrid{
-        display:flex;
-        gap:12px;
-        overflow-x:auto;
-        overflow-y:hidden;
-        flex-wrap:nowrap;
-        scroll-behavior:smooth;
-        padding-bottom:10px;
-    }
-
-    #movieGrid .movie{
-        flex:0 0 145px;
-        width:145px;
-    }
-
-    #movieGrid .poster{
-        width:145px;
-        height:215px;
-        object-fit:cover;
-    }
-
-    #movieGrid::-webkit-scrollbar{
-        height:5px;
-    }
-
-    #movieGrid::-webkit-scrollbar-thumb{
-        background:#444;
-        border-radius:10px;
-    }
-
-}
-
+  
 .where-watch-button:hover{
     background:#555;
 }
