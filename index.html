@@ -1422,22 +1422,90 @@ footer{
     }
 
 
-    /* =================================================
-       MOVIE DETAILS MODAL
-    ================================================= */
+  /* =================================================
+   MOVIE DETAILS MODAL
+   Controlled desktop size + responsive mobile
+================================================= */
+
+#movieModal {
+    padding: 20px !important;
+    box-sizing: border-box !important;
+}
+
+/* Actual movie details prompt */
+#movieModal > * {
+    width: min(900px, 92vw) !important;
+    max-width: 900px !important;
+
+    box-sizing: border-box !important;
+
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* =================================================
+   PHONE
+================================================= */
+
+@media (max-width: 700px) {
 
     #movieModal {
-        padding: 12px !important;
-        box-sizing: border-box;
+        padding: 10px !important;
     }
 
-
-    /* Keep details popup inside phone screen */
     #movieModal > * {
-        max-width: 100% !important;
-        box-sizing: border-box;
+        width: 96vw !important;
+        max-width: 96vw !important;
+    }
+}
+
+/* =================================================
+   MOVIE DETAILS — LARGER TEXT
+================================================= */
+
+#movieModal {
+    font-size: 17px !important;
+}
+
+#movieModal h1,
+#movieModal h2,
+#movieModal h3 {
+    font-size: 26px !important;
+    line-height: 1.2 !important;
+}
+
+#movieModal p {
+    font-size: 16px !important;
+    line-height: 1.55 !important;
+}
+
+#movieModal button {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+}
+
+/* Phone */
+@media (max-width: 700px) {
+
+    #movieModal {
+        font-size: 15px !important;
     }
 
+    #movieModal h1,
+    #movieModal h2,
+    #movieModal h3 {
+        font-size: 21px !important;
+    }
+
+    #movieModal p {
+        font-size: 14px !important;
+        line-height: 1.45 !important;
+    }
+
+    #movieModal button {
+        font-size: 15px !important;
+    }
+}
 
     /* =================================================
        BUTTONS
