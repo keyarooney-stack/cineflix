@@ -1543,12 +1543,12 @@ footer{
 }
 
 #cineflixRelatedMovies .movie-title {
-    height: 42px !important;
+    height: 46px !important;
 
-    margin-top: 7px !important;
+    margin-top: 8px !important;
 
-    font-size: 13px !important;
-    line-height: 20px !important;
+    font-size: 16px !important;
+    line-height: 22px !important;
 
     white-space: normal !important;
 
@@ -1557,6 +1557,14 @@ footer{
     -webkit-box-orient: vertical !important;
 
     overflow: hidden !important;
+}
+
+#cineflixRelatedMovies .movie-year {
+    height: 22px !important;
+
+    margin-top: 4px !important;
+
+    font-size: 14px !important;
 }
 
 #cineflixRelatedMovies .movie-year {
@@ -1574,7 +1582,6 @@ footer{
     }
 
 }
-
 
 </style>
 
@@ -7925,38 +7932,38 @@ overflow-y: auto;
 }
 
 
-/* =====================================================
-   TOP BAR
-===================================================== */
+/* =================================================
+   CINEFLIX PLAYER TOP BAR
+================================================= */
 
 .cineflix-player-topbar {
 
-    position: absolute;
+    position: absolute !important;
 
-    top: 50%;
-    left: 50%;
+    top: 50% !important;
+    left: 50% !important;
 
-    transform: translate(-50%, -281px);
+    transform: translate(-50%, -308.5px) !important;
 
-    width: min(1000px, 90vw);
+    width: min(1000px, 90vw) !important;
 
-    height: 55px;
-    min-height: 55px;
+    height: 55px !important;
+    min-height: 55px !important;
 
-    display: flex;
+    display: flex !important;
 
-    align-items: center;
-    justify-content: space-between;
+    align-items: center !important;
+    justify-content: space-between !important;
 
-    padding: 0 18px;
+    padding: 0 18px !important;
 
-    box-sizing: border-box;
+    box-sizing: border-box !important;
 
-    background: #080808;
+    background: #080808 !important;
 
-    border-bottom: 1px solid #222;
+    border-bottom: 1px solid #222 !important;
 
-    z-index: 10;
+    z-index: 10 !important;
 
 }
 
@@ -8221,6 +8228,44 @@ overflow-y: auto;
         font-size: 16px !important;
     }
 
+/* =================================================
+   CINEFLIX — NETFLIX-STYLE TYPOGRAPHY
+================================================= */
+
+body {
+    font-family: Arial, Helvetica, sans-serif !important;
+    letter-spacing: 0 !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: Arial, Helvetica, sans-serif !important;
+    letter-spacing: -0.2px;
+}
+
+.movie-title {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 20px !important;
+    letter-spacing: 0 !important;
+}
+
+.movie-year {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 18px !important;
+    color: #aaa !important;
+}
+
+.rating {
+    font-family: Arial, Helvetica, sans-serif !important;
+}
   
 </style>
 
