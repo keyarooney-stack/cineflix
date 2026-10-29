@@ -9048,6 +9048,82 @@ document.addEventListener("keydown", function(event) {
 
 });
 
+/* =====================================================
+   CINEFLIX — MOBILE FULLSCREEN LANDSCAPE
+===================================================== */
+
+(function () {
+
+    const player =
+        document.getElementById("cineflixPlayer");
+
+    if (!player) return;
+
+    /* MOBILE ONLY */
+    if (window.innerWidth > 1000) return;
+
+    /* WHEN FULLSCREEN STARTS */
+    document.addEventListener(
+        "fullscreenchange",
+        async function () {
+
+            if (document.fullscreenElement === player) {
+
+                try {
+
+                    if (
+                        screen.orientation &&
+                        screen.orientation.lock
+                    ) {
+
+                        await screen.orientation.lock(
+                            "landscape"
+                        );
+
+                    }
+
+                } catch (error) {
+
+                    console.log(
+                        "Landscape lock unavailable:",
+                        error
+                    );
+
+                }
+
+            }
+
+            /* WHEN FULLSCREEN ENDS */
+
+            else {
+
+                try {
+
+                    if (
+                        screen.orientation &&
+                        screen.orientation.unlock
+                    ) {
+
+                        screen.orientation.unlock();
+
+                    }
+
+                } catch (error) {
+
+                    console.log(
+                        "Orientation unlock unavailable:",
+                        error
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+})();
+
 </script>
 
 
