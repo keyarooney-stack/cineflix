@@ -8486,6 +8486,35 @@ window.addEventListener(
         }
 
 
+        /* STOP WHEN TV SHOW DETAILS ARE OPEN */
+
+        const tvDetails =
+            document.querySelector(
+                ".tv-show-details"
+            );
+
+        if (tvDetails) {
+            return;
+        }
+
+
+        /* STOP WHILE SEARCH RESULTS ARE OPEN */
+
+        const searchSection =
+            document.getElementById(
+                "searchSection"
+            );
+
+        if (
+            searchSection &&
+            window.getComputedStyle(
+                searchSection
+            ).display !== "none"
+        ) {
+            return;
+        }
+
+
         /* LOAD BEFORE REACHING BOTTOM */
 
         const distanceFromBottom =
