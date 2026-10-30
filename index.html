@@ -7431,37 +7431,40 @@ if (document.readyState === "loading") {
         overflow: hidden !important;
     }
 
+/* Make the movie player automatically fit the phone fullscreen area */
 
-    /* Make the movie player cover that fullscreen area */
+#cineflixPlayerModal:fullscreen #cineflixPlayer,
+#cineflixPlayerModal:-webkit-full-screen #cineflixPlayer {
 
-    #cineflixPlayerModal:fullscreen #cineflixPlayer,
-    #cineflixPlayerModal:-webkit-full-screen #cineflixPlayer {
+    position: absolute !important;
 
-        position: absolute !important;
+    inset: 0 !important;
 
-        top: 0 !important;
-        left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
 
-        width: 100vw !important;
-        height: 100vh !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
 
-        max-width: none !important;
-        max-height: none !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
 
-        aspect-ratio: auto !important;
+    aspect-ratio: auto !important;
 
-        transform: none !important;
+    transform: none !important;
 
-        margin: 0 !important;
-        padding: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 
-        border: 0 !important;
-        border-radius: 0 !important;
+    box-sizing: border-box !important;
 
-        background: #000 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
 
-        z-index: 10 !important;
-    }
+    background: #000 !important;
+
+    z-index: 10 !important;
+}
 
 
     /* Hide CineFlix extras during fullscreen */
