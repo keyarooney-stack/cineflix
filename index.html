@@ -2549,7 +2549,78 @@ footer{
 #cineflixPlayerLoading {
     display: none !important;
 }
+/* =====================================================
+   CINEFLIX — MOBILE TOP NAVIGATION
+===================================================== */
 
+@media (max-width: 600px) {
+
+    /* Keep the main header visible */
+    .navbar {
+        display: block !important;
+        width: 100% !important;
+        overflow: visible !important;
+    }
+
+    /* Keep logo + navigation available */
+    .navbar .navbar-main {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    /* FORCE NAVIGATION TO SHOW */
+    .navbar .navbar-main .nav {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+
+        width: 100% !important;
+        height: auto !important;
+
+        flex-direction: row !important;
+        align-items: center !important;
+
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+
+        white-space: nowrap !important;
+
+        gap: 18px !important;
+
+        padding: 10px 14px !important;
+        margin: 0 !important;
+
+        box-sizing: border-box !important;
+
+        -webkit-overflow-scrolling: touch !important;
+
+        scrollbar-width: none !important;
+    }
+
+    .navbar .navbar-main .nav::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    /* Navigation buttons */
+    .navbar .navbar-main .nav a {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+
+        flex: 0 0 auto !important;
+
+        white-space: nowrap !important;
+
+        padding: 8px 2px !important;
+
+        margin: 0 !important;
+    }
+
+}
 </style>
 
 </head>
@@ -8639,18 +8710,27 @@ async function playCineFlixTVEpisode(
             embedUrl
         );
 
-        /* =============================================
-           LOAD EPISODE
-        ============================================= */
+   /* =============================================
+   REMEMBER TV EPISODE POSITION
+============================================= */
 
-        player.src = embedUrl;
+window.cineflixTVPlayerActive = true;
 
-        /* =============================================
-           SHOW PLAYER
-        ============================================= */
+window.cineflixTVReturnScrollY =
+    window.scrollY;
 
-        modal.style.display = "flex";
 
+/* =============================================
+   LOAD EPISODE
+============================================= */
+
+player.src = embedUrl;
+
+/* =============================================
+   SHOW PLAYER
+============================================= */
+
+modal.style.display = "flex";
     }
 
     catch (error) {
@@ -9632,8 +9712,9 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 });
+
 /* =====================================================
-   CINEFLIX — TV SHOWS NAVIGATION
+   CINEFLIX — MAIN NAVIGATION
 ===================================================== */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -9643,6 +9724,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const tvSection =
         document.getElementById("tvshows");
+
+    const homeButton =
+        document.querySelector(
+            '.nav a[href="#"]'
+        );
 
     const movieSections = [
         "trending",
@@ -9654,46 +9740,220 @@ document.addEventListener("DOMContentLoaded", function () {
     ];
 
     if (!tvButton || !tvSection) {
-        console.error("CineFlix TV Shows navigation not found.");
+
+        console.error(
+            "CineFlix navigation elements not found."
+        );
+
         return;
     }
 
-    tvButton.addEventListener("click", function (event) {
 
-        event.preventDefault();
+    /* =================================================
+       SHOW MOVIE HOMEPAGE
+    ================================================= */
 
-        /* Hide movie sections */
-        movieSections.forEach(function (id) {
+    function showCineFlixHome() {
 
-            const section =
-                document.getElementById(id);
+        /* Hide TV Shows */
 
-            if (section) {
-                section.style.display = "none";
+        tvSection.style.display =
+            "none";
+
+
+        /* Show movie sections */
+
+        movieSections.forEach(
+            function (id) {
+
+                const section =
+                    document.getElementById(id);
+
+                if (section) {
+
+                    section.style.display =
+                        "";
+
+                }
+
             }
+        );
 
-        });
 
-        /* Hide hero */
+        /* Show hero */
+
         const hero =
             document.getElementById("hero");
 
         if (hero) {
-            hero.style.display = "none";
+
+            hero.style.display =
+                "";
+
         }
 
-        /* Show TV Shows */
-        tvSection.style.display = "block";
-        loadCineFlixTVShows();
-        /* Move to TV Shows */
-        tvSection.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
+
+        /* Go to top */
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
         });
 
-    });
+    }
+
+
+    /* =================================================
+       HOME BUTTON
+    ================================================= */
+
+    if (homeButton) {
+
+        homeButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+                showCineFlixHome();
+
+            }
+        );
+
+    }
+
+
+    /* =================================================
+       TV SHOWS BUTTON
+    ================================================= */
+
+    tvButton.addEventListener(
+        "click",
+        function (event) {
+
+            event.preventDefault();
+
+
+            /* Hide movie sections */
+
+            movieSections.forEach(
+                function (id) {
+
+                    const section =
+                        document.getElementById(id);
+
+                    if (section) {
+
+                        section.style.display =
+                            "none";
+
+                    }
+
+                }
+            );
+
+
+            /* Hide hero */
+
+            const hero =
+                document.getElementById("hero");
+
+            if (hero) {
+
+                hero.style.display =
+                    "none";
+
+            }
+
+
+            /* Show TV Shows */
+
+            tvSection.style.display =
+                "block";
+
+
+            /* Load TV Shows */
+
+            loadCineFlixTVShows();
+
+
+            /* Move to TV Shows */
+
+            tvSection.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }
+    );
 
 });
+/* =====================================================
+   CINEFLIX — RETURN TO TV EPISODES AFTER PLAYER CLOSE
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const modal =
+            document.getElementById(
+                "cineflixPlayerModal"
+            );
+
+        if (!modal) {
+            return;
+        }
+
+        const observer =
+            new MutationObserver(
+                function () {
+
+                    const isHidden =
+                        window.getComputedStyle(
+                            modal
+                        ).display === "none";
+
+                    if (
+                        isHidden &&
+                        typeof
+                            window.cineflixTVReturnScrollY
+                            === "number"
+                    ) {
+
+                        setTimeout(
+                            function () {
+
+                                window.scrollTo({
+                                    top:
+                                        window.cineflixTVReturnScrollY,
+                                    behavior:
+                                        "smooth"
+                                });
+
+                            },
+                            100
+                        );
+
+                    }
+
+                }
+            );
+
+        observer.observe(
+            modal,
+            {
+                attributes: true,
+                attributeFilter: [
+                    "style",
+                    "class"
+                ]
+            }
+        );
+
+    }
+);
+
 </script>
 <script>
 /* =====================================================
@@ -10150,8 +10410,6 @@ if (poster) {
     document.body.style.overflow = "hidden";
 
 }
-
-
 /* =====================================================
    CLOSE CINEFLIX PLAYER
 ===================================================== */
@@ -10168,18 +10426,15 @@ function closeCineflixPlayer() {
     /* STOP PLAYER */
 
     if (player) {
-
         player.src = "";
-
     }
 
 
     /* CLOSE MODAL */
 
     if (modal) {
-
         modal.classList.remove("active");
-
+        modal.style.display = "none";
     }
 
 
@@ -10187,26 +10442,42 @@ function closeCineflixPlayer() {
 
     document.body.style.overflow = "";
 
-}
 
+    /* RETURN TO TV EPISODE PAGE */
 
-/* =====================================================
-   PLAYER CLOSE BUTTON
-===================================================== */
+    if (window.cineflixTVPlayerActive === true) {
 
-document.addEventListener("click", function(event) {
+        window.cineflixTVPlayerActive = false;
 
-    if (
-        event.target &&
-        event.target.id === "cineflixPlayerClose"
-    ) {
+        setTimeout(function () {
 
-        closeCineflixPlayer();
+            window.scrollTo({
+                top:
+                    window.cineflixTVReturnScrollY || 0,
+                behavior: "smooth"
+            });
+
+        }, 100);
 
     }
 
-});
+}
+/* =====================================================
+   PLAYER X BUTTON
+===================================================== */
 
+document.addEventListener("click", function (event) {
+
+    const closeButton =
+        event.target.closest("#cineflixPlayerClose");
+
+    if (!closeButton) {
+        return;
+    }
+
+    closeCineflixPlayer();
+
+});
 
 /* =====================================================
    ESC KEY CLOSES PLAYER
