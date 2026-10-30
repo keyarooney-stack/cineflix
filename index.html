@@ -1249,57 +1249,32 @@ body{
     display: none;
 }
 
-
 /* =====================================================
-   LAPTOP
+   RESPONSIVE MOVIE GRID — AUTOMATIC
 ===================================================== */
 
-@media (max-width: 1100px) {
+.movie-scroll {
+    display: grid !important;
 
-    .movie-scroll {
-        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-        gap: 26px 18px !important;
-    }
+    grid-template-columns:
+        repeat(auto-fit, minmax(150px, 1fr)) !important;
 
+    gap: 26px 18px !important;
+
+    width: 100% !important;
 }
 
 
 /* =====================================================
-   TABLET
-===================================================== */
-
-@media (max-width: 850px) {
-
-    .movie-scroll {
-        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-        gap: 24px 14px !important;
-    }
-
-}
-
-
-/* =====================================================
-   SMALL TABLET
+   SMALL SCREENS
 ===================================================== */
 
 @media (max-width: 650px) {
 
     .movie-scroll {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 22px 12px !important;
-    }
+        grid-template-columns:
+            repeat(auto-fit, minmax(130px, 1fr)) !important;
 
-}
-
-
-/* =====================================================
-   PHONE
-===================================================== */
-
-@media (max-width: 480px) {
-
-    .movie-scroll {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 20px 10px !important;
     }
 
@@ -2477,6 +2452,96 @@ footer{
         max-width: 90vw !important;
         box-sizing: border-box;
     }
+    /* =====================================================
+   CINEFLIX — FINAL AUTOMATIC RESPONSIVE MOVIE GRIDS
+===================================================== */
+
+/* Main movie grids */
+.grid {
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(150px, 1fr)) !important;
+
+    gap: 26px 18px !important;
+}
+
+
+/* Movie Collection */
+.movie-scroll {
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(150px, 1fr)) !important;
+
+    gap: 26px 18px !important;
+}
+
+
+/* Related Movies */
+#cineflixRelatedMovies {
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(150px, 1fr)) !important;
+
+    gap: 14px !important;
+}
+
+
+/* =====================================================
+   SMALL PHONE ADJUSTMENT
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .grid,
+    .movie-scroll,
+    #cineflixRelatedMovies {
+
+        grid-template-columns:
+            repeat(auto-fit, minmax(130px, 1fr)) !important;
+
+        gap: 20px 10px !important;
+    }
+
+}
+/* =====================================================
+   CINEFLIX — MOBILE LANDSCAPE FULLSCREEN PLAYER
+===================================================== */
+
+@media (max-width: 1000px) and (orientation: landscape) {
+
+    #cineflixPlayer:fullscreen {
+        position: fixed !important;
+
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+
+        width: 100vw !important;
+        height: 100vh !important;
+
+        max-width: none !important;
+        max-height: none !important;
+
+        aspect-ratio: auto !important;
+
+        transform: none !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+        border-radius: 0 !important;
+
+        background: #000 !important;
+
+        z-index: 2147483647 !important;
+    }
+
+}
 
 </style>
 
@@ -9050,7 +9115,7 @@ document.addEventListener("click", function(event) {
 });
 
 /* =====================================================
-   CINEFLIX — MOBILE FULLSCREEN DETECTION
+   CINEFLIX — MOBILE FULLSCREEN + LANDSCAPE
 ===================================================== */
 
 (function () {
@@ -9063,81 +9128,109 @@ document.addEventListener("click", function(event) {
     }
 
 
-    document.addEventListener(
-        "fullscreenchange",
-        async function () {
+    function isCineflixMobile() {
 
-            /* Desktop is completely ignored */
-            if (window.innerWidth > 1000) {
-                return;
+        return (
+            window.matchMedia("(max-width: 1000px)").matches &&
+            (
+                navigator.maxTouchPoints > 0 ||
+                "ontouchstart" in window
+            )
+        );
+
+    }
+
+
+    async function handleCineflixFullscreen() {
+
+        /* Never interfere with desktop */
+        if (!isCineflixMobile()) {
+            return;
+        }
+
+
+        const fullscreenElement =
+            document.fullscreenElement ||
+            document.webkitFullscreenElement;
+
+
+        /*
+         * The iframe itself should be the fullscreen
+         * element when { } is pressed.
+         */
+
+        if (fullscreenElement === player) {
+
+            document.body.classList.add(
+                "cineflix-mobile-fullscreen"
+            );
+
+
+            /* Ask the phone for landscape */
+            try {
+
+                if (
+                    screen.orientation &&
+                    typeof screen.orientation.lock === "function"
+                ) {
+
+                    await screen.orientation.lock(
+                        "landscape"
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.log(
+                    "CineFlix: phone controls orientation.",
+                    error
+                );
+
             }
 
+        } else {
 
-            const isFullscreen =
-                document.fullscreenElement === player;
-
-
-            if (isFullscreen) {
-
-                document.body.classList.add(
-                    "cineflix-mobile-fullscreen"
-                );
+            document.body.classList.remove(
+                "cineflix-mobile-fullscreen"
+            );
 
 
-                /* Request landscape on supported phones */
+            /* Release orientation after minimizing */
+            try {
+
                 if (
                     screen.orientation &&
-                    screen.orientation.lock
+                    typeof screen.orientation.unlock === "function"
                 ) {
 
-                    try {
-
-                        await screen.orientation.lock(
-                            "landscape"
-                        );
-
-                    } catch (error) {
-
-                        console.log(
-                            "CineFlix: landscape lock unavailable.",
-                            error
-                        );
-
-                    }
+                    screen.orientation.unlock();
 
                 }
 
-            } else {
+            } catch (error) {
 
-                document.body.classList.remove(
-                    "cineflix-mobile-fullscreen"
+                console.log(
+                    "CineFlix: orientation unlock unavailable.",
+                    error
                 );
-
-
-                /* Return orientation control to the phone */
-                if (
-                    screen.orientation &&
-                    screen.orientation.unlock
-                ) {
-
-                    try {
-
-                        screen.orientation.unlock();
-
-                    } catch (error) {
-
-                        console.log(
-                            "CineFlix: orientation unlock unavailable.",
-                            error
-                        );
-
-                    }
-
-                }
 
             }
 
         }
+
+    }
+
+
+    document.addEventListener(
+        "fullscreenchange",
+        handleCineflixFullscreen
+    );
+
+
+    document.addEventListener(
+        "webkitfullscreenchange",
+        handleCineflixFullscreen
     );
 
 })();
