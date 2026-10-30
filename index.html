@@ -10147,9 +10147,105 @@ document.addEventListener(
 
     }
 );
+/* =====================================================
+   CINEFLIX — HOME HISTORY STATE
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        /*
+         * ONLY MARK THE NORMAL HOMEPAGE
+         */
+
+        if (
+            window.location.pathname === "/" ||
+            window.location.pathname === ""
+        ) {
+
+            window.history.replaceState(
+                {
+                    cineflixPage: "home"
+                },
+                "",
+                window.location.href
+            );
+
+        }
+
+    }
+);
+
 
 /* =====================================================
-   CINEFLIX — BROWSER BACK / FORWARD NAVIGATION
+   CINEFLIX — RESTORE HOME
+===================================================== */
+
+function cineflixRestoreHome() {
+
+    /* HIDE TV SECTION */
+
+    const tvSection =
+        document.getElementById("tvshows");
+
+    if (tvSection) {
+        tvSection.style.display = "none";
+    }
+
+
+    /* HIDE SEARCH RESULTS */
+
+    const searchSection =
+        document.getElementById(
+            "searchSection"
+        );
+
+    if (searchSection) {
+        searchSection.style.display = "none";
+    }
+
+
+    /* SHOW MOVIE SECTIONS */
+
+    [
+        "trending",
+        "latest",
+        "popular",
+        "toprated",
+        "genres",
+        "movies"
+    ].forEach(function(id) {
+
+        const section =
+            document.getElementById(id);
+
+        if (section) {
+            section.style.display = "";
+        }
+
+    });
+
+
+    /* SHOW HERO */
+
+    const hero =
+        document.getElementById("hero");
+
+    if (hero) {
+        hero.style.display = "";
+    }
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+/* =====================================================
+   CINEFLIX — BROWSER BACK / FORWARD
 ===================================================== */
 
 window.addEventListener(
@@ -10163,86 +10259,29 @@ window.addEventListener(
                     window.location.pathname;
 
 
-                /* =========================================
-                   RETURNED TO CINEFLIX HOME
-                ========================================= */
+                /* HOME */
 
                 if (
                     path === "/" ||
                     path === ""
                 ) {
 
-                    const tvSection =
-                        document.getElementById(
-                            "tvshows"
-                        );
-
-                    if (tvSection) {
-                        tvSection.style.display =
-                            "none";
-                    }
-
-
-                    /* SHOW MOVIE SECTIONS */
-
-                    [
-                        "trending",
-                        "latest",
-                        "popular",
-                        "toprated",
-                        "genres",
-                        "movies"
-                    ].forEach(function(id) {
-
-                        const section =
-                            document.getElementById(id);
-
-                        if (section) {
-                            section.style.display = "";
-                        }
-
-                    });
-
-
-                    /* SHOW HERO */
-
-                    const hero =
-                        document.getElementById(
-                            "hero"
-                        );
-
-                    if (hero) {
-                        hero.style.display = "";
-                    }
-
-
-                    /* HIDE SEARCH RESULTS */
-
-                    const searchSection =
-                        document.getElementById(
-                            "searchSection"
-                        );
-
-                    if (searchSection) {
-                        searchSection.style.display =
-                            "none";
-                    }
-
-
-                    window.scrollTo({
-                        top: 0,
-                        behavior: "smooth"
-                    });
+                    cineflixRestoreHome();
 
                     return;
                 }
 
 
-                /* =========================================
-                   MOVIE OR TV URL
-                ========================================= */
+                /* MOVIE / TV */
 
-                cineflixOpenFromURL();
+                if (
+                    path.startsWith("/movie/") ||
+                    path.startsWith("/tv/")
+                ) {
+
+                    cineflixOpenFromURL();
+
+                }
 
             },
             0
