@@ -7430,26 +7430,29 @@ if (document.readyState === "loading") {
 
         overflow: hidden !important;
     }
-/* =====================================================
-   CINEFLIX — MOBILE FULLSCREEN 16:9
-===================================================== */
+   /* =====================================================
+   CINEFLIX — STRICT MOBILE FULLSCREEN 16:9
+    ===================================================== */
 
-#cineflixPlayerModal:fullscreen #cineflixPlayer,
-#cineflixPlayerModal:-webkit-full-screen #cineflixPlayer {
+   #cineflixPlayerModal:fullscreen #cineflixPlayer,
+   #cineflixPlayerModal:-webkit-full-screen #cineflixPlayer {
 
     position: absolute !important;
 
     top: 50% !important;
     left: 50% !important;
 
-    /* Automatic 16:9 size for different phones */
-    width: min(100%, calc(100vh * 16 / 9)) !important;
-    height: auto !important;
+    /*
+       Fit a true 16:9 rectangle inside
+       whatever landscape phone screen is available.
+    */
+    width: min(100vw, calc(100vh * 16 / 9)) !important;
+    height: min(100vh, calc(100vw * 9 / 16)) !important;
 
     aspect-ratio: 16 / 9 !important;
 
-    max-width: 100% !important;
-    max-height: 100% !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
 
     min-width: 0 !important;
     min-height: 0 !important;
@@ -7467,7 +7470,7 @@ if (document.readyState === "loading") {
     background: #000 !important;
 
     z-index: 10 !important;
-}
+   }
 
 
     /* Hide CineFlix extras during fullscreen */
