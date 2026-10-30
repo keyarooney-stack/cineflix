@@ -7358,32 +7358,63 @@ if (document.readyState === "loading") {
     }
 
 }
+
 /* =====================================================
-   CINEFLIX — PHONE LANDSCAPE TAKEOVER
-   PHONE ONLY — DESKTOP UNTOUCHED
+   CINEFLIX — MOBILE FULLSCREEN BUTTON
+===================================================== */
+
+/* Hidden everywhere by default */
+#cineflixMobileFullscreen {
+    display: none;
+}
+
+
+/* Phone only */
+@media (max-width: 600px) {
+
+    #cineflixMobileFullscreen {
+        display: flex !important;
+
+        position: absolute !important;
+
+        right: 5vw !important;
+        top: calc(50% + 210px) !important;
+
+        width: 44px !important;
+        height: 44px !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        padding: 0 !important;
+
+        border: 0 !important;
+        border-radius: 7px !important;
+
+        background: rgba(0, 0, 0, 0.82) !important;
+        color: #fff !important;
+
+        font-size: 27px !important;
+
+        cursor: pointer !important;
+
+        z-index: 500 !important;
+    }
+
+}
+/* =====================================================
+   CINEFLIX — OWN PHONE FULLSCREEN LAYOUT
+   DESKTOP / LARGE SCREENS UNTOUCHED
 ===================================================== */
 
 @media (max-width: 600px) {
 
-    html.cineflix-phone-landscape,
-    body.cineflix-phone-landscape {
-        width: 100% !important;
-        height: 100% !important;
+    /* The CineFlix modal itself is fullscreen */
 
-        margin: 0 !important;
-        padding: 0 !important;
+    #cineflixPlayerModal:fullscreen,
+    #cineflixPlayerModal:-webkit-full-screen {
 
-        overflow: hidden !important;
-
-        background: #000 !important;
-    }
-
-
-    /* Entire CineFlix player becomes the screen */
-
-    #cineflixPlayerModal.cineflix-phone-landscape-player {
         position: fixed !important;
-
         inset: 0 !important;
 
         width: 100vw !important;
@@ -7395,20 +7426,16 @@ if (document.readyState === "loading") {
         margin: 0 !important;
         padding: 0 !important;
 
-        transform: none !important;
-
         background: #000 !important;
-
-        z-index: 2147483647 !important;
 
         overflow: hidden !important;
     }
 
 
-    /* Video takes the complete screen */
+    /* Make the movie player cover that fullscreen area */
 
-    #cineflixPlayerModal.cineflix-phone-landscape-player
-    #cineflixPlayer {
+    #cineflixPlayerModal:fullscreen #cineflixPlayer,
+    #cineflixPlayerModal:-webkit-full-screen #cineflixPlayer {
 
         position: absolute !important;
 
@@ -7423,33 +7450,40 @@ if (document.readyState === "loading") {
 
         aspect-ratio: auto !important;
 
+        transform: none !important;
+
         margin: 0 !important;
         padding: 0 !important;
-
-        transform: none !important;
 
         border: 0 !important;
         border-radius: 0 !important;
 
         background: #000 !important;
 
-        z-index: 2147483647 !important;
+        z-index: 10 !important;
     }
 
 
-    /* Hide CineFlix UI while watching fullscreen */
+    /* Hide CineFlix extras during fullscreen */
 
-    #cineflixPlayerModal.cineflix-phone-landscape-player
-    .cineflix-player-topbar,
+    #cineflixPlayerModal:fullscreen .cineflix-player-topbar,
+    #cineflixPlayerModal:fullscreen .cineflix-player-info,
+    #cineflixPlayerModal:fullscreen #cineflixRelatedSection,
+    #cineflixPlayerModal:fullscreen #cineflixPlayerLoading,
 
-    #cineflixPlayerModal.cineflix-phone-landscape-player
-    .cineflix-player-info,
+    #cineflixPlayerModal:-webkit-full-screen .cineflix-player-topbar,
+    #cineflixPlayerModal:-webkit-full-screen .cineflix-player-info,
+    #cineflixPlayerModal:-webkit-full-screen #cineflixRelatedSection,
+    #cineflixPlayerModal:-webkit-full-screen #cineflixPlayerLoading {
 
-    #cineflixPlayerModal.cineflix-phone-landscape-player
-    #cineflixRelatedSection,
+        display: none !important;
+    }
 
-    #cineflixPlayerModal.cineflix-phone-landscape-player
-    #cineflixPlayerLoading {
+
+    /* Keep our fullscreen button above the video */
+
+    #cineflixPlayerModal:fullscreen #cineflixMobileFullscreen,
+    #cineflixPlayerModal:-webkit-full-screen #cineflixMobileFullscreen {
 
         display: none !important;
     }
@@ -8705,169 +8739,124 @@ window.addEventListener(
     }
 
 })();
-
 /* =====================================================
-   CINEFLIX — AGGRESSIVE PHONE FULLSCREEN / LANDSCAPE
+   CINEFLIX — OWN MOBILE FULLSCREEN
 ===================================================== */
 
 (function () {
 
-    const player =
-        document.getElementById("cineflixPlayer");
+    const button =
+        document.getElementById("cineflixMobileFullscreen");
 
     const modal =
         document.getElementById("cineflixPlayerModal");
 
-
-    if (!player || !modal) {
+    if (!button || !modal) {
         return;
     }
 
 
-    function isCineflixPhone() {
-
-        return (
-            window.matchMedia("(max-width: 600px)").matches &&
-            (
-                navigator.maxTouchPoints > 0 ||
-                "ontouchstart" in window
-            )
-        );
-
+    function isPhone() {
+        return window.matchMedia(
+            "(max-width: 600px)"
+        ).matches;
     }
 
 
-    async function enterCineflixLandscape() {
+    button.addEventListener("click", async function () {
 
-        if (!isCineflixPhone()) {
+        /* Never interfere with desktop */
+        if (!isPhone()) {
             return;
         }
 
 
-        document.documentElement.classList.add(
-            "cineflix-phone-landscape"
-        );
-
-        document.body.classList.add(
-            "cineflix-phone-landscape"
-        );
-
-        modal.classList.add(
-            "cineflix-phone-landscape-player"
-        );
-
-
-        /*
-         * Request landscape orientation.
-         */
-
         try {
 
+            /* Make the CINEFLIX modal fullscreen */
+            if (modal.requestFullscreen) {
+
+                await modal.requestFullscreen();
+
+            } else if (modal.webkitRequestFullscreen) {
+
+                modal.webkitRequestFullscreen();
+
+            }
+
+
+            /* Request landscape */
             if (
                 screen.orientation &&
                 typeof screen.orientation.lock === "function"
             ) {
 
-                await screen.orientation.lock(
-                    "landscape"
-                );
+                try {
+
+                    await screen.orientation.lock(
+                        "landscape"
+                    );
+
+                } catch (orientationError) {
+
+                    console.log(
+                        "CineFlix: landscape lock unavailable.",
+                        orientationError
+                    );
+
+                }
 
             }
 
         } catch (error) {
 
-            console.log(
-                "CineFlix landscape lock unavailable:",
+            console.error(
+                "CineFlix fullscreen error:",
                 error
             );
 
         }
 
-    }
+    });
 
 
-    function exitCineflixLandscape() {
-
-        document.documentElement.classList.remove(
-            "cineflix-phone-landscape"
-        );
-
-        document.body.classList.remove(
-            "cineflix-phone-landscape"
-        );
-
-        modal.classList.remove(
-            "cineflix-phone-landscape-player"
-        );
-
-
-        try {
-
-            if (
-                screen.orientation &&
-                typeof screen.orientation.unlock === "function"
-            ) {
-
-                screen.orientation.unlock();
-
-            }
-
-        } catch (error) {
-
-            console.log(
-                "CineFlix orientation unlock unavailable:",
-                error
-            );
-
-        }
-
-    }
-
-
-    async function handleFullscreenChange() {
-
-        if (!isCineflixPhone()) {
-            return;
-        }
-
-
-        const fullscreenElement =
-            document.fullscreenElement ||
-            document.webkitFullscreenElement;
-
-
-        /*
-         * Something inside the CineFlix player has
-         * entered fullscreen.
-         */
-
-        if (fullscreenElement) {
-
-            await enterCineflixLandscape();
-
-        }
-
-        /*
-         * Fullscreen was minimized/exited.
-         */
-
-        else {
-
-            exitCineflixLandscape();
-
-        }
-
-    }
-
+    /* ================================================
+       RETURN TO NORMAL AFTER EXITING FULLSCREEN
+    ================================================ */
 
     document.addEventListener(
         "fullscreenchange",
-        handleFullscreenChange
-    );
+        function () {
 
-    document.addEventListener(
-        "webkitfullscreenchange",
-        handleFullscreenChange
+            if (!isPhone()) {
+                return;
+            }
+
+
+            if (!document.fullscreenElement) {
+
+                if (
+                    screen.orientation &&
+                    typeof screen.orientation.unlock === "function"
+                ) {
+
+                    try {
+
+                        screen.orientation.unlock();
+
+                    } catch (error) {
+
+                        console.log(
+                            "CineFlix orientation unlock unavailable."
+                        );
+
+                    }
+
+                }
+
+            }
+
+        }
     );
 
 })();
@@ -10035,6 +10024,17 @@ h3 {
         frameborder="0"
         referrerpolicy="origin"
     ></iframe>
+    <!-- =====================================================
+     CINEFLIX MOBILE FULLSCREEN BUTTON
+===================================================== -->
+
+<button
+    id="cineflixMobileFullscreen"
+    type="button"
+    aria-label="Fullscreen"
+>
+    ⛶
+</button>
 
 
     <!-- =====================================================
