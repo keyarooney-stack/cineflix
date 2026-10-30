@@ -12205,76 +12205,96 @@ h3 {
          CINEFLIX — PLAYER SERVER BUTTONS
     ================================================= -->
 
+<div
+    id="cineflixServerButtons"
+    style="
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        flex-wrap:wrap;
+        gap:12px;
+        width:100%;
+        padding:12px;
+        background:#080808;
+        box-sizing:border-box;
+        flex-shrink:0;
+    "
+>
+
+    <!-- SERVER MESSAGE -->
+
     <div
-        id="cineflixServerButtons"
         style="
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            gap:12px;
             width:100%;
-            padding:12px;
-            background:#080808;
-            box-sizing:border-box;
-            flex-shrink:0;
+            text-align:center;
+            color:#aaa;
+            font-size:12px;
+            font-weight:500;
+            margin-bottom:2px;
         "
     >
-
-                <button
-            id="cineflixServer1Button"
-            type="button"
-            onclick="event.stopPropagation(); cineflixSelectServer('server1')"
-            style="
-                padding:10px 20px;
-                border:2px solid #e50914;
-                border-radius:6px;
-                background:#e50914;
-                color:#fff;
-                font-weight:700;
-                cursor:pointer;
-            "
-        >
-            SERVER 1
-        </button>
-
-
-                                <button
-            id="cineflixServer2Button"
-            type="button"
-            onclick="event.stopPropagation(); cineflixSelectServer('server2')"
-            style="
-                padding:10px 20px;
-                border:2px solid #e50914;
-                border-radius:6px;
-                background:#111;
-                color:#fff;
-                font-weight:700;
-                cursor:pointer;
-            "
-        >
-            SERVER 2
-        </button>
-
-        <button
-            id="cineflixServer3Button"
-            type="button"
-            onclick="event.stopPropagation(); cineflixSelectServer('server3')"
-            style="
-                padding:10px 20px;
-                border:2px solid #e50914;
-                border-radius:6px;
-                background:#111;
-                color:#fff;
-                font-weight:700;
-                cursor:pointer;
-            "
-        >
-            SERVER 3
-        </button>
-
-        
-
+        Server not working? Try another one.
     </div>
+
+
+    <!-- SERVER 1 -->
+
+    <button
+        id="cineflixServer1Button"
+        type="button"
+        onclick="event.stopPropagation(); cineflixSelectServer('server1')"
+        style="
+            padding:10px 20px;
+            border:2px solid #e50914;
+            border-radius:6px;
+            background:#e50914;
+            color:#fff;
+            font-weight:700;
+            cursor:pointer;
+        "
+    >
+        SERVER 1
+    </button>
+
+
+    <!-- SERVER 2 -->
+
+    <button
+        id="cineflixServer2Button"
+        type="button"
+        onclick="event.stopPropagation(); cineflixSelectServer('server2')"
+        style="
+            padding:10px 20px;
+            border:2px solid #e50914;
+            border-radius:6px;
+            background:#111;
+            color:#fff;
+            font-weight:700;
+            cursor:pointer;
+        "
+    >
+        SERVER 2
+    </button>
+
+
+    <!-- SERVER 3 -->
+
+    <button
+        id="cineflixServer3Button"
+        type="button"
+        onclick="event.stopPropagation(); cineflixSelectServer('server3')"
+        style="
+            padding:10px 20px;
+            border:2px solid #e50914;
+            border-radius:6px;
+            background:#111;
+            color:#fff;
+            font-weight:700;
+            cursor:pointer;
+        "
+    >
+        SERVER 3
+    </button>
 
 </div>
     <!-- =====================================================
