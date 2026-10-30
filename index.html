@@ -4530,7 +4530,13 @@ if (cineflixWatchButton) {
                 id +
                 "?language=en-US"
             );
+       /* CINEFLIX MOVIE URL */
 
+cineflixSetContentURL(
+    "movie",
+    movie.id,
+    movie.title || movie.original_title
+);
 
         /* WHERE TO WATCH */
 
@@ -5003,7 +5009,53 @@ function updateHero(){
         );
 
 }
+/* =====================================================
+   CINEFLIX — SEO FRIENDLY URL HELPER
+===================================================== */
 
+function cineflixCreateSlug(title) {
+
+    return String(title || "")
+        .toLowerCase()
+        .trim()
+        .replace(/['"]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+
+}
+
+
+function cineflixSetContentURL(
+    type,
+    id,
+    title
+) {
+
+    const slug =
+        cineflixCreateSlug(title);
+
+    if (!slug) {
+        return;
+    }
+
+
+    const newURL =
+        "/" +
+        type +
+        "/" +
+        slug;
+
+
+    window.history.pushState(
+        {
+            cineflixType: type,
+            cineflixId: Number(id)
+        },
+        "",
+        newURL
+    );
+
+}
 
 function openHeroMovie(){
 
