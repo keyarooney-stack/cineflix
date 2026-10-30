@@ -5097,6 +5097,27 @@ setInterval(
 );
 
 /* =====================================================
+   CINEFLIX — RETURN URL TO HOME
+===================================================== */
+
+function cineflixSetHomeURL() {
+
+    if (
+        window.location.pathname !== "/"
+    ) {
+
+        window.history.pushState(
+            {
+                cineflixPage: "home"
+            },
+            "",
+            "/"
+        );
+
+    }
+
+}
+/* =====================================================
    CLOSE WITH ESC
 ===================================================== */
 
@@ -10540,6 +10561,7 @@ document.addEventListener("DOMContentLoaded", function () {
     ================================================= */
 
     function showCineFlixHome() {
+        cineflixSetHomeURL();
 
         /* Hide TV Shows */
 
