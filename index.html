@@ -10148,6 +10148,109 @@ document.addEventListener(
     }
 );
 
+/* =====================================================
+   CINEFLIX — BROWSER BACK / FORWARD NAVIGATION
+===================================================== */
+
+window.addEventListener(
+    "popstate",
+    function () {
+
+        setTimeout(
+            function () {
+
+                const path =
+                    window.location.pathname;
+
+
+                /* =========================================
+                   RETURNED TO CINEFLIX HOME
+                ========================================= */
+
+                if (
+                    path === "/" ||
+                    path === ""
+                ) {
+
+                    const tvSection =
+                        document.getElementById(
+                            "tvshows"
+                        );
+
+                    if (tvSection) {
+                        tvSection.style.display =
+                            "none";
+                    }
+
+
+                    /* SHOW MOVIE SECTIONS */
+
+                    [
+                        "trending",
+                        "latest",
+                        "popular",
+                        "toprated",
+                        "genres",
+                        "movies"
+                    ].forEach(function(id) {
+
+                        const section =
+                            document.getElementById(id);
+
+                        if (section) {
+                            section.style.display = "";
+                        }
+
+                    });
+
+
+                    /* SHOW HERO */
+
+                    const hero =
+                        document.getElementById(
+                            "hero"
+                        );
+
+                    if (hero) {
+                        hero.style.display = "";
+                    }
+
+
+                    /* HIDE SEARCH RESULTS */
+
+                    const searchSection =
+                        document.getElementById(
+                            "searchSection"
+                        );
+
+                    if (searchSection) {
+                        searchSection.style.display =
+                            "none";
+                    }
+
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+
+                    return;
+                }
+
+
+                /* =========================================
+                   MOVIE OR TV URL
+                ========================================= */
+
+                cineflixOpenFromURL();
+
+            },
+            0
+        );
+
+    }
+);
+
 </script>
 <script>
 /* =====================================================
