@@ -9940,6 +9940,213 @@ window.addEventListener(
 
     }
 );
+/* =====================================================
+   CINEFLIX — OPEN MOVIE / TV DIRECTLY FROM URL
+===================================================== */
+
+async function cineflixOpenFromURL() {
+
+    const path =
+        window.location.pathname;
+
+    const parts =
+        path
+            .split("/")
+            .filter(Boolean);
+
+
+    /* NORMAL HOMEPAGE */
+
+    if (parts.length < 2) {
+        return;
+    }
+
+
+    const type =
+        parts[0];
+
+    const slug =
+        parts.slice(1).join("-");
+
+
+    if (
+        type !== "movie" &&
+        type !== "tv"
+    ) {
+        return;
+    }
+
+
+    try {
+
+        /* =================================================
+           SEARCH TMDB USING THE URL TITLE
+        ================================================= */
+
+        const query =
+            slug
+                .replace(/-/g, " ")
+                .trim();
+
+
+        const data =
+            await tmdb(
+                "/search/" +
+                type +
+                "?query=" +
+                encodeURIComponent(query) +
+                "&include_adult=false" +
+                "&language=en-US&page=1"
+            );
+
+
+        const results =
+            data.results || [];
+
+
+        if (!results.length) {
+
+            console.error(
+                "CineFlix direct URL title not found:",
+                query
+            );
+
+            return;
+        }
+
+
+        /* =================================================
+           FIND THE BEST MATCH
+        ================================================= */
+
+        const exactMatch =
+            results.find(function(item) {
+
+                const title =
+                    type === "movie"
+                        ? (
+                            item.title ||
+                            item.original_title
+                          )
+                        : (
+                            item.name ||
+                            item.original_name
+                          );
+
+
+                return (
+                    cineflixCreateSlug(title) ===
+                    slug
+                );
+
+            });
+
+
+        const selected =
+            exactMatch || results[0];
+
+
+        /* =================================================
+           OPEN MOVIE
+        ================================================= */
+
+        if (type === "movie") {
+
+            openMovie(
+                selected.id
+            );
+
+            return;
+        }
+
+
+        /* =================================================
+           OPEN TV SHOW
+        ================================================= */
+
+        if (type === "tv") {
+
+            const tvSection =
+                document.getElementById(
+                    "tvshows"
+                );
+
+
+            /* HIDE MOVIE SECTIONS */
+
+            [
+                "trending",
+                "latest",
+                "popular",
+                "toprated",
+                "genres",
+                "movies"
+            ].forEach(function(id) {
+
+                const section =
+                    document.getElementById(id);
+
+                if (section) {
+                    section.style.display =
+                        "none";
+                }
+
+            });
+
+
+            /* HIDE HERO */
+
+            const hero =
+                document.getElementById(
+                    "hero"
+                );
+
+            if (hero) {
+                hero.style.display =
+                    "none";
+            }
+
+
+            /* SHOW TV SECTION */
+
+            if (tvSection) {
+                tvSection.style.display =
+                    "block";
+            }
+
+
+            openCineFlixTVShow(
+                selected.id
+            );
+
+        }
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "CineFlix direct URL error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   CHECK URL WHEN CINEFLIX STARTS
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        cineflixOpenFromURL();
+
+    }
+);
 
 </script>
 <script>
