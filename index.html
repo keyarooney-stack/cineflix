@@ -7941,7 +7941,8 @@ if (document.readyState === "loading") {
 /* SERVER BUTTONS */
 
 #cineflixServer1Button,
-#cineflixServer2Button {
+#cineflixServer2Button,
+#cineflixServer3Button {
 
     display: inline-flex !important;
 
@@ -7970,11 +7971,14 @@ if (document.readyState === "loading") {
 }
 
 
-/* SERVER 2 */
+/* SERVER 2 AND SERVER 3 */
 
-#cineflixServer2Button {
+#cineflixServer2Button,
+#cineflixServer3Button {
     background: #111 !important;
 }
+
+
 </style>
 
 
@@ -10403,9 +10407,23 @@ let cineflixSelectedServer = "server1";
 const CINEZO_PLAYER_OPTIONS =
     "?autoplay=false&poster=true&chromecast=true&servericon=true&setting=true&pip=true&font=Roboto&fontcolor=6f63ff&fontsize=20&opacity=0.5&primarycolor=e8b86d&secondarycolor=0a0a12&iconcolor=ffffff";
 
+
+
 window.cineflixActivePlayerContent = null;
 
 function cineflixGetPlayerURL(content) {
+
+    if (cineflixSelectedServer === "server3") {
+        if (content.type === "tv") {
+            return "https://vidly.pro/tv/" +
+                encodeURIComponent(content.id) + "/" +
+                encodeURIComponent(content.season) + "/" +
+                encodeURIComponent(content.episode);
+        }
+
+        return "https://vidly.pro/movie/" +
+            encodeURIComponent(content.id);
+    }
 
     if (cineflixSelectedServer === "server1") {
         if (content.type === "tv") {
@@ -10418,6 +10436,8 @@ function cineflixGetPlayerURL(content) {
         return "https://cinesrc.st/embed/movie/" +
             encodeURIComponent(content.id);
     }
+
+    
 
     if (content.type === "tv") {
         return "https://player.cinezo.live/embed/tv/" +
@@ -10448,64 +10468,29 @@ function cineflixSetPlayerContent(content) {
 
 function cineflixSelectServer(server) {
 
-    const server1 =
-        document.getElementById(
-            "cineflixServer1Button"
-        );
+        const serverButtons = {
+        server1: document.getElementById("cineflixServer1Button"),
+        server2: document.getElementById("cineflixServer2Button"),
+        server3: document.getElementById("cineflixServer3Button")
+    };
 
-    const server2 =
-        document.getElementById(
-            "cineflixServer2Button"
-        );
-
-
-    if (!server1 || !server2) {
+    if (!serverButtons[server]) {
         return;
     }
 
+    cineflixSelectedServer = server;
 
-    cineflixSelectedServer =
-        server;
+    Object.entries(serverButtons).forEach(function ([name, button]) {
+        if (button) {
+            button.style.setProperty(
+                "background",
+                name === server ? "#e50914" : "#111",
+                "important"
+            );
+        }
+    });
 
-
-    /* SERVER 1 ACTIVE */
-
-   if (server === "server1") {
-
-    server1.style.setProperty(
-        "background",
-        "#e50914",
-        "important"
-    );
-
-    server2.style.setProperty(
-        "background",
-        "#111",
-        "important"
-    );
-
-}
-
-    /* SERVER 2 ACTIVE */
-
-   else {
-
-    server1.style.setProperty(
-        "background",
-        "#111",
-        "important"
-    );
-
-    server2.style.setProperty(
-        "background",
-        "#e50914",
-        "important"
-    );
-
-}
-
-
-        if (window.cineflixActivePlayerContent) {
+    if (window.cineflixActivePlayerContent) {
         const player =
             document.getElementById("cineflixPlayer");
 
@@ -10546,7 +10531,7 @@ document.addEventListener(
         }
 
 
-        if (
+                if (
             event.target.closest(
                 "#cineflixServer2Button"
             )
@@ -10554,6 +10539,19 @@ document.addEventListener(
 
             cineflixSelectServer(
                 "server2"
+            );
+
+            return;
+        }
+
+        if (
+            event.target.closest(
+                "#cineflixServer3Button"
+            )
+        ) {
+
+            cineflixSelectServer(
+                "server3"
             );
 
         }
@@ -12193,22 +12191,14 @@ h3 {
     <!-- =================================================
          VIDEO PLAYER
     ================================================= -->
-
-    <iframe
-        id="cineflixPlayer"
-        src=""
-        title="CineFlix Player"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowfullscreen
-        frameborder="0"
-        referrerpolicy="origin"
-        style="
-            flex:1;
-            width:100%;
-            min-height:0;
-            border:0;
-        "
-    ></iframe>
+<iframe
+    id="cineflixPlayer"
+    src=""
+    allow="autoplay; fullscreen; picture-in-picture"
+    allowfullscreen
+    frameborder="0"
+    referrerpolicy="origin"
+></iframe>
 
 
     <!-- =================================================
@@ -12248,9 +12238,10 @@ h3 {
         </button>
 
 
-        <button
+                                <button
             id="cineflixServer2Button"
             type="button"
+            onclick="event.stopPropagation(); cineflixSelectServer('server2')"
             style="
                 padding:10px 20px;
                 border:2px solid #e50914;
@@ -12263,6 +12254,25 @@ h3 {
         >
             SERVER 2
         </button>
+
+        <button
+            id="cineflixServer3Button"
+            type="button"
+            onclick="event.stopPropagation(); cineflixSelectServer('server3')"
+            style="
+                padding:10px 20px;
+                border:2px solid #e50914;
+                border-radius:6px;
+                background:#111;
+                color:#fff;
+                font-weight:700;
+                cursor:pointer;
+            "
+        >
+            SERVER 3
+        </button>
+
+        
 
     </div>
 
