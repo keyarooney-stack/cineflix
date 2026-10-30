@@ -2542,6 +2542,13 @@ footer{
     }
 
 }
+/* =====================================================
+   CINEFLIX — HIDE PLAYER LOADING OVERLAY
+===================================================== */
+
+#cineflixPlayerLoading {
+    display: none !important;
+}
 
 </style>
 
@@ -2661,16 +2668,21 @@ footer{
         </div>
 
 
-        <nav class="nav">
+      <nav class="nav">
 
-            <a href="#">HOME</a>
-            <a href="#trending">TRENDING</a>
-            <a href="#latest">LATEST</a>
-            <a href="#popular">POPULAR</a>
-            <a href="#toprated">TOP RATED</a>
+    <a href="#">HOME</a>
+    <a href="#trending">TRENDING</a>
+    <a href="#latest">LATEST</a>
+    <a href="#popular">POPULAR</a>
+    <a href="#toprated">TOP RATED</a>
 
-        </nav>
+    <a
+        href="#tvshows"
+        id="tvShowsNavButton">
+        TV SHOWS
+    </a>
 
+    </nav>
     </div>
 
 
@@ -3109,6 +3121,47 @@ footer{
         onclick="loadMoviePage()">
 
         LOAD MORE MOVIES
+
+    </button>
+
+</section>
+<!-- =====================================================
+     CINEFLIX TV SHOWS
+===================================================== -->
+
+<section
+    class="section"
+    id="tvshows"
+    style="display: none;">
+
+    <div class="section-header">
+
+        <h2 class="section-title">
+            📺 TV Shows
+        </h2>
+
+        <p class="section-subtitle">
+            Popular series and TV shows
+        </p>
+
+    </div>
+
+    <div
+        id="tvShowsGrid"
+        class="grid">
+
+        <div class="loading">
+            Loading TV shows...
+        </div>
+
+    </div>
+
+    <button
+        id="loadMoreTVButton"
+        class="load-more"
+        type="button">
+
+        LOAD MORE TV SHOWS
 
     </button>
 
@@ -7916,7 +7969,700 @@ if (document.readyState === "loading") {
     restoreCineFlixNotificationButton();
 
 }
+/* =====================================================
+   CINEFLIX — LOAD TV SHOWS FROM TMDB
+===================================================== */
 
+async function loadCineFlixTVShows() {
+
+    const tvGrid =
+        document.getElementById("tvShowsGrid");
+
+    if (!tvGrid) {
+        console.error("TV Shows grid not found.");
+        return;
+    }
+
+    tvGrid.innerHTML = `
+        <div class="loading">
+            📺 Loading TV shows...
+        </div>
+    `;
+
+    try {
+
+        const response =
+            await fetch(
+                "https://api.themoviedb.org/3/tv/popular?language=en-US&page=1",
+                {
+                    headers: {
+                        Authorization:
+                            "Bearer " + TMDB_TOKEN,
+                        accept:
+                            "application/json"
+                    }
+                }
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                "TMDB TV Shows request failed."
+            );
+        }
+
+        const data =
+            await response.json();
+
+        const shows =
+            data.results || [];
+
+        if (!shows.length) {
+
+            tvGrid.innerHTML = `
+                <div class="loading">
+                    No TV shows found.
+                </div>
+            `;
+
+            return;
+        }
+
+        tvGrid.innerHTML =
+            shows.map(show => {
+
+                const poster =
+                    show.poster_path
+                        ? "https://image.tmdb.org/t/p/w500" +
+                          show.poster_path
+                        : "https://placehold.co/500x750/111/fff?text=No+Poster";
+
+                const title =
+                    show.name ||
+                    show.original_name ||
+                    "Unknown TV Show";
+
+                const year =
+                    show.first_air_date
+                        ? show.first_air_date.substring(0, 4)
+                        : "N/A";
+
+                const rating =
+                    show.vote_average
+                        ? Number(show.vote_average).toFixed(1)
+                        : "N/A";
+
+                return `
+                    <div
+                        class="movie-card"
+                        onclick="openCineFlixTVShow(${show.id})"
+                    >
+
+                        <img
+                            src="${poster}"
+                            alt="${escapeHTML(title)}"
+                            loading="lazy"
+                        >
+
+                        <div class="movie-info">
+
+                            <h3 class="movie-title">
+                                ${escapeHTML(title)}
+                            </h3>
+
+                            <div class="movie-year">
+                                ${year}
+                                · ★ ${rating}
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("");
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "CineFlix TV Shows error:",
+            error
+        );
+
+        tvGrid.innerHTML = `
+            <div class="loading">
+                ❌ Could not load TV shows.
+                <br><br>
+                <small>
+                    ${escapeHTML(error.message)}
+                </small>
+            </div>
+        `;
+
+    }
+
+}
+/* =====================================================
+   CINEFLIX — TV SHOW DETAILS
+===================================================== */
+
+async function openCineFlixTVShow(tvId) {
+
+    console.log(
+        "CineFlix TV Show selected:",
+        tvId
+    );
+
+    try {
+
+        const response =
+            await fetch(
+                "https://api.themoviedb.org/3/tv/" +
+                encodeURIComponent(tvId) +
+                "?language=en-US",
+                {
+                    headers: {
+                        Authorization:
+                            "Bearer " + TMDB_TOKEN,
+                        accept:
+                            "application/json"
+                    }
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "TV show details request failed."
+            );
+
+        }
+
+        const show =
+            await response.json();
+
+        /*
+         * SAVE THE SELECTED SHOW
+         */
+        window.cineflixSelectedTVShow = show;
+
+        console.log(
+            "CineFlix selected TV show:",
+            show.name
+        );
+
+        /*
+         * FOR NOW, SHOW THE DETAILS
+         * IN THE TV SECTION
+         */
+
+        const tvGrid =
+            document.getElementById("tvShowsGrid");
+
+        if (!tvGrid) {
+            return;
+        }
+
+        tvGrid.innerHTML = `
+            
+            <div class="tv-show-details">
+
+                <button
+                    type="button"
+                    onclick="loadCineFlixTVShows()"
+                    style="
+                        margin-bottom:20px;
+                        padding:10px 16px;
+                        border:0;
+                        border-radius:6px;
+                        background:#e50914;
+                        color:#fff;
+                        cursor:pointer;
+                    "
+                >
+                    ← BACK TO TV SHOWS
+                </button>
+
+                <h2
+                    style="
+                        margin-bottom:10px;
+                    "
+                >
+                    ${escapeHTML(
+                        show.name ||
+                        show.original_name ||
+                        "TV Show"
+                    )}
+                </h2>
+
+                <p
+                    style="
+                        opacity:.75;
+                        margin-bottom:15px;
+                    "
+                >
+                    ⭐ ${
+                        show.vote_average
+                            ? Number(
+                                show.vote_average
+                              ).toFixed(1)
+                            : "N/A"
+                    }
+
+                    ·
+
+                    ${
+                        show.first_air_date
+                            ? show.first_air_date
+                                .substring(0, 4)
+                            : "N/A"
+                    }
+
+                    ·
+
+                    ${
+                        show.number_of_seasons ||
+                        0
+                    }
+                    Seasons
+                </p>
+
+                <p
+                    style="
+                        max-width:800px;
+                        line-height:1.6;
+                        margin-bottom:25px;
+                    "
+                >
+                    ${escapeHTML(
+                        show.overview ||
+                        "No description available."
+                    )}
+                </p>
+
+                <h3
+                    style="
+                        margin-bottom:15px;
+                    "
+                >
+                    Seasons
+                </h3>
+
+                <div
+                    id="cineflixTVSeasons"
+                    style="
+                        display:grid;
+                        grid-template-columns:
+                            repeat(
+                                auto-fit,
+                                minmax(140px, 1fr)
+                            );
+                        gap:15px;
+                    "
+                >
+
+                    ${
+                        (show.seasons || [])
+                            .filter(
+                                season =>
+                                    season.season_number > 0
+                            )
+                            .map(
+                                season => `
+                                    <button
+                                        type="button"
+                                        onclick="
+                                            loadCineFlixTVSeason(
+                                                ${show.id},
+                                                ${season.season_number}
+                                            )
+                                        "
+                                        style="
+                                            padding:18px;
+                                            border:1px solid #333;
+                                            border-radius:8px;
+                                            background:#111;
+                                            color:#fff;
+                                            cursor:pointer;
+                                            text-align:left;
+                                        "
+                                    >
+
+                                        <strong>
+                                            Season
+                                            ${season.season_number}
+                                        </strong>
+
+                                        <br>
+
+                                        <small
+                                            style="
+                                                opacity:.7;
+                                            "
+                                        >
+                                            ${
+                                                season.episode_count ||
+                                                0
+                                            }
+                                            Episodes
+                                        </small>
+
+                                    </button>
+                                `
+                            )
+                            .join("")
+                    }
+
+                </div>
+
+                <div
+                    id="cineflixTVEpisodes"
+                    style="
+                        margin-top:30px;
+                    "
+                ></div>
+
+            </div>
+        `;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "CineFlix TV Show details error:",
+            error
+        );
+
+    }
+
+}
+
+/* =====================================================
+   CINEFLIX — LOAD TV SEASON EPISODES
+===================================================== */
+
+async function loadCineFlixTVSeason(tvId, seasonNumber) {
+
+    const episodesBox =
+        document.getElementById("cineflixTVEpisodes");
+
+    if (!episodesBox) {
+        console.error(
+            "TV Episodes container not found."
+        );
+        return;
+    }
+
+    episodesBox.innerHTML = `
+        <div class="loading">
+            📺 Loading episodes...
+        </div>
+    `;
+
+    try {
+
+        const response =
+            await fetch(
+                "https://api.themoviedb.org/3/tv/" +
+                encodeURIComponent(tvId) +
+                "/season/" +
+                encodeURIComponent(seasonNumber) +
+                "?language=en-US",
+                {
+                    headers: {
+                        Authorization:
+                            "Bearer " + TMDB_TOKEN,
+                        accept:
+                            "application/json"
+                    }
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "TV season request failed."
+            );
+
+        }
+
+        const season =
+            await response.json();
+
+        const episodes =
+            season.episodes || [];
+
+        if (!episodes.length) {
+
+            episodesBox.innerHTML = `
+                <div class="loading">
+                    No episodes found.
+                </div>
+            `;
+
+            return;
+        }
+
+        episodesBox.innerHTML = `
+
+            <h3 style="margin-bottom:15px;">
+                Season ${seasonNumber} Episodes
+            </h3>
+
+            <div
+                style="
+                    display:grid;
+                    gap:12px;
+                "
+            >
+
+                ${
+                    episodes.map(
+                        episode => `
+
+                            <button
+                                type="button"
+                                onclick="
+                                    playCineFlixTVEpisode(
+                                        ${tvId},
+                                        ${seasonNumber},
+                                        ${episode.episode_number}
+                                    )
+                                "
+                                style="
+                                    width:100%;
+                                    padding:15px;
+                                    border:1px solid #333;
+                                    border-radius:8px;
+                                    background:#111;
+                                    color:#fff;
+                                    cursor:pointer;
+                                    text-align:left;
+                                "
+                            >
+
+                                <strong>
+                                    Episode
+                                    ${episode.episode_number}
+                                    —
+                                    ${escapeHTML(
+                                        episode.name ||
+                                        "Untitled Episode"
+                                    )}
+                                </strong>
+
+                                <br>
+
+                                <small
+                                    style="
+                                        opacity:.7;
+                                    "
+                                >
+                                    ${
+                                        episode.air_date ||
+                                        "No air date"
+                                    }
+                                </small>
+
+                            </button>
+
+                        `
+                    ).join("")
+                }
+
+            </div>
+
+        `;
+
+        episodesBox.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "CineFlix TV Episodes error:",
+            error
+        );
+
+        episodesBox.innerHTML = `
+            <div class="loading">
+                ❌ Could not load episodes.
+            </div>
+        `;
+
+    }
+
+}
+
+/* =====================================================
+   CINEFLIX — PLAY TV EPISODE WITH SHOW POSTER
+===================================================== */
+
+async function playCineFlixTVEpisode(
+    tvId,
+    seasonNumber,
+    episodeNumber
+) {
+
+    console.log(
+        "CineFlix TV episode:",
+        tvId,
+        seasonNumber,
+        episodeNumber
+    );
+
+    const modal =
+        document.getElementById(
+            "cineflixPlayerModal"
+        );
+
+    const player =
+        document.getElementById(
+            "cineflixPlayer"
+        );
+
+    const poster =
+        document.getElementById(
+            "cineflixPlayerPoster"
+        );
+
+    const title =
+        document.getElementById(
+            "cineflixPlayerTitle"
+        );
+
+    if (!modal || !player) {
+
+        console.error(
+            "CineFlix player not found."
+        );
+
+        return;
+    }
+
+    try {
+
+        /* =============================================
+           GET TV SHOW DETAILS FROM TMDB
+        ============================================= */
+
+        const response =
+            await fetch(
+                "https://api.themoviedb.org/3/tv/" +
+                encodeURIComponent(tvId) +
+                "?language=en-US",
+                {
+                    headers: {
+                        Authorization:
+                            "Bearer " + TMDB_TOKEN,
+                        accept:
+                            "application/json"
+                    }
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "TV show details request failed."
+            );
+
+        }
+
+        const show =
+            await response.json();
+
+        /* =============================================
+           TV SHOW POSTER
+        ============================================= */
+
+        if (
+            poster &&
+            show.poster_path
+        ) {
+
+            poster.src =
+                "https://image.tmdb.org/t/p/w500" +
+                show.poster_path;
+
+        }
+
+        /* =============================================
+           TV SHOW TITLE
+        ============================================= */
+
+        if (title) {
+
+            title.textContent =
+                show.name ||
+                show.original_name ||
+                "Unknown TV Show";
+
+        }
+
+        /* =============================================
+           TV SHOW BACKDROP
+        ============================================= */
+
+        if (show.backdrop_path) {
+
+            document.documentElement.style
+                .setProperty(
+                    "--cineflix-backdrop",
+                    'url("https://image.tmdb.org/t/p/w1280' +
+                    show.backdrop_path +
+                    '")'
+                );
+
+        }
+
+        /* =============================================
+           CINESRC TV EPISODE
+        ============================================= */
+
+        const embedUrl =
+            "https://cinesrc.st/embed/tv/" +
+            encodeURIComponent(tvId) +
+            "?s=" +
+            encodeURIComponent(seasonNumber) +
+            "&e=" +
+            encodeURIComponent(episodeNumber);
+
+        console.log(
+            "CineFlix TV player URL:",
+            embedUrl
+        );
+
+        /* =============================================
+           LOAD EPISODE
+        ============================================= */
+
+        player.src = embedUrl;
+
+        /* =============================================
+           SHOW PLAYER
+        ============================================= */
+
+        modal.style.display = "flex";
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "CineFlix TV player error:",
+            error
+        );
+
+    }
+
+}
 </script>
 <!-- =====================================================
      CINEFLIX INSTALL BUTTON
@@ -8886,7 +9632,68 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 });
+/* =====================================================
+   CINEFLIX — TV SHOWS NAVIGATION
+===================================================== */
 
+document.addEventListener("DOMContentLoaded", function () {
+
+    const tvButton =
+        document.getElementById("tvShowsNavButton");
+
+    const tvSection =
+        document.getElementById("tvshows");
+
+    const movieSections = [
+        "trending",
+        "latest",
+        "popular",
+        "toprated",
+        "genres",
+        "movies"
+    ];
+
+    if (!tvButton || !tvSection) {
+        console.error("CineFlix TV Shows navigation not found.");
+        return;
+    }
+
+    tvButton.addEventListener("click", function (event) {
+
+        event.preventDefault();
+
+        /* Hide movie sections */
+        movieSections.forEach(function (id) {
+
+            const section =
+                document.getElementById(id);
+
+            if (section) {
+                section.style.display = "none";
+            }
+
+        });
+
+        /* Hide hero */
+        const hero =
+            document.getElementById("hero");
+
+        if (hero) {
+            hero.style.display = "none";
+        }
+
+        /* Show TV Shows */
+        tvSection.style.display = "block";
+        loadCineFlixTVShows();
+        /* Move to TV Shows */
+        tvSection.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    });
+
+});
 </script>
 <script>
 /* =====================================================
