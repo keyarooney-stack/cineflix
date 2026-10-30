@@ -7898,7 +7898,83 @@ if (document.readyState === "loading") {
     }
 
 }
+/* =====================================================
+   CINEFLIX — PLAYER SERVER BUTTONS
+   DOES NOT RESIZE THE PLAYER
+===================================================== */
 
+#cineflixPlayerVideoArea {
+    display: contents !important;
+}
+
+
+/* KEEP SERVER BUTTONS OVER THE PLAYER AREA */
+
+#cineflixServerButtons {
+
+    position: absolute !important;
+
+    left: 50% !important;
+    bottom: 12px !important;
+
+    transform: translateX(-50%) !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 10px !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    padding: 8px 10px !important;
+
+    background: rgba(0, 0, 0, 0.82) !important;
+
+    border-radius: 8px !important;
+
+    z-index: 400 !important;
+}
+
+
+/* SERVER BUTTONS */
+
+#cineflixServer1Button,
+#cineflixServer2Button {
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    min-width: 100px !important;
+
+    padding: 9px 16px !important;
+
+    border: 2px solid #e50914 !important;
+    border-radius: 6px !important;
+
+    color: #fff !important;
+
+    font-weight: 700 !important;
+
+    cursor: pointer !important;
+}
+
+
+/* SERVER 1 ACTIVE */
+
+#cineflixServer1Button {
+    background: #e50914 !important;
+}
+
+
+/* SERVER 2 */
+
+#cineflixServer2Button {
+    background: #111 !important;
+}
 </style>
 
 
@@ -9161,13 +9237,15 @@ async function playCineFlixTVEpisode(
            CINESRC TV EPISODE
         ============================================= */
 
+                const playerContent = {
+            type: "tv",
+            id: tvId,
+            season: seasonNumber,
+            episode: episodeNumber
+        };
+
         const embedUrl =
-            "https://cinesrc.st/embed/tv/" +
-            encodeURIComponent(tvId) +
-            "?s=" +
-            encodeURIComponent(seasonNumber) +
-            "&e=" +
-            encodeURIComponent(episodeNumber);
+            cineflixGetPlayerURL(playerContent);
 
         console.log(
             "CineFlix TV player URL:",
@@ -9188,7 +9266,7 @@ window.cineflixTVReturnScrollY =
    LOAD EPISODE
 ============================================= */
 
-player.src = embedUrl;
+cineflixSetPlayerContent(playerContent);
 
 /* =============================================
    SHOW PLAYER
@@ -10316,6 +10394,172 @@ window.addEventListener(
 
     }
 );
+/* =====================================================
+   CINEFLIX — PLAYER SERVER SELECTOR
+===================================================== */
+
+let cineflixSelectedServer = "server1";
+
+const CINEZO_PLAYER_OPTIONS =
+    "?autoplay=false&poster=true&chromecast=true&servericon=true&setting=true&pip=true&font=Roboto&fontcolor=6f63ff&fontsize=20&opacity=0.5&primarycolor=e8b86d&secondarycolor=0a0a12&iconcolor=ffffff";
+
+window.cineflixActivePlayerContent = null;
+
+function cineflixGetPlayerURL(content) {
+
+    if (cineflixSelectedServer === "server1") {
+        if (content.type === "tv") {
+            return "https://cinesrc.st/embed/tv/" +
+                encodeURIComponent(content.id) +
+                "?s=" + encodeURIComponent(content.season) +
+                "&e=" + encodeURIComponent(content.episode);
+        }
+
+        return "https://cinesrc.st/embed/movie/" +
+            encodeURIComponent(content.id);
+    }
+
+    if (content.type === "tv") {
+        return "https://player.cinezo.live/embed/tv/" +
+            encodeURIComponent(content.id) + "/" +
+            encodeURIComponent(content.season) + "/" +
+            encodeURIComponent(content.episode) +
+            CINEZO_PLAYER_OPTIONS;
+    }
+
+    return "https://player.cinezo.live/embed/movie/" +
+        encodeURIComponent(content.id) +
+        CINEZO_PLAYER_OPTIONS;
+}
+
+
+function cineflixSetPlayerContent(content) {
+
+    window.cineflixActivePlayerContent = content;
+
+    const player =
+        document.getElementById("cineflixPlayer");
+
+    if (player) {
+        player.src = cineflixGetPlayerURL(content);
+    }
+}
+
+
+function cineflixSelectServer(server) {
+
+    const server1 =
+        document.getElementById(
+            "cineflixServer1Button"
+        );
+
+    const server2 =
+        document.getElementById(
+            "cineflixServer2Button"
+        );
+
+
+    if (!server1 || !server2) {
+        return;
+    }
+
+
+    cineflixSelectedServer =
+        server;
+
+
+    /* SERVER 1 ACTIVE */
+
+   if (server === "server1") {
+
+    server1.style.setProperty(
+        "background",
+        "#e50914",
+        "important"
+    );
+
+    server2.style.setProperty(
+        "background",
+        "#111",
+        "important"
+    );
+
+}
+
+    /* SERVER 2 ACTIVE */
+
+   else {
+
+    server1.style.setProperty(
+        "background",
+        "#111",
+        "important"
+    );
+
+    server2.style.setProperty(
+        "background",
+        "#e50914",
+        "important"
+    );
+
+}
+
+
+        if (window.cineflixActivePlayerContent) {
+        const player =
+            document.getElementById("cineflixPlayer");
+
+        if (player) {
+            player.src = cineflixGetPlayerURL(
+                window.cineflixActivePlayerContent
+            );
+        }
+    }
+
+    console.log(
+        "CineFlix selected server:",
+        server
+    );
+
+}
+
+
+/* =====================================================
+   SERVER BUTTON CLICKS
+===================================================== */
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            event.target.closest(
+                "#cineflixServer1Button"
+            )
+        ) {
+
+            cineflixSelectServer(
+                "server1"
+            );
+
+            return;
+        }
+
+
+        if (
+            event.target.closest(
+                "#cineflixServer2Button"
+            )
+        ) {
+
+            cineflixSelectServer(
+                "server2"
+            );
+
+        }
+
+    }
+);
 
 </script>
 <script>
@@ -11093,13 +11337,16 @@ if (!modal || !player) {
        BUILD CINESRC URL
     ================================================= */
 
-    const embedUrl =
-        "https://cinesrc.st/embed/movie/" +
-        encodeURIComponent(tmdbId);
+        const playerContent = {
+        type: "movie",
+        id: tmdbId
+    };
 
+    const embedUrl =
+        cineflixGetPlayerURL(playerContent);
 
     console.log(
-        "CineSrc URL:",
+        "CineFlix player URL:",
         embedUrl
     );
     /* =================================================
@@ -11193,11 +11440,11 @@ if (poster) {
     }
 
 
-    /* =================================================
-       LOAD CINESRC
+        /* =================================================
+       LOAD SELECTED PLAYER SERVER
     ================================================= */
 
-    player.src = embedUrl;
+    cineflixSetPlayerContent(playerContent);
 
 
     /* =================================================
@@ -11928,10 +12175,24 @@ h3 {
         Loading movie...
     </div>
 
+<!-- =====================================================
+     VIDEO PLAYER + SERVER BUTTONS
+===================================================== -->
+<div
+    id="cineflixPlayerVideoArea"
+   style="
+    flex:1 1 0;
+    width:100%;
+    height:auto;
+    min-height:0;
+    border:0;
+    display:block;
+"
+>
 
-    <!-- =====================================================
+    <!-- =================================================
          VIDEO PLAYER
-    ===================================================== -->
+    ================================================= -->
 
     <iframe
         id="cineflixPlayer"
@@ -11941,7 +12202,71 @@ h3 {
         allowfullscreen
         frameborder="0"
         referrerpolicy="origin"
+        style="
+            flex:1;
+            width:100%;
+            min-height:0;
+            border:0;
+        "
     ></iframe>
+
+
+    <!-- =================================================
+         CINEFLIX — PLAYER SERVER BUTTONS
+    ================================================= -->
+
+    <div
+        id="cineflixServerButtons"
+        style="
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:12px;
+            width:100%;
+            padding:12px;
+            background:#080808;
+            box-sizing:border-box;
+            flex-shrink:0;
+        "
+    >
+
+                <button
+            id="cineflixServer1Button"
+            type="button"
+            onclick="event.stopPropagation(); cineflixSelectServer('server1')"
+            style="
+                padding:10px 20px;
+                border:2px solid #e50914;
+                border-radius:6px;
+                background:#e50914;
+                color:#fff;
+                font-weight:700;
+                cursor:pointer;
+            "
+        >
+            SERVER 1
+        </button>
+
+
+        <button
+            id="cineflixServer2Button"
+            type="button"
+            style="
+                padding:10px 20px;
+                border:2px solid #e50914;
+                border-radius:6px;
+                background:#111;
+                color:#fff;
+                font-weight:700;
+                cursor:pointer;
+            "
+        >
+            SERVER 2
+        </button>
+
+    </div>
+
+</div>
     <!-- =====================================================
      CINEFLIX MOBILE FULLSCREEN BUTTON
 ===================================================== -->
