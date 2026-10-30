@@ -7430,18 +7430,23 @@ if (document.readyState === "loading") {
 
         overflow: hidden !important;
     }
-
-/* Make the movie player automatically fit the phone fullscreen area */
+/* =====================================================
+   CINEFLIX — MOBILE FULLSCREEN 16:9
+===================================================== */
 
 #cineflixPlayerModal:fullscreen #cineflixPlayer,
 #cineflixPlayerModal:-webkit-full-screen #cineflixPlayer {
 
     position: absolute !important;
 
-    inset: 0 !important;
+    top: 50% !important;
+    left: 50% !important;
 
-    width: 100% !important;
-    height: 100% !important;
+    /* Automatic 16:9 size for different phones */
+    width: min(100%, calc(100vh * 16 / 9)) !important;
+    height: auto !important;
+
+    aspect-ratio: 16 / 9 !important;
 
     max-width: 100% !important;
     max-height: 100% !important;
@@ -7449,9 +7454,7 @@ if (document.readyState === "loading") {
     min-width: 0 !important;
     min-height: 0 !important;
 
-    aspect-ratio: auto !important;
-
-    transform: none !important;
+    transform: translate(-50%, -50%) !important;
 
     margin: 0 !important;
     padding: 0 !important;
