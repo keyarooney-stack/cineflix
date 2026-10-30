@@ -4097,12 +4097,11 @@ function applyGenre(){
 
 }
 
-
 /* =====================================================
-   SEARCH
+   CINEFLIX — SEARCH MOVIES + TV SHOWS
 ===================================================== */
 
-async function searchMovies(query){
+async function searchMovies(query) {
 
     query = query.trim();
 
@@ -4112,7 +4111,7 @@ async function searchMovies(query){
     const results =
         document.getElementById("searchResults");
 
-    if(!query){
+    if (!query) {
 
         section.style.display = "none";
 
@@ -4123,13 +4122,17 @@ async function searchMovies(query){
 
     results.innerHTML = `
         <div class="loading">
-            Searching...
+            Searching CineFlix...
         </div>
     `;
 
-    try{
+    try {
 
-        const data =
+        /* =================================================
+           SEARCH MOVIES
+        ================================================= */
+
+        const movieData =
             await tmdb(
                 "/search/movie" +
                 "?query=" +
@@ -4138,28 +4141,151 @@ async function searchMovies(query){
                 "&language=en-US&page=1"
             );
 
+
+        /* =================================================
+           SEARCH TV SHOWS
+        ================================================= */
+
+        const tvData =
+            await tmdb(
+                "/search/tv" +
+                "?query=" +
+                encodeURIComponent(query) +
+                "&language=en-US&page=1"
+            );
+
+
+        const movies =
+            (movieData.results || [])
+                .map(function(movie) {
+
+                    return {
+                        ...movie,
+                        media_type: "movie"
+                    };
+
+                });
+
+
+        const shows =
+            (tvData.results || [])
+                .map(function(show) {
+
+                    return {
+                        ...show,
+                        media_type: "tv"
+                    };
+
+                });
+
+
         const found =
-            data.results || [];
+            [...movies, ...shows];
 
-        results.innerHTML =
-            found.length
 
-            ? found
-                .map(movieCard)
-                .join("")
+        if (!found.length) {
 
-            : `
+            results.innerHTML = `
                 <div class="loading">
-                    No movies found.
+                    No movies or TV shows found.
                 </div>
             `;
 
+            return;
+        }
+
+
+        /* =================================================
+           DISPLAY RESULTS
+        ================================================= */
+
+        results.innerHTML =
+            found.map(function(item) {
+
+
+                /* =========================================
+                   MOVIE RESULT
+                ========================================= */
+
+                if (item.media_type === "movie") {
+
+                    return movieCard(item);
+
+                }
+
+
+                /* =========================================
+                   TV SHOW RESULT
+                ========================================= */
+
+                const title =
+                    item.name ||
+                    item.original_name ||
+                    "Unknown TV Show";
+
+                const year =
+                    item.first_air_date
+                        ? item.first_air_date.substring(0, 4)
+                        : "N/A";
+
+                const rating =
+                    item.vote_average
+                        ? Number(
+                            item.vote_average
+                          ).toFixed(1)
+                        : "N/A";
+
+                const poster =
+                    item.poster_path
+                        ? "https://image.tmdb.org/t/p/w500" +
+                          item.poster_path
+                        : "https://placehold.co/500x750/111/fff?text=No+Poster";
+
+
+                return `
+                    <div
+                        class="movie"
+                       onclick="openCineFlixTVShowFromSearch(${item.id})"
+                    >
+
+                        <div class="poster">
+
+                            <img
+                                src="${poster}"
+                                alt="${escapeHTML(title)}"
+                                loading="lazy"
+                                onerror="
+                                    this.src='https://placehold.co/500x750/111/fff?text=No+Poster'
+                                "
+                            >
+
+                            <div class="rating">
+                                ★ ${rating}
+                            </div>
+
+                        </div>
+
+                        <div class="movie-title">
+                            ${escapeHTML(title)}
+                        </div>
+
+                        <div class="movie-year">
+                            TV · ${year}
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("");
+
+
         section.scrollIntoView({
-            behavior:"smooth"
+            behavior: "smooth"
         });
 
+
     }
-    catch(error){
+    catch(error) {
 
         console.error(
             "Search error:",
@@ -4173,9 +4299,83 @@ async function searchMovies(query){
                 ${escapeHTML(error.message)}
             </div>
         `;
+
     }
+
 }
 
+/* =====================================================
+   CINEFLIX — OPEN TV SHOW FROM SEARCH
+===================================================== */
+
+function openCineFlixTVShowFromSearch(tvId) {
+
+    const tvSection =
+        document.getElementById("tvshows");
+
+    if (!tvSection) {
+        console.error(
+            "TV Shows section not found."
+        );
+        return;
+    }
+
+
+    /* SHOW TV SECTION */
+
+    tvSection.style.display = "block";
+
+
+    /* HIDE MOVIE SECTIONS */
+
+    [
+        "trending",
+        "latest",
+        "popular",
+        "toprated",
+        "genres",
+        "movies"
+    ].forEach(function(id) {
+
+        const section =
+            document.getElementById(id);
+
+        if (section) {
+            section.style.display = "none";
+        }
+
+    });
+
+
+    /* HIDE HERO */
+
+    const hero =
+        document.getElementById("hero");
+
+    if (hero) {
+        hero.style.display = "none";
+    }
+
+
+    /* OPEN THE NORMAL TV DETAILS */
+
+    openCineFlixTVShow(
+        Number(tvId)
+    );
+
+
+    /* MOVE TO TV SHOW */
+
+    setTimeout(function() {
+
+        tvSection.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    }, 100);
+
+}
 
 /* SEARCH BOX */
 
@@ -8040,31 +8240,73 @@ if (document.readyState === "loading") {
     restoreCineFlixNotificationButton();
 
 }
+
 /* =====================================================
-   CINEFLIX — LOAD TV SHOWS FROM TMDB
+   CINEFLIX — ENDLESS TV SHOW CATALOGUE
 ===================================================== */
 
-async function loadCineFlixTVShows() {
+let cineflixTVPage = 0;
+let cineflixTVLoading = false;
+let cineflixTVFinished = false;
+
+
+async function loadCineFlixTVShows(reset = true) {
 
     const tvGrid =
         document.getElementById("tvShowsGrid");
 
     if (!tvGrid) {
-        console.error("TV Shows grid not found.");
+        console.error(
+            "TV Shows grid not found."
+        );
         return;
     }
 
-    tvGrid.innerHTML = `
-        <div class="loading">
-            📺 Loading TV shows...
-        </div>
-    `;
+
+    /* =================================================
+       STOP DUPLICATE REQUESTS
+    ================================================= */
+
+    if (cineflixTVLoading) {
+        return;
+    }
+
+
+    if (
+        cineflixTVFinished &&
+        !reset
+    ) {
+        return;
+    }
+
+
+    /* =================================================
+       RESET WHEN OPENING TV SHOWS
+    ================================================= */
+
+    if (reset) {
+
+        cineflixTVPage = 0;
+        cineflixTVFinished = false;
+
+        tvGrid.innerHTML = "";
+
+    }
+
+
+    cineflixTVLoading = true;
+
+
+    const nextPage =
+        cineflixTVPage + 1;
+
 
     try {
 
         const response =
             await fetch(
-                "https://api.themoviedb.org/3/tv/popular?language=en-US&page=1",
+                "https://api.themoviedb.org/3/tv/popular?language=en-US&page=" +
+                nextPage,
                 {
                     headers: {
                         Authorization:
@@ -8075,31 +8317,47 @@ async function loadCineFlixTVShows() {
                 }
             );
 
+
         if (!response.ok) {
+
             throw new Error(
                 "TMDB TV Shows request failed."
             );
+
         }
+
 
         const data =
             await response.json();
 
+
         const shows =
             data.results || [];
 
+
+        /* =================================================
+           NO MORE SHOWS
+        ================================================= */
+
         if (!shows.length) {
 
-            tvGrid.innerHTML = `
-                <div class="loading">
-                    No TV shows found.
-                </div>
-            `;
+            cineflixTVFinished = true;
+
+            cineflixTVLoading = false;
 
             return;
+
         }
 
-        tvGrid.innerHTML =
-            shows.map(show => {
+
+        /* =================================================
+           ADD NEW SHOWS UNDER EXISTING SHOWS
+        ================================================= */
+
+        tvGrid.insertAdjacentHTML(
+            "beforeend",
+
+            shows.map(function(show) {
 
                 const poster =
                     show.poster_path
@@ -8107,25 +8365,34 @@ async function loadCineFlixTVShows() {
                           show.poster_path
                         : "https://placehold.co/500x750/111/fff?text=No+Poster";
 
+
                 const title =
                     show.name ||
                     show.original_name ||
                     "Unknown TV Show";
+
 
                 const year =
                     show.first_air_date
                         ? show.first_air_date.substring(0, 4)
                         : "N/A";
 
+
                 const rating =
                     show.vote_average
-                        ? Number(show.vote_average).toFixed(1)
+                        ? Number(
+                            show.vote_average
+                          ).toFixed(1)
                         : "N/A";
 
+
                 return `
+
                     <div
                         class="movie-card"
-                        onclick="openCineFlixTVShow(${show.id})"
+                        onclick="
+                            openCineFlixTVShow(${show.id})
+                        "
                     >
 
                         <img
@@ -8148,9 +8415,34 @@ async function loadCineFlixTVShows() {
                         </div>
 
                     </div>
+
                 `;
 
-            }).join("");
+            }).join("")
+
+        );
+
+
+        /* =================================================
+           SAVE CURRENT PAGE
+        ================================================= */
+
+        cineflixTVPage =
+            nextPage;
+
+
+        /* =================================================
+           CHECK LAST TMDB PAGE
+        ================================================= */
+
+        if (
+            cineflixTVPage >=
+            (data.total_pages || 1)
+        ) {
+
+            cineflixTVFinished = true;
+
+        }
 
     }
 
@@ -8161,19 +8453,58 @@ async function loadCineFlixTVShows() {
             error
         );
 
-        tvGrid.innerHTML = `
-            <div class="loading">
-                ❌ Could not load TV shows.
-                <br><br>
-                <small>
-                    ${escapeHTML(error.message)}
-                </small>
-            </div>
-        `;
-
     }
 
+
+    cineflixTVLoading = false;
+
 }
+/* =====================================================
+   CINEFLIX — ENDLESS TV SHOW SCROLL
+===================================================== */
+
+window.addEventListener(
+    "scroll",
+    function () {
+
+        const tvSection =
+            document.getElementById("tvshows");
+
+        if (!tvSection) {
+            return;
+        }
+
+
+        /* ONLY RUN ON TV SHOWS */
+
+        if (
+            window.getComputedStyle(
+                tvSection
+            ).display === "none"
+        ) {
+            return;
+        }
+
+
+        /* LOAD BEFORE REACHING BOTTOM */
+
+        const distanceFromBottom =
+            document.documentElement.scrollHeight -
+            window.innerHeight -
+            window.scrollY;
+
+
+        if (
+            distanceFromBottom <= 1000
+        ) {
+
+            loadCineFlixTVShows(false);
+
+        }
+
+    }
+);
+
 /* =====================================================
    CINEFLIX — TV SHOW DETAILS
 ===================================================== */
