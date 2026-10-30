@@ -8738,12 +8738,12 @@ window.addEventListener(
 
     }
 
-})();
+    })();
 /* =====================================================
    CINEFLIX — OWN MOBILE FULLSCREEN
 ===================================================== */
 
-(function () {
+document.addEventListener("DOMContentLoaded", function () {
 
     const button =
         document.getElementById("cineflixMobileFullscreen");
@@ -8752,28 +8752,36 @@ window.addEventListener(
         document.getElementById("cineflixPlayerModal");
 
     if (!button || !modal) {
+
+        console.error(
+            "CineFlix fullscreen button or modal not found."
+        );
+
         return;
-    }
-
-
-    function isPhone() {
-        return window.matchMedia(
-            "(max-width: 600px)"
-        ).matches;
     }
 
 
     button.addEventListener("click", async function () {
 
-        /* Never interfere with desktop */
-        if (!isPhone()) {
+        /* PHONE ONLY */
+        if (
+            !window.matchMedia("(max-width: 600px)").matches
+        ) {
             return;
         }
 
 
+        console.log(
+            "CineFlix mobile fullscreen button pressed."
+        );
+
+
         try {
 
-            /* Make the CINEFLIX modal fullscreen */
+            /* =========================================
+               ENTER FULLSCREEN
+            ========================================= */
+
             if (modal.requestFullscreen) {
 
                 await modal.requestFullscreen();
@@ -8782,37 +8790,49 @@ window.addEventListener(
 
                 modal.webkitRequestFullscreen();
 
+            } else {
+
+                console.error(
+                    "Fullscreen API is not supported."
+                );
+
+                return;
             }
 
 
-            /* Request landscape */
-            if (
-                screen.orientation &&
-                typeof screen.orientation.lock === "function"
-            ) {
+            /* =========================================
+               REQUEST LANDSCAPE
+            ========================================= */
 
-                try {
+            try {
+
+                if (
+                    screen.orientation &&
+                    typeof screen.orientation.lock ===
+                        "function"
+                ) {
 
                     await screen.orientation.lock(
                         "landscape"
                     );
 
-                } catch (orientationError) {
-
-                    console.log(
-                        "CineFlix: landscape lock unavailable.",
-                        orientationError
-                    );
-
                 }
+
+            } catch (orientationError) {
+
+                console.log(
+                    "Landscape lock was refused:",
+                    orientationError
+                );
 
             }
 
-        } catch (error) {
+
+        } catch (fullscreenError) {
 
             console.error(
-                "CineFlix fullscreen error:",
-                error
+                "CineFlix fullscreen failed:",
+                fullscreenError
             );
 
         }
@@ -8820,46 +8840,43 @@ window.addEventListener(
     });
 
 
-    /* ================================================
-       RETURN TO NORMAL AFTER EXITING FULLSCREEN
-    ================================================ */
+    /* =================================================
+       FULLSCREEN EXIT
+    ================================================= */
 
     document.addEventListener(
         "fullscreenchange",
         function () {
 
-            if (!isPhone()) {
+            if (document.fullscreenElement) {
                 return;
             }
 
 
-            if (!document.fullscreenElement) {
+            try {
 
                 if (
                     screen.orientation &&
-                    typeof screen.orientation.unlock === "function"
+                    typeof screen.orientation.unlock ===
+                        "function"
                 ) {
 
-                    try {
-
-                        screen.orientation.unlock();
-
-                    } catch (error) {
-
-                        console.log(
-                            "CineFlix orientation unlock unavailable."
-                        );
-
-                    }
+                    screen.orientation.unlock();
 
                 }
+
+            } catch (error) {
+
+                console.log(
+                    "Orientation unlock unavailable."
+                );
 
             }
 
         }
     );
 
-})();
+});
 
 </script>
 <script>
