@@ -8625,6 +8625,14 @@ async function openCineFlixTVShow(tvId) {
         const show =
             await response.json();
 
+/* CINEFLIX TV SHOW URL */
+
+cineflixSetContentURL(
+    "tv",
+    show.id,
+    show.name || show.original_name
+);
+
         /*
          * SAVE THE SELECTED SHOW
          */
