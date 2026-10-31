@@ -4056,6 +4056,714 @@ footer{
     }
 
 }
+/* =====================================================
+   CINEFLIX — MY LIST
+===================================================== */
+
+.cineflix-mylist-overlay {
+    position: fixed;
+    inset: 0;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 22px;
+
+    background: rgba(0, 0, 0, 0.82);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    z-index: 100000;
+}
+
+.cineflix-mylist-overlay.active {
+    display: flex;
+}
+
+
+/* =====================================================
+   PANEL
+===================================================== */
+
+.cineflix-mylist-panel {
+    position: relative;
+
+    width: 100%;
+    max-width: 1000px;
+    max-height: 82vh;
+
+    overflow-y: auto;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(25, 25, 25, 0.98),
+            rgba(8, 8, 8, 0.98)
+        );
+
+    box-shadow:
+        0 25px 80px rgba(0, 0, 0, 0.75);
+
+    color: #ffffff;
+}
+
+.cineflix-mylist-panel::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 60px;
+    right: 60px;
+
+    height: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #e50914,
+            transparent
+        );
+}
+
+
+/* =====================================================
+   CLOSE
+===================================================== */
+
+.cineflix-mylist-close {
+    position: absolute;
+
+    top: 16px;
+    right: 18px;
+
+    width: 36px;
+    height: 36px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    color: #aaaaaa;
+
+    font-size: 25px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.cineflix-mylist-close:hover {
+    color: #ffffff;
+
+    background:
+        rgba(229, 9, 20, 0.16);
+}
+
+
+/* =====================================================
+   HEADING
+===================================================== */
+
+.cineflix-mylist-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding-right: 45px;
+
+    margin-bottom: 25px;
+}
+
+.cineflix-mylist-heading h2 {
+    margin: 0 0 6px;
+
+    font-size: 26px;
+}
+
+.cineflix-mylist-heading p {
+    margin: 0;
+
+    color: #8d8d8d;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+.cineflix-mylist-message {
+    padding: 35px 10px;
+
+    text-align: center;
+
+    color: #8f8f8f;
+
+    font-size: 14px;
+}
+
+.cineflix-mylist-message:empty {
+    display: none;
+}
+
+
+/* =====================================================
+   MOVIE GRID
+===================================================== */
+
+.cineflix-mylist-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(145px, 1fr)
+        );
+
+    gap: 18px;
+}
+
+
+/* =====================================================
+   MY LIST CARD
+===================================================== */
+
+.cineflix-mylist-card {
+    position: relative;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    border-radius: 11px;
+
+    background: #151515;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.cineflix-mylist-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.55);
+}
+
+.cineflix-mylist-card img {
+    display: block;
+
+    width: 100%;
+    aspect-ratio: 2 / 3;
+
+    object-fit: cover;
+
+    background: #202020;
+}
+
+
+/* =====================================================
+   CARD INFORMATION
+===================================================== */
+
+.cineflix-mylist-card-info {
+    padding: 11px;
+}
+
+.cineflix-mylist-card-title {
+    overflow: hidden;
+
+    margin-bottom: 5px;
+
+    color: #ffffff;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cineflix-mylist-card-type {
+    color: #777777;
+
+    font-size: 11px;
+
+    text-transform: uppercase;
+}
+
+
+/* =====================================================
+   REMOVE BUTTON
+===================================================== */
+
+.cineflix-mylist-remove {
+    position: absolute;
+
+    top: 7px;
+    right: 7px;
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.78);
+
+    color: #ffffff;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+    opacity: 0;
+
+    transition:
+        opacity 0.2s ease,
+        background 0.2s ease;
+}
+
+.cineflix-mylist-card:hover
+.cineflix-mylist-remove {
+    opacity: 1;
+}
+
+.cineflix-mylist-remove:hover {
+    background: #e50914;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .cineflix-mylist-overlay {
+        padding: 12px;
+    }
+
+    .cineflix-mylist-panel {
+        max-height: 88vh;
+
+        padding:
+            25px
+            16px
+            20px;
+
+        border-radius: 15px;
+    }
+
+    .cineflix-mylist-heading h2 {
+        font-size: 22px;
+    }
+
+    .cineflix-mylist-grid {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+
+        gap: 12px;
+    }
+
+    .cineflix-mylist-remove {
+        opacity: 1;
+    }
+
+}
+/* =====================================================
+   CINEFLIX — ADD TO MY LIST BUTTON
+===================================================== */
+
+.cineflix-add-list-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    min-height: 42px;
+
+    padding: 10px 17px;
+
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 8px;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    color: #ffffff;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.cineflix-add-list-button:hover {
+    background: rgba(255, 255, 255, 0.14);
+
+    border-color:
+        rgba(255, 255, 255, 0.28);
+}
+
+.cineflix-add-list-button:active {
+    transform: scale(0.97);
+}
+
+
+/* PLUS / CHECK ICON */
+
+#cineflixAddToListIcon {
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 1;
+}
+
+
+/* MOVIE ALREADY SAVED */
+
+.cineflix-add-list-button.saved {
+    border-color:
+        rgba(229, 9, 20, 0.55);
+
+    background:
+        rgba(229, 9, 20, 0.13);
+}
+
+.cineflix-add-list-button.saved
+#cineflixAddToListIcon {
+    color: #e50914;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .cineflix-add-list-button {
+        min-height: 40px;
+
+        padding: 9px 14px;
+
+        font-size: 12px;
+    }
+
+}
+/* =====================================================
+   CINEFLIX — WATCH HISTORY
+===================================================== */
+
+.cineflix-history-overlay {
+    position: fixed;
+    inset: 0;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 22px;
+
+    background: rgba(0, 0, 0, 0.82);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    z-index: 100000;
+}
+
+.cineflix-history-overlay.active {
+    display: flex;
+}
+
+
+/* =====================================================
+   HISTORY PANEL
+===================================================== */
+
+.cineflix-history-panel {
+    position: relative;
+
+    width: 100%;
+    max-width: 1000px;
+    max-height: 82vh;
+
+    overflow-y: auto;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(25, 25, 25, 0.98),
+            rgba(8, 8, 8, 0.98)
+        );
+
+    box-shadow:
+        0 25px 80px rgba(0, 0, 0, 0.75);
+
+    color: #ffffff;
+}
+
+.cineflix-history-panel::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 60px;
+    right: 60px;
+
+    height: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #e50914,
+            transparent
+        );
+}
+
+
+/* =====================================================
+   CLOSE BUTTON
+===================================================== */
+
+.cineflix-history-close {
+    position: absolute;
+
+    top: 16px;
+    right: 18px;
+
+    width: 36px;
+    height: 36px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    color: #aaaaaa;
+
+    font-size: 25px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.cineflix-history-close:hover {
+    color: #ffffff;
+
+    background:
+        rgba(229, 9, 20, 0.16);
+}
+
+
+/* =====================================================
+   HEADING
+===================================================== */
+
+.cineflix-history-heading {
+    padding-right: 45px;
+
+    margin-bottom: 25px;
+}
+
+.cineflix-history-heading h2 {
+    margin: 0 0 6px;
+
+    font-size: 26px;
+}
+
+.cineflix-history-heading p {
+    margin: 0;
+
+    color: #8d8d8d;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+.cineflix-history-message {
+    padding: 35px 10px;
+
+    text-align: center;
+
+    color: #8f8f8f;
+
+    font-size: 14px;
+}
+
+.cineflix-history-message:empty {
+    display: none;
+}
+
+
+/* =====================================================
+   HISTORY GRID
+===================================================== */
+
+.cineflix-history-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(145px, 1fr)
+        );
+
+    gap: 18px;
+}
+
+
+/* =====================================================
+   HISTORY CARD
+===================================================== */
+
+.cineflix-history-card {
+    position: relative;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    border-radius: 11px;
+
+    background: #151515;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.cineflix-history-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.55);
+}
+
+.cineflix-history-card img {
+    display: block;
+
+    width: 100%;
+    aspect-ratio: 2 / 3;
+
+    object-fit: cover;
+
+    background: #202020;
+}
+
+
+/* =====================================================
+   CARD INFO
+===================================================== */
+
+.cineflix-history-card-info {
+    padding: 11px;
+}
+
+.cineflix-history-card-title {
+    overflow: hidden;
+
+    margin-bottom: 5px;
+
+    color: #ffffff;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cineflix-history-card-type {
+    color: #777777;
+
+    font-size: 11px;
+
+    text-transform: uppercase;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .cineflix-history-overlay {
+        padding: 12px;
+    }
+
+    .cineflix-history-panel {
+        max-height: 88vh;
+
+        padding:
+            25px
+            16px
+            20px;
+
+        border-radius: 15px;
+    }
+
+    .cineflix-history-heading h2 {
+        font-size: 22px;
+    }
+
+    .cineflix-history-grid {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+
+        gap: 12px;
+    }
+
+}
 </style>
 
 </head>
@@ -4962,6 +5670,18 @@ footer{
 
 </button>
 
+<button
+    type="button"
+    id="cineflixAddToListButton"
+    class="cineflix-add-list-button">
+
+    <span id="cineflixAddToListIcon">＋</span>
+
+    <span id="cineflixAddToListText">
+        My List
+    </span>
+
+</button>
 
         </div>
 
@@ -4983,9 +5703,7 @@ footer{
 
 </div>
 
-
 <!-- INSTALL -->
-
 <button id="installAppBtn">
     📱 Install CineFlix
 </button>
@@ -6062,12 +6780,111 @@ if(searchInput){
         }
     );
 }
+/* =====================================================
+   CINEFLIX — SAVE WATCH HISTORY
+===================================================== */
 
+async function saveCineFlixWatchHistory(item) {
+
+    try {
+
+        if (
+            !window.cineflixAccountSupabase ||
+            !window.cineflixAccountSupabase.auth
+        ) {
+            console.warn(
+                "CineFlix Supabase is not ready."
+            );
+            return;
+        }
+
+        const {
+            data: sessionData,
+            error: sessionError
+        } =
+            await window.cineflixAccountSupabase
+                .auth
+                .getSession();
+
+        if (sessionError) {
+            console.warn(
+                "CineFlix watch history session error:",
+                sessionError.message
+            );
+            return;
+        }
+
+        const user =
+            sessionData.session?.user;
+
+        /* User must be signed in */
+        if (!user) {
+            console.log(
+                "CineFlix: user is not signed in. Watch history not saved."
+            );
+            return;
+        }
+
+        /* Make sure the item has the required information */
+        if (
+            !item ||
+            !item.tmdb_id ||
+            !item.title ||
+            !item.media_type
+        ) {
+            console.warn(
+                "CineFlix: incomplete watch history item.",
+                item
+            );
+            return;
+        }
+
+        const {
+            error: historyError
+        } =
+            await window.cineflixAccountSupabase
+                .from("watch_history")
+                .insert({
+                    user_id:
+                        user.id,
+
+                    tmdb_id:
+                        item.tmdb_id,
+
+                    media_type:
+                        item.media_type,
+
+                    title:
+                        item.title,
+
+                    poster_path:
+                        item.poster_path ||
+                        null
+                });
+
+        if (historyError) {
+            throw historyError;
+        }
+
+        console.log(
+            "CineFlix watch history saved:",
+            item.title
+        );
+
+    } catch (error) {
+
+        console.error(
+            "CineFlix watch history save failed:",
+            error
+        );
+
+    }
+
+}
 
 /* =====================================================
    MOVIE DETAILS
 ===================================================== */
-
 async function openMovie(id){
 
     const modal =
@@ -6086,66 +6903,164 @@ async function openMovie(id){
         document.getElementById("modalBackdrop");
 
     const trailerButton =
-    document.getElementById("watchButton");
+        document.getElementById("watchButton");
 
-const whereToWatchButton =
-    document.getElementById(
-        "whereToWatchButton"
-    );
+    const whereToWatchButton =
+        document.getElementById(
+            "whereToWatchButton"
+        );
 
-const cineflixWatchButton =
-    document.getElementById(
-        "cineflixWatchButton"
-    );
+    const cineflixWatchButton =
+        document.getElementById(
+            "cineflixWatchButton"
+        );
 
-modal.style.display = "block";
 
-document.body.style.overflow = "hidden";
+    /* =================================================
+       OPEN MOVIE DETAILS
+    ================================================= */
 
-title.textContent = "Loading...";
-info.textContent = "";
-description.textContent = "";
+    modal.style.display = "block";
 
-trailerButton.disabled = true;
+    document.body.style.overflow =
+        "hidden";
 
-trailerButton.textContent =
-    "🔎 FINDING TRAILER...";
+    title.textContent =
+        "Loading...";
 
-if(whereToWatchButton){
+    info.textContent = "";
 
-    whereToWatchButton.disabled = false;
+    description.textContent = "";
 
-    whereToWatchButton.textContent =
-        "📺 WHERE TO WATCH";
+    trailerButton.disabled = true;
 
-    whereToWatchButton.onclick = null;
+    trailerButton.textContent =
+        "🔎 FINDING TRAILER...";
 
-}
+
+    /* =================================================
+       LOAD CURRENT MOVIE FOR MY LIST
+    ================================================= */
+
+    try {
+
+        const movie =
+            await tmdb(
+                `/movie/${id}`
+            );
+
+
+        window.cineflixCurrentMovie = {
+
+            tmdb_id:
+                movie.id,
+
+            media_type:
+                "movie",
+
+            title:
+                movie.title ||
+                movie.original_title ||
+                "Unknown Movie",
+
+            poster_path:
+                movie.poster_path ||
+                null
+
+        };
+
+
+        console.log(
+            "CineFlix current movie ready:",
+            window.cineflixCurrentMovie
+        );
+
+
+    } catch (error) {
+
+        console.warn(
+            "CineFlix could not prepare movie for My List:",
+            error
+        );
+
+        window.cineflixCurrentMovie =
+            null;
+
+    }
+
+
+    /* =================================================
+       WHERE TO WATCH BUTTON
+    ================================================= */
+
+    if (whereToWatchButton) {
+
+        whereToWatchButton.disabled =
+            false;
+
+        whereToWatchButton.textContent =
+            "📺 WHERE TO WATCH";
+
+        whereToWatchButton.onclick =
+            null;
+
+    }
+
+
+  /* =================================================
+   CINEFLIX WATCH BUTTON
+================================================= */
 
 if (cineflixWatchButton) {
 
-    cineflixWatchButton.disabled = false;
+    cineflixWatchButton.disabled =
+        false;
 
     cineflixWatchButton.textContent =
         "▶ WATCH";
 
-    cineflixWatchButton.onclick = function () {
+    cineflixWatchButton.onclick =
+        async function () {
 
-        console.log(
-            "CineFlix WATCH clicked. TMDB ID:",
-            id
-        );
+            console.log(
+                "CineFlix WATCH clicked. TMDB ID:",
+                id
+            );
 
-        // Close the movie details prompt
-        modal.style.display = "none";
+            /* =============================================
+               SAVE MOVIE TO WATCH HISTORY
+            ============================================= */
 
-        // Open the CineFlix player
-        openCineflixPlayer(id);
+            if (
+                window.cineflixCurrentMovie
+            ) {
 
-        // Load related movies
-        loadRelatedMovies(id);
+                await saveCineFlixWatchHistory(
+                    window.cineflixCurrentMovie
+                );
 
-    };
+            }
+
+            /* =============================================
+               CLOSE MOVIE DETAILS
+            ============================================= */
+
+            modal.style.display =
+                "none";
+
+            /* =============================================
+               OPEN CINEFLIX PLAYER
+            ============================================= */
+
+            openCineflixPlayer(id);
+
+            /* =============================================
+               LOAD RELATED MOVIES
+            ============================================= */
+
+            loadRelatedMovies(id);
+
+        };
 
 }
     /* OPEN MODAL */
@@ -9123,6 +10038,1154 @@ if (selectedPhoto) {
     setupCineFlixProfileSave();
 
 })();
+/* =====================================================
+   CINEFLIX — MY LIST PANEL CONTROLS
+===================================================== */
+
+(function () {
+
+    function setupCineFlixMyListPanel() {
+
+        const myListButton =
+            document.getElementById(
+                "cineflixMyListButton"
+            );
+
+        const profilePanel =
+            document.getElementById(
+                "cineflixProfilePanel"
+            );
+
+        const myListOverlay =
+            document.getElementById(
+                "cineflixMyListOverlay"
+            );
+
+        const closeButton =
+            document.getElementById(
+                "cineflixMyListClose"
+            );
+
+
+        if (
+            !myListButton ||
+            !myListOverlay ||
+            !closeButton
+        ) {
+
+            setTimeout(
+                setupCineFlixMyListPanel,
+                100
+            );
+
+            return;
+        }
+
+
+        if (
+            myListButton.dataset
+                .cineflixMyListReady === "true"
+        ) {
+            return;
+        }
+
+
+        myListButton.dataset
+            .cineflixMyListReady = "true";
+
+
+        /* =============================================
+           OPEN MY LIST
+        ============================================= */
+
+        myListButton.addEventListener(
+            "click",
+            async function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+
+                if (
+                    !window.cineflixAccountSupabase ||
+                    !window.cineflixAccountSupabase.auth
+                ) {
+                    return;
+                }
+
+
+                const {
+                    data,
+                    error
+                } =
+                    await window.cineflixAccountSupabase
+                        .auth
+                        .getSession();
+
+
+                if (error) {
+
+                    console.error(
+                        "CineFlix My List session error:",
+                        error.message
+                    );
+
+                    return;
+                }
+
+
+                if (!data.session) {
+                    return;
+                }
+
+
+                /* CLOSE PROFILE DROPDOWN */
+
+                if (profilePanel) {
+
+                    profilePanel.classList.remove(
+                        "active"
+                    );
+
+                }
+
+
+              /* =============================================
+   OPEN MY LIST
+============================================= */
+
+myListOverlay.classList.add(
+    "active"
+);
+
+document.body.style.overflow =
+    "hidden";
+
+
+/* =============================================
+   LOAD USER'S SAVED TITLES
+============================================= */
+
+const myListGrid =
+    document.getElementById(
+        "cineflixMyListGrid"
+    );
+
+const myListMessage =
+    document.getElementById(
+        "cineflixMyListMessage"
+    );
+
+
+if (myListGrid) {
+    myListGrid.innerHTML = "";
+}
+
+if (myListMessage) {
+    myListMessage.textContent =
+        "Loading your list...";
+}
+
+
+try {
+
+    const user =
+        data.session.user;
+
+
+  const {
+    data: favorites,
+    error: favoritesError
+} =
+    await window.cineflixAccountSupabase
+        .from("favorites")
+        .select(
+            "id, tmdb_id, media_type, title, poster_path"
+        )
+        .eq(
+            "user_id",
+            user.id
+        );
+
+
+    if (favoritesError) {
+        throw favoritesError;
+    }
+
+
+    /* =========================================
+       EMPTY LIST
+    ========================================= */
+
+    if (
+        !favorites ||
+        favorites.length === 0
+    ) {
+
+        if (myListMessage) {
+            myListMessage.textContent =
+                "Your list is empty.";
+        }
+
+        return;
+    }
+
+
+    if (myListMessage) {
+        myListMessage.textContent = "";
+    }
+
+
+  /* =========================================
+   CREATE MY LIST CARDS
+========================================= */
+
+favorites.forEach(
+    function (favorite) {
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+        card.className =
+            "cineflix-mylist-card";
+
+
+        /* =====================================
+           POSTER
+        ===================================== */
+
+        const image =
+            document.createElement(
+                "img"
+            );
+
+
+        if (favorite.poster_path) {
+
+            image.src =
+                "https://image.tmdb.org/t/p/w500" +
+                favorite.poster_path;
+
+        } else {
+
+            image.alt =
+                "No poster available";
+
+        }
+
+
+        image.alt =
+            favorite.title ||
+            "CineFlix title";
+
+
+        /* =====================================
+           INFORMATION
+        ===================================== */
+
+        const info =
+            document.createElement(
+                "div"
+            );
+
+        info.className =
+            "cineflix-mylist-card-info";
+
+
+        const title =
+            document.createElement(
+                "div"
+            );
+
+        title.className =
+            "cineflix-mylist-card-title";
+
+        title.textContent =
+            favorite.title ||
+            "Untitled";
+
+
+        const type =
+            document.createElement(
+                "div"
+            );
+
+        type.className =
+            "cineflix-mylist-card-type";
+
+        type.textContent =
+            favorite.media_type === "tv"
+                ? "TV Show"
+                : "Movie";
+
+
+        info.appendChild(title);
+        info.appendChild(type);
+
+
+        /* =====================================
+           REMOVE BUTTON
+        ===================================== */
+
+        const removeButton =
+            document.createElement(
+                "button"
+            );
+
+        removeButton.type =
+            "button";
+
+        removeButton.className =
+            "cineflix-mylist-remove";
+
+        removeButton.textContent =
+            "×";
+
+        removeButton.title =
+            "Remove from My List";
+
+
+        removeButton.addEventListener(
+            "click",
+            async function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                removeButton.disabled =
+                    true;
+
+
+                try {
+
+                    const {
+                        error: removeError
+                    } =
+                        await window
+                            .cineflixAccountSupabase
+                            .from("favorites")
+                            .delete()
+                            .eq(
+                                "id",
+                                favorite.id
+                            );
+
+
+                    if (removeError) {
+                        throw removeError;
+                    }
+
+
+                    /* REMOVE FROM SCREEN */
+
+                    card.remove();
+
+
+                    console.log(
+                        "CineFlix removed from My List:",
+                        favorite.title
+                    );
+
+
+                    /* =================================
+                       LIST NOW EMPTY
+                    ================================= */
+
+                    if (
+                        myListGrid &&
+                        myListGrid.children.length === 0
+                    ) {
+
+                        if (myListMessage) {
+
+                            myListMessage.textContent =
+                                "Your list is empty.";
+
+                        }
+
+                    }
+
+
+                } catch (error) {
+
+                    console.error(
+                        "CineFlix remove from My List failed:",
+                        error
+                    );
+
+                    removeButton.disabled =
+                        false;
+
+                }
+
+            }
+        );
+
+
+        /* =====================================
+           BUILD CARD
+        ===================================== */
+
+        card.appendChild(image);
+        card.appendChild(info);
+        card.appendChild(removeButton);
+
+
+        if (myListGrid) {
+
+            myListGrid.appendChild(
+                card
+            );
+
+        }
+
+    }
+);
+
+    console.log(
+        "CineFlix My List loaded:",
+        favorites.length
+    );
+
+
+} catch (error) {
+
+    console.error(
+        "CineFlix My List load failed:",
+        error
+    );
+
+
+    if (myListMessage) {
+
+        myListMessage.textContent =
+            error.message ||
+            "Unable to load your list.";
+
+    }
+
+}
+
+
+/* =============================================
+   END MY LIST BUTTON CLICK
+============================================= */
+
+}
+);
+
+
+        /* =============================================
+           CLOSE BUTTON
+        ============================================= */
+
+        closeButton.addEventListener(
+            "click",
+            function () {
+
+                myListOverlay.classList.remove(
+                    "active"
+                );
+
+                document.body.style.overflow =
+                    "";
+
+            }
+        );
+
+
+        /* =============================================
+           CLICK OUTSIDE PANEL
+        ============================================= */
+
+        myListOverlay.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    myListOverlay
+                ) {
+
+                    myListOverlay.classList.remove(
+                        "active"
+                    );
+
+                    document.body.style.overflow =
+                        "";
+
+                }
+
+            }
+        );
+
+
+        console.log(
+            "CineFlix My List panel ready."
+        );
+
+    }
+
+
+    setupCineFlixMyListPanel();
+
+})();
+/* =====================================================
+   CINEFLIX — ADD MOVIE TO MY LIST
+===================================================== */
+
+(function () {
+
+    function setupCineFlixAddToList() {
+
+        const addButton =
+            document.getElementById(
+                "cineflixAddToListButton"
+            );
+
+        const addIcon =
+            document.getElementById(
+                "cineflixAddToListIcon"
+            );
+
+        const addText =
+            document.getElementById(
+                "cineflixAddToListText"
+            );
+
+
+        if (!addButton) {
+
+            setTimeout(
+                setupCineFlixAddToList,
+                100
+            );
+
+            return;
+        }
+
+
+        if (
+            addButton.dataset.cineflixListReady ===
+            "true"
+        ) {
+            return;
+        }
+
+
+        addButton.dataset.cineflixListReady =
+            "true";
+
+
+        addButton.addEventListener(
+            "click",
+            async function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+
+                /* CURRENT MOVIE */
+
+                const movie =
+                    window.cineflixCurrentMovie;
+
+
+                if (!movie) {
+
+                    console.warn(
+                        "CineFlix: no movie is currently selected."
+                    );
+
+                    return;
+                }
+
+
+                /* SUPABASE */
+
+                if (
+                    !window.cineflixAccountSupabase ||
+                    !window.cineflixAccountSupabase.auth
+                ) {
+                    return;
+                }
+
+
+                try {
+
+                    addButton.disabled = true;
+
+
+                    /* GET SIGNED-IN USER */
+
+                    const {
+                        data: sessionData,
+                        error: sessionError
+                    } =
+                        await window.cineflixAccountSupabase
+                            .auth
+                            .getSession();
+
+
+                    if (sessionError) {
+                        throw sessionError;
+                    }
+
+
+                    const user =
+                        sessionData.session?.user;
+
+
+                    /* NOT SIGNED IN */
+
+                    if (!user) {
+
+                        const authOverlay =
+                            document.getElementById(
+                                "cineflixAuthOverlay"
+                            );
+
+                        if (authOverlay) {
+
+                            authOverlay.classList.add(
+                                "active"
+                            );
+
+                            document.body.style.overflow =
+                                "hidden";
+
+                        }
+
+                        return;
+                    }
+
+
+                    /* CHECK IF ALREADY SAVED */
+
+                    const {
+                        data: existingFavorite,
+                        error: checkError
+                    } =
+                        await window.cineflixAccountSupabase
+                            .from("favorites")
+                            .select("id")
+                            .eq(
+                                "user_id",
+                                user.id
+                            )
+                            .eq(
+                                "tmdb_id",
+                                movie.tmdb_id
+                            )
+                            .eq(
+                                "media_type",
+                                movie.media_type
+                            )
+                            .maybeSingle();
+
+
+                    if (checkError) {
+                        throw checkError;
+                    }
+
+
+                    /* ALREADY IN MY LIST */
+
+                    if (existingFavorite) {
+
+                        addButton.classList.add(
+                            "saved"
+                        );
+
+                        if (addIcon) {
+                            addIcon.textContent = "✓";
+                        }
+
+                        if (addText) {
+                            addText.textContent =
+                                "In My List";
+                        }
+
+                        return;
+                    }
+
+
+                    /* SAVE MOVIE */
+
+                    const {
+                        error: insertError
+                    } =
+                        await window.cineflixAccountSupabase
+                            .from("favorites")
+                            .insert({
+
+                                user_id:
+                                    user.id,
+
+                                tmdb_id:
+                                    movie.tmdb_id,
+
+                                media_type:
+                                    movie.media_type,
+
+                                title:
+                                    movie.title,
+
+                                poster_path:
+                                    movie.poster_path
+
+                            });
+
+
+                    if (insertError) {
+                        throw insertError;
+                    }
+
+
+                    /* UPDATE BUTTON */
+
+                    addButton.classList.add(
+                        "saved"
+                    );
+
+                    if (addIcon) {
+                        addIcon.textContent = "✓";
+                    }
+
+                    if (addText) {
+                        addText.textContent =
+                            "In My List";
+                    }
+
+
+                    console.log(
+                        "CineFlix movie added to My List:",
+                        movie.title
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "CineFlix My List save failed:",
+                        error
+                    );
+
+                    alert(
+                        error.message ||
+                        "Unable to add this movie to My List."
+                    );
+
+
+                } finally {
+
+                    addButton.disabled = false;
+
+                }
+
+            }
+        );
+
+
+        console.log(
+            "CineFlix Add to My List ready."
+        );
+
+    }
+
+
+    setupCineFlixAddToList();
+
+})();
+/* =====================================================
+   CINEFLIX — WATCH HISTORY PANEL
+===================================================== */
+
+(function () {
+
+    function setupCineFlixWatchHistory() {
+
+        const historyButton =
+            document.getElementById(
+                "cineflixHistoryButton"
+            );
+
+        const historyOverlay =
+            document.getElementById(
+                "cineflixHistoryOverlay"
+            );
+
+        const closeButton =
+            document.getElementById(
+                "cineflixHistoryClose"
+            );
+
+        const profilePanel =
+            document.getElementById(
+                "cineflixProfilePanel"
+            );
+
+
+        if (
+            !historyButton ||
+            !historyOverlay ||
+            !closeButton
+        ) {
+
+            setTimeout(
+                setupCineFlixWatchHistory,
+                100
+            );
+
+            return;
+        }
+
+
+        if (
+            historyButton.dataset
+                .cineflixHistoryReady === "true"
+        ) {
+            return;
+        }
+
+
+        historyButton.dataset
+            .cineflixHistoryReady = "true";
+
+
+        /* =============================================
+           OPEN WATCH HISTORY
+        ============================================= */
+
+        historyButton.addEventListener(
+            "click",
+            async function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+
+                if (
+                    !window.cineflixAccountSupabase ||
+                    !window.cineflixAccountSupabase.auth
+                ) {
+                    return;
+                }
+
+
+                const {
+                    data: sessionData,
+                    error: sessionError
+                } =
+                    await window.cineflixAccountSupabase
+                        .auth
+                        .getSession();
+
+
+                if (sessionError) {
+
+                    console.error(
+                        "CineFlix history session error:",
+                        sessionError.message
+                    );
+
+                    return;
+                }
+
+
+                const user =
+                    sessionData.session?.user;
+
+
+                if (!user) {
+                    return;
+                }
+
+
+                /* CLOSE PROFILE DROPDOWN */
+
+                if (profilePanel) {
+
+                    profilePanel.classList.remove(
+                        "active"
+                    );
+
+                }
+
+
+                /* OPEN HISTORY */
+
+                historyOverlay.classList.add(
+                    "active"
+                );
+
+                document.body.style.overflow =
+                    "hidden";
+
+
+                const historyGrid =
+                    document.getElementById(
+                        "cineflixHistoryGrid"
+                    );
+
+                const historyMessage =
+                    document.getElementById(
+                        "cineflixHistoryMessage"
+                    );
+
+
+                if (historyGrid) {
+                    historyGrid.innerHTML = "";
+                }
+
+
+                if (historyMessage) {
+
+                    historyMessage.textContent =
+                        "Loading your history...";
+
+                }
+
+
+                /* =====================================
+                   LOAD HISTORY FROM SUPABASE
+                ===================================== */
+
+                try {
+
+                   const {
+    data: history,
+    error: historyError
+} =
+    await window.cineflixAccountSupabase
+        .from("watch_history")
+        .select(
+            "id, tmdb_id, media_type, title, poster_path, season_number, episode_number"
+        )
+        .eq(
+            "user_id",
+            user.id
+        );
+
+
+                    if (historyError) {
+                        throw historyError;
+                    }
+
+
+                    /* EMPTY */
+
+                    if (
+                        !history ||
+                        history.length === 0
+                    ) {
+
+                        if (historyMessage) {
+
+                            historyMessage.textContent =
+                                "Your watch history is empty.";
+
+                        }
+
+                        return;
+                    }
+
+
+                    if (historyMessage) {
+                        historyMessage.textContent = "";
+                    }
+
+
+                    /* =================================
+                       CREATE HISTORY CARDS
+                    ================================= */
+
+                    history.forEach(
+                        function (item) {
+
+                            const card =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            card.className =
+                                "cineflix-history-card";
+
+
+                            /* POSTER */
+
+                            const image =
+                                document.createElement(
+                                    "img"
+                                );
+
+
+                            if (item.poster_path) {
+
+                                image.src =
+                                    "https://image.tmdb.org/t/p/w500" +
+                                    item.poster_path;
+
+                            } else {
+
+                                image.alt =
+                                    "No poster available";
+
+                            }
+
+
+                            image.alt =
+                                item.title ||
+                                "CineFlix title";
+
+
+                            /* INFO */
+
+                            const info =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            info.className =
+                                "cineflix-history-card-info";
+
+
+                            const title =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            title.className =
+                                "cineflix-history-card-title";
+
+                            title.textContent =
+                                item.title ||
+                                "Untitled";
+
+
+                            const type =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            type.className =
+                                "cineflix-history-card-type";
+
+                          type.textContent =
+    item.media_type === "tv"
+        ? (
+            "TV Show • Season " +
+            (item.season_number || "?") +
+            " • Episode " +
+            (item.episode_number || "?")
+        )
+        : "Movie";
+
+
+                            info.appendChild(title);
+                            info.appendChild(type);
+
+                            card.appendChild(image);
+                            card.appendChild(info);
+
+                            if (historyGrid) {
+
+                                historyGrid.appendChild(
+                                    card
+                                );
+
+                            }
+
+                        }
+                    );
+
+
+                    console.log(
+                        "CineFlix Watch History loaded:",
+                        history.length
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "CineFlix Watch History load failed:",
+                        error
+                    );
+
+
+                    if (historyMessage) {
+
+                        historyMessage.textContent =
+                            error.message ||
+                            "Unable to load watch history.";
+
+                    }
+
+                }
+
+            }
+        );
+
+
+        /* =============================================
+           CLOSE
+        ============================================= */
+
+        closeButton.addEventListener(
+            "click",
+            function () {
+
+                historyOverlay.classList.remove(
+                    "active"
+                );
+
+                document.body.style.overflow =
+                    "";
+
+            }
+        );
+
+
+        /* =============================================
+           CLICK OUTSIDE
+        ============================================= */
+
+        historyOverlay.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    historyOverlay
+                ) {
+
+                    historyOverlay.classList.remove(
+                        "active"
+                    );
+
+                    document.body.style.overflow =
+                        "";
+
+                }
+
+            }
+        );
+
+
+        console.log(
+            "CineFlix Watch History panel ready."
+        );
+
+    }
+
+
+    setupCineFlixWatchHistory();
+
+})();
+
 /* =====================================================
    CINEFLIX — PROFILE PHOTO DEVICE IMPORT
 ===================================================== */
@@ -12397,6 +14460,9 @@ async function loadCineFlixTVSeason(tvId, seasonNumber) {
 /* =====================================================
    CINEFLIX — PLAY TV EPISODE WITH SHOW POSTER
 ===================================================== */
+/* =====================================================
+   CINEFLIX — PLAY TV EPISODE + SAVE WATCH HISTORY
+===================================================== */
 
 async function playCineFlixTVEpisode(
     tvId,
@@ -12473,6 +14539,93 @@ async function playCineFlixTVEpisode(
             await response.json();
 
         /* =============================================
+           SAVE TV SHOW WATCH HISTORY
+        ============================================= */
+
+        if (
+            window.cineflixAccountSupabase &&
+            window.cineflixAccountSupabase.auth
+        ) {
+
+            const {
+                data: sessionData,
+                error: sessionError
+            } =
+                await window.cineflixAccountSupabase
+                    .auth
+                    .getSession();
+
+            if (!sessionError) {
+
+                const user =
+                    sessionData.session?.user;
+
+                if (user) {
+
+                    const {
+                        error: historyError
+                    } =
+                        await window.cineflixAccountSupabase
+                            .from("watch_history")
+                            .insert({
+                                user_id:
+                                    user.id,
+
+                                tmdb_id:
+                                    show.id,
+
+                                media_type:
+                                    "tv",
+
+                                title:
+                                    show.name ||
+                                    show.original_name ||
+                                    "Unknown TV Show",
+
+                                poster_path:
+                                    show.poster_path ||
+                                    null,
+
+                                season_number:
+                                    seasonNumber,
+
+                                episode_number:
+                                    episodeNumber
+                            });
+
+                    if (historyError) {
+
+                        console.error(
+                            "CineFlix TV watch history save failed:",
+                            historyError
+                        );
+
+                    } else {
+
+                        console.log(
+                            "CineFlix TV watch history saved:",
+                            show.name,
+                            "Season",
+                            seasonNumber,
+                            "Episode",
+                            episodeNumber
+                        );
+
+                    }
+
+                } else {
+
+                    console.log(
+                        "CineFlix: user is not signed in. TV history not saved."
+                    );
+
+                }
+
+            }
+
+        }
+
+        /* =============================================
            TV SHOW POSTER
         ============================================= */
 
@@ -12494,9 +14647,13 @@ async function playCineFlixTVEpisode(
         if (title) {
 
             title.textContent =
-                show.name ||
+                (show.name ||
                 show.original_name ||
-                "Unknown TV Show";
+                "Unknown TV Show") +
+                " • S" +
+                seasonNumber +
+                " E" +
+                episodeNumber;
 
         }
 
@@ -12520,7 +14677,7 @@ async function playCineFlixTVEpisode(
            CINESRC TV EPISODE
         ============================================= */
 
-                const playerContent = {
+        const playerContent = {
             type: "tv",
             id: tvId,
             season: seasonNumber,
@@ -12528,37 +14685,41 @@ async function playCineFlixTVEpisode(
         };
 
         const embedUrl =
-            cineflixGetPlayerURL(playerContent);
+            cineflixGetPlayerURL(
+                playerContent
+            );
 
         console.log(
             "CineFlix TV player URL:",
             embedUrl
         );
 
-   /* =============================================
-   REMEMBER TV EPISODE POSITION
-============================================= */
+        /* =============================================
+           REMEMBER TV EPISODE POSITION
+        ============================================= */
 
-window.cineflixTVPlayerActive = true;
+        window.cineflixTVPlayerActive =
+            true;
 
-window.cineflixTVReturnScrollY =
-    window.scrollY;
+        window.cineflixTVReturnScrollY =
+            window.scrollY;
 
+        /* =============================================
+           LOAD EPISODE
+        ============================================= */
 
-/* =============================================
-   LOAD EPISODE
-============================================= */
+        cineflixSetPlayerContent(
+            playerContent
+        );
 
-cineflixSetPlayerContent(playerContent);
+        /* =============================================
+           SHOW PLAYER
+        ============================================= */
 
-/* =============================================
-   SHOW PLAYER
-============================================= */
+        modal.style.display =
+            "flex";
 
-modal.style.display = "flex";
-    }
-
-    catch (error) {
+    } catch (error) {
 
         console.error(
             "CineFlix TV player error:",
@@ -12568,6 +14729,7 @@ modal.style.display = "flex";
     }
 
 }
+
 </script>
 <!-- =====================================================
      CINEFLIX INSTALL BUTTON
@@ -16119,6 +18281,106 @@ h3 {
     </div>
 
 </div>
+<!-- =====================================================
+     CINEFLIX — MY LIST
+===================================================== -->
 
+<div
+    id="cineflixMyListOverlay"
+    class="cineflix-mylist-overlay">
+
+    <div class="cineflix-mylist-panel">
+
+        <!-- CLOSE -->
+
+        <button
+            type="button"
+            id="cineflixMyListClose"
+            class="cineflix-mylist-close">
+            ×
+        </button>
+
+
+        <!-- HEADER -->
+
+        <div class="cineflix-mylist-heading">
+
+            <div>
+                <h2>My List</h2>
+
+                <p>
+                    Movies and shows you've saved.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- LOADING / MESSAGE -->
+
+        <div
+            id="cineflixMyListMessage"
+            class="cineflix-mylist-message">
+
+            Loading your list...
+
+        </div>
+
+
+        <!-- SAVED TITLES -->
+
+        <div
+            id="cineflixMyListGrid"
+            class="cineflix-mylist-grid">
+        </div>
+
+    </div>
+
+</div>
+<!-- =====================================================
+     CINEFLIX — WATCH HISTORY
+===================================================== -->
+
+<div
+    id="cineflixHistoryOverlay"
+    class="cineflix-history-overlay">
+
+    <div class="cineflix-history-panel">
+
+        <button
+            type="button"
+            id="cineflixHistoryClose"
+            class="cineflix-history-close">
+            ×
+        </button>
+
+        <div class="cineflix-history-heading">
+
+            <div>
+                <h2>Watch History</h2>
+
+                <p>
+                    Movies and shows you've watched.
+                </p>
+            </div>
+
+        </div>
+
+        <div
+            id="cineflixHistoryMessage"
+            class="cineflix-history-message">
+
+            Loading your history...
+
+        </div>
+
+        <div
+            id="cineflixHistoryGrid"
+            class="cineflix-history-grid">
+        </div>
+
+    </div>
+
+</div>
 </body>
 </html>
