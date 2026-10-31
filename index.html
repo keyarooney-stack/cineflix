@@ -7812,239 +7812,152 @@ async function findWhereToWatch(movieId){
 
 
     
-    // =====================================================
-    // CINEFLIX EMAIL OTP LOGIN
-    // =====================================================
+    
+// =====================================================
+// NORMAL CINEFLIX PASSWORD LOGIN
+// =====================================================
 
-    let cineflixOtpPendingEmail = null;
+document.addEventListener("submit", async function (event) {
 
-    document.addEventListener("submit", async function (event) {
+    const form = event.target;
 
-        const form = event.target;
+    if (!form || form.id !== "cineflixAuthForm") return;
 
-        if (!form || form.id !== "cineflixAuthForm") return;
+    event.preventDefault();
+    event.stopPropagation();
 
-        event.preventDefault();
-        event.stopPropagation();
+    const client = window.cineflixAccountSupabase;
 
-        const client = window.cineflixAccountSupabase;
+    const email = document.getElementById("cineflixAuthEmail").value.trim();
+    const password = document.getElementById("cineflixAuthPassword").value;
 
-        const emailInput =
-            document.getElementById("cineflixAuthEmail");
+    const button = document.getElementById("cineflixAuthSubmit");
+    const originalText = button ? button.innerHTML : "Sign In";
 
-        const codeInput =
-            document.getElementById("cineflixAuthPassword");
+    try {
 
-        const submitButton =
-            document.getElementById("cineflixAuthSubmit");
-
-        const originalButtonText =
-            submitButton ? submitButton.innerHTML : "Sign In";
-
-        const email = emailInput ? emailInput.value.trim() : "";
-        const code = codeInput ? codeInput.value.trim() : "";
-
-        try {
-
-            if (!client || !client.auth) {
-                throw new Error("CineFlix is still connecting. Please refresh.");
-            }
-
-            if (!email) {
-                throw new Error("Please enter your email address.");
-            }
-
-            if (!cineflixOtpPendingEmail) {
-
-                // SEND LOGIN CODE
-
-                if (submitButton) {
-                    submitButton.disabled = true;
-                    submitButton.textContent = "Sending code...";
-                }
-
-                showMessage("Sending your login code...", "");
-
-                const { error } = await client.auth.signInWithOtp({
-                    email: email,
-                    options: {
-                        shouldCreateUser: false
-                    }
-                });
-
-                if (error) throw error;
-
-                cineflixOtpPendingEmail = email;
-
-                if (codeInput) {
-                    codeInput.value = "";
-                    codeInput.type = "text";
-                    codeInput.inputMode = "numeric";
-                    codeInput.autocomplete = "one-time-code";
-                    codeInput.placeholder = "Enter your 6-digit code";
-                    codeInput.maxLength = 6;
-                }
-
-                if (submitButton) {
-                    submitButton.textContent = "Verify Code";
-                }
-
-                showMessage(
-                    "A login code has been sent to your email. Enter it here.",
-                    "success"
-                );
-
-                return;
-            }
-
-            // VERIFY LOGIN CODE
-
-            if (email.toLowerCase() !== cineflixOtpPendingEmail.toLowerCase()) {
-                throw new Error(
-                    "The email address has changed. Please request a new code."
-                );
-            }
-
-            if (!/^\d{6}$/.test(code)) {
-                throw new Error("Please enter the 6-digit code from your email.");
-            }
-
-            if (submitButton) {
-                submitButton.disabled = true;
-                submitButton.textContent = "Verifying...";
-            }
-
-            showMessage("Verifying your login code...", "");
-
-            const { error } = await client.auth.verifyOtp({
-                email: email,
-                token: code,
-                type: "email"
-            });
-
-            if (error) throw error;
-
-            cineflixOtpPendingEmail = null;
-
-            showMessage("Signed in successfully!", "success");
-
-            console.log("CineFlix email OTP login successful.");
-
-            const overlay =
-                document.getElementById("cineflixAuthOverlay");
-
-            if (overlay) {
-                setTimeout(function () {
-                    overlay.classList.remove("active");
-                }, 700);
-            }
-
-        } catch (error) {
-
-            console.error("CineFlix OTP login failed:", error);
-
-            showMessage(
-                error.message || "Login failed. Please try again.",
-                "error"
-            );
-
-        } finally {
-
-            if (submitButton) {
-                submitButton.disabled = false;
-
-                submitButton.innerHTML =
-                    cineflixOtpPendingEmail
-                        ? "Verify Code"
-                        : originalButtonText;
-            }
-
+        if (!client) {
+            throw new Error("CineFlix is still connecting. Please refresh.");
         }
 
-    }, true);
+        if (!email || !password) {
+            throw new Error("Enter your email and password.");
+        }
 
+        if (button) {
+            button.disabled = true;
+            button.textContent = "Signing in...";
+        }
 
+        const { error } = await client.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
 
-    // =====================================================
-    // FORGOT PASSWORD — SEND RESET EMAIL
-    // =====================================================
+        if (error) throw error;
 
-    document.addEventListener("click", async function (event) {
+        showMessage("Signed in successfully!", "success");
 
-        const button = event.target.closest(
-            "#cineflixForgotPassword"
+        const overlay = document.getElementById("cineflixAuthOverlay");
+
+        if (overlay) {
+            setTimeout(function () {
+                overlay.classList.remove("active");
+            }, 700);
+        }
+
+    } catch (error) {
+
+        console.error("CineFlix sign in failed:", error);
+
+        showMessage(
+            error.message || "Sign in failed.",
+            "error"
         );
 
-        if (!button) return;
+    } finally {
 
-        event.preventDefault();
-
-        const emailInput =
-            document.getElementById("cineflixAuthEmail");
-
-        const email =
-            emailInput ? emailInput.value.trim() : "";
-
-        if (!email) {
-            showMessage(
-                "Please enter your email address first.",
-                "error"
-            );
-
-            if (emailInput) emailInput.focus();
-
-            return;
-        }
-
-        if (!window.cineflixAccountSupabase) {
-            showMessage(
-                "CineFlix is still connecting. Please refresh and try again.",
-                "error"
-            );
-            return;
-        }
-
-        const originalText = button.textContent;
-
-        button.disabled = true;
-        button.textContent = "Sending reset email...";
-
-        try {
-
-            const { error } =
-                await window.cineflixAccountSupabase.auth
-                    .resetPasswordForEmail(email, {
-                      redirectTo:
-    "https://cineflix-8jn.pages.dev/?type=recovery"
-                    });
-
-            if (error) throw error;
-
-            showMessage(
-                "Password reset email sent. Check your inbox.",
-                "success"
-            );
-
-        } catch (error) {
-
-            console.error(
-                "CineFlix password reset failed:",
-                error
-            );
-
-            showMessage(
-                error.message || "Could not send reset email.",
-                "error"
-            );
-
-        } finally {
-
+        if (button) {
             button.disabled = false;
-            button.textContent = originalText;
-
+            button.innerHTML = originalText;
         }
 
-    });
+    }
+
+}, true);
+
+
+// =====================================================
+// FORGOT PASSWORD — SEND 6-DIGIT RECOVERY CODE
+// =====================================================
+
+document.addEventListener("click", async function (event) {
+
+    const button = event.target.closest("#cineflixForgotPassword");
+
+    if (!button) return;
+
+    event.preventDefault();
+
+    const client = window.cineflixAccountSupabase;
+
+    const emailInput = document.getElementById("cineflixAuthEmail");
+    const email = emailInput ? emailInput.value.trim() : "";
+
+    if (!email) {
+        showMessage("Please enter your email address first.", "error");
+        if (emailInput) emailInput.focus();
+        return;
+    }
+
+    if (!client) {
+        showMessage("CineFlix is still connecting. Please refresh.", "error");
+        return;
+    }
+
+    const originalText = button.textContent;
+
+    button.disabled = true;
+    button.textContent = "Sending recovery code...";
+
+    try {
+
+        const { error } = await client.auth.resetPasswordForEmail(email);
+
+        if (error) throw error;
+
+        showMessage(
+            "A 6-digit recovery code has been sent to your email. Enter it to continue.",
+            "success"
+        );
+
+        // Remember the email for the recovery step.
+        window.cineflixRecoveryEmail = email;
+
+        // Show the recovery-code panel.
+        const mainPanel = document.getElementById("cineflixAuthPanel");
+        const resetPanel = document.getElementById("cineflixPasswordResetPanel");
+
+        if (mainPanel) mainPanel.style.display = "none";
+        if (resetPanel) resetPanel.style.display = "block";
+
+    } catch (error) {
+
+        console.error("CineFlix recovery code request failed:", error);
+
+        showMessage(
+            error.message || "Could not send the recovery code.",
+            "error"
+        );
+
+    } finally {
+
+        button.disabled = false;
+        button.textContent = originalText;
+
+    }
+
+});
 
 
     // =====================================================
@@ -8092,155 +8005,200 @@ async function findWhereToWatch(movieId){
 
     }
 
+    
+// =====================================================
+// VERIFY RECOVERY CODE AND SAVE NEW PASSWORD
+// =====================================================
 
-    // =====================================================
-    // SAVE NEW PASSWORD
-    // =====================================================
+document.addEventListener("click", async function (event) {
 
-    document.addEventListener("click", async function (event) {
+    const button = event.target.closest(
+        "#cineflixSaveNewPassword"
+    );
 
-        const button = event.target.closest(
-            "#cineflixSaveNewPassword"
+    if (!button) return;
+
+    event.preventDefault();
+
+    const client = window.cineflixAccountSupabase;
+    const email = window.cineflixRecoveryEmail || "";
+
+    const codeInput =
+        document.getElementById("cineflixRecoveryCode");
+
+    const newPasswordInput =
+        document.getElementById("cineflixNewPassword");
+
+    const confirmPasswordInput =
+        document.getElementById("cineflixConfirmNewPassword");
+
+    const code = codeInput ? codeInput.value.trim() : "";
+
+    const newPassword =
+        newPasswordInput ? newPasswordInput.value : "";
+
+    const confirmPassword =
+        confirmPasswordInput ? confirmPasswordInput.value : "";
+
+    function showResetMessage(text, type) {
+
+        const message =
+            document.getElementById("cineflixPasswordResetMessage");
+
+        if (message) {
+            message.textContent = text;
+            message.className = "cineflix-auth-message " + type;
+        }
+
+    }
+
+    if (!client || !email) {
+        showResetMessage(
+            "Please request a new recovery code first.",
+            "error"
         );
+        return;
+    }
 
-        if (!button) return;
+    if (!/^\d{6}$/.test(code)) {
+        showResetMessage(
+            "Please enter the 6-digit recovery code.",
+            "error"
+        );
+        return;
+    }
 
-        event.preventDefault();
+    if (!newPassword || !confirmPassword) {
+        showResetMessage(
+            "Please fill in both password fields.",
+            "error"
+        );
+        return;
+    }
 
-        const newPasswordInput =
-            document.getElementById("cineflixNewPassword");
+    if (newPassword.length < 6) {
+        showResetMessage(
+            "Your password must be at least 6 characters.",
+            "error"
+        );
+        return;
+    }
 
-        const confirmPasswordInput =
-            document.getElementById("cineflixConfirmNewPassword");
+    if (newPassword !== confirmPassword) {
+        showResetMessage(
+            "Your passwords do not match.",
+            "error"
+        );
+        return;
+    }
 
-        const newPassword =
-            newPasswordInput ? newPasswordInput.value : "";
+    const originalText = button.textContent;
 
-        const confirmPassword =
-            confirmPasswordInput ? confirmPasswordInput.value : "";
+    button.disabled = true;
+    button.textContent = "Verifying Code...";
 
-        if (!newPassword || !confirmPassword) {
-            showResetMessage(
-                "Please fill in both password fields.",
-                "error"
-            );
-            return;
-        }
+    try {
 
-        if (newPassword.length < 6) {
-            showResetMessage(
-                "Your password must be at least 6 characters.",
-                "error"
-            );
-            return;
-        }
+        // STEP 1: VERIFY THE 6-DIGIT RECOVERY CODE
 
-        if (newPassword !== confirmPassword) {
-            showResetMessage(
-                "Your passwords do not match.",
-                "error"
-            );
-            return;
-        }
+        const { error: verifyError } =
+            await client.auth.verifyOtp({
+                email: email,
+                token: code,
+                type: "recovery"
+            });
 
-        if (!window.cineflixAccountSupabase) {
-            showResetMessage(
-                "CineFlix is still connecting. Please refresh.",
-                "error"
-            );
-            return;
-        }
+        if (verifyError) throw verifyError;
 
-        const originalText = button.textContent;
+        // STEP 2: UPDATE THE PASSWORD
 
-        button.disabled = true;
         button.textContent = "Updating Password...";
 
-        try {
+        const { error: updateError } =
+            await client.auth.updateUser({
+                password: newPassword
+            });
 
-            const { data: { session }, error: sessionError } =
-                await window.cineflixAccountSupabase.auth.getSession();
+        if (updateError) throw updateError;
 
-            if (sessionError) throw sessionError;
+        showResetMessage(
+            "Your password has been updated successfully!",
+            "success"
+        );
 
-            if (!session) {
-                throw new Error(
-                    "Your reset session has expired. Please request another reset email."
+        codeInput.value = "";
+        newPasswordInput.value = "";
+        confirmPasswordInput.value = "";
+
+        window.cineflixRecoveryEmail = null;
+
+        // STEP 3: RETURN TO NORMAL LOGIN
+
+        setTimeout(async function () {
+
+            try {
+
+                await client.auth.signOut();
+
+            } catch (signOutError) {
+
+                console.error(
+                    "CineFlix sign-out error:",
+                    signOutError
                 );
+
             }
 
-            const { error } =
-                await window.cineflixAccountSupabase.auth.updateUser({
-                    password: newPassword
-                });
+            const resetPanel =
+                document.getElementById("cineflixPasswordResetPanel");
 
-            if (error) throw error;
+            const mainPanel =
+                document.getElementById("cineflixAuthPanel");
 
-            showResetMessage(
-                "Your password has been updated successfully!",
+            const overlay =
+                document.getElementById("cineflixAuthOverlay");
+
+            if (resetPanel) resetPanel.style.display = "none";
+            if (mainPanel) mainPanel.style.display = "block";
+            if (overlay) overlay.classList.add("active");
+
+            window.history.replaceState(
+                {},
+                document.title,
+                window.location.pathname
+            );
+
+            showMessage(
+                "Password changed! Sign in with your new password.",
                 "success"
             );
 
-            newPasswordInput.value = "";
-            confirmPasswordInput.value = "";
+        }, 1800);
 
-            setTimeout(async function () {
+    } catch (error) {
 
-                await window.cineflixAccountSupabase.auth.signOut();
+        console.error(
+            "CineFlix password recovery failed:",
+            error
+        );
 
-                const resetPanel =
-                    document.getElementById("cineflixPasswordResetPanel");
+        showResetMessage(
+            error.message || "Invalid or expired recovery code.",
+            "error"
+        );
 
-                const mainPanel =
-                    document.getElementById("cineflixAuthPanel");
+    } finally {
 
-                if (resetPanel) resetPanel.style.display = "none";
+        button.disabled = false;
+        button.textContent = originalText;
 
-                if (mainPanel) mainPanel.style.display = "block";
+    }
 
-                const overlay =
-                    document.getElementById("cineflixAuthOverlay");
+});
 
-                if (overlay) overlay.classList.add("active");
-
-                window.history.replaceState(
-                    {},
-                    document.title,
-                    window.location.pathname
-                );
-
-                showMessage(
-                    "Password changed! Sign in with your new password.",
-                    "success"
-                );
-
-            }, 1800);
-
-        } catch (error) {
-
-            console.error(
-                "CineFlix password update failed:",
-                error
-            );
-
-            showResetMessage(
-                error.message || "Could not update your password.",
-                "error"
-            );
-
-        } finally {
-
-            button.disabled = false;
-            button.textContent = originalText;
-
-        }
-
-    });
-
-
-    console.log(
-        "CineFlix authentication and password recovery ready."
-    );
+console.log(
+    "CineFlix authentication and recovery ready."
+);
 
 })();
 
@@ -18889,87 +18847,78 @@ h3 {
     </div>
 
 
-    <!-- PASSWORD RESET PANEL -->
+  
+<!-- PASSWORD RESET PANEL -->
 
-    <div
-        id="cineflixPasswordResetPanel"
-        class="cineflix-auth-panel"
-        style="display:none;">
+<div
+    id="cineflixPasswordResetPanel"
+    class="cineflix-auth-panel"
+    style="display:none;">
 
-        <div class="cineflix-auth-brand">
-
-            <div class="cineflix-auth-logo">
-                <span>▶</span>
-            </div>
-
-            <div>
-                <strong>CINEFLIX</strong>
-                <span>Your entertainment, your account.</span>
-            </div>
-
+    <div class="cineflix-auth-brand">
+        <div class="cineflix-auth-logo">
+            <span>▶</span>
         </div>
 
-        <div class="cineflix-auth-heading">
+        <div>
+            <strong>CINEFLIX</strong>
+            <span>Your entertainment, your account.</span>
+        </div>
+    </div>
 
-            <h2>Reset Your Password</h2>
+    <div class="cineflix-auth-heading">
+        <h2>Verify Your Email</h2>
+        <p>Enter the 6-digit code sent to your email, then choose a new password.</p>
+    </div>
 
-            <p>
-                Choose a new password for your CineFlix account.
-            </p>
+    <div class="cineflix-auth-form">
 
+        <div class="cineflix-auth-field">
+            <label for="cineflixRecoveryCode">Email Verification Code</label>
+            <input
+                type="text"
+                id="cineflixRecoveryCode"
+                placeholder="Enter 6-digit code"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                maxlength="6">
         </div>
 
-        <div class="cineflix-auth-form">
-
-            <div class="cineflix-auth-field">
-
-                <label for="cineflixNewPassword">
-                    New Password
-                </label>
-
-                <input
-                    type="password"
-                    id="cineflixNewPassword"
-                    placeholder="Enter new password"
-                    autocomplete="new-password">
-
-            </div>
-
-            <div class="cineflix-auth-field">
-
-                <label for="cineflixConfirmNewPassword">
-                    Confirm New Password
-                </label>
-
-                <input
-                    type="password"
-                    id="cineflixConfirmNewPassword"
-                    placeholder="Confirm new password"
-                    autocomplete="new-password">
-
-            </div>
-
-            <div
-                id="cineflixPasswordResetMessage"
-                class="cineflix-auth-message">
-            </div>
-
-            <button
-                type="button"
-                id="cineflixSaveNewPassword"
-                class="cineflix-auth-submit">
-
-                Update Password
-
-            </button>
-
+        <div class="cineflix-auth-field">
+            <label for="cineflixNewPassword">New Password</label>
+            <input
+                type="password"
+                id="cineflixNewPassword"
+                placeholder="Enter new password"
+                autocomplete="new-password">
         </div>
 
-        <div class="cineflix-auth-security">
-            <span>🔒</span>
-            <span>Your CineFlix account is securely protected.</span>
+        <div class="cineflix-auth-field">
+            <label for="cineflixConfirmNewPassword">Confirm New Password</label>
+            <input
+                type="password"
+                id="cineflixConfirmNewPassword"
+                placeholder="Confirm new password"
+                autocomplete="new-password">
         </div>
 
+        <div
+            id="cineflixPasswordResetMessage"
+            class="cineflix-auth-message">
+        </div>
+
+        <button
+            type="button"
+            id="cineflixSaveNewPassword"
+            class="cineflix-auth-submit">
+            Verify Code & Update Password
+        </button>
+
+    </div>
+
+    <div class="cineflix-auth-security">
+        <span>🔒</span>
+        <span>Your CineFlix account is securely protected.</span>
     </div>
 
 </div>
