@@ -4764,6 +4764,335 @@ footer{
     }
 
 }
+
+/* =====================================================
+   CINEFLIX — PREMIUM PROFILE DROPDOWN
+===================================================== */
+
+.cineflix-profile-panel {
+    width: 300px !important;
+    padding: 17px !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    border-radius: 19px !important;
+    background:
+        radial-gradient(
+            ellipse at top right,
+            rgba(229,9,20,0.13),
+            transparent 55%
+        ),
+        linear-gradient(145deg,#191919,#0b0b0b) !important;
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.65),
+        0 0 25px rgba(229,9,20,0.07) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* PROFILE HEADER */
+
+.cineflix-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 9px 7px 19px !important;
+}
+
+.cineflix-panel-avatar {
+    width: 53px !important;
+    height: 53px !important;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 2px solid rgba(229,9,20,0.65) !important;
+    border-radius: 50% !important;
+    box-shadow: 0 0 14px rgba(229,9,20,0.18);
+}
+
+.cineflix-panel-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.cineflix-profile-user-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 5px;
+}
+
+.cineflix-profile-user-info strong {
+    color: #fff !important;
+    font-size: 15px !important;
+    font-weight: 750 !important;
+}
+
+.cineflix-profile-user-info span {
+    overflow: hidden;
+    color: #858585 !important;
+    font-size: 11px !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* DIVIDERS */
+
+.cineflix-profile-divider {
+    height: 1px !important;
+    margin: 5px 0 10px !important;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.13),
+        transparent
+    ) !important;
+}
+
+/* MENU ITEMS */
+
+.cineflix-profile-menu-item {
+    display: flex !important;
+    align-items: center;
+    width: 100% !important;
+    min-height: 45px !important;
+    padding: 0 11px !important;
+    margin: 3px 0 !important;
+    gap: 12px;
+    border: 1px solid transparent !important;
+    border-radius: 10px !important;
+    background: transparent !important;
+    color: #dedede !important;
+    font-size: 13px !important;
+    font-weight: 550 !important;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease !important;
+}
+
+.cineflix-profile-menu-item:hover {
+    border-color: rgba(229,9,20,0.18) !important;
+    background: rgba(229,9,20,0.10) !important;
+    color: #fff !important;
+    transform: translateX(3px);
+}
+
+.cineflix-menu-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 23px;
+    color: #aaa !important;
+    font-size: 16px !important;
+    transition: color 0.2s ease;
+}
+
+.cineflix-profile-menu-item:hover .cineflix-menu-icon {
+    color: #ff3440 !important;
+}
+
+.cineflix-menu-arrow {
+    margin-left: auto;
+    color: #666 !important;
+    font-size: 20px !important;
+    transition: all 0.2s ease;
+}
+
+.cineflix-profile-menu-item:hover .cineflix-menu-arrow {
+    color: #e50914 !important;
+    transform: translateX(3px);
+}
+
+/* SIGN OUT */
+
+.cineflix-signout-button {
+    margin-top: 7px !important;
+    color: #ff777d !important;
+}
+
+.cineflix-signout-button .cineflix-menu-icon {
+    color: #e50914 !important;
+}
+
+.cineflix-signout-button:hover {
+    background: rgba(229,9,20,0.15) !important;
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+    .cineflix-profile-panel {
+        width: min(300px, calc(100vw - 24px)) !important;
+    }
+}
+
+/* =====================================================
+   CINEFLIX — RESPONSIVE PROFILE PANEL
+===================================================== */
+
+.cineflix-profile-panel {
+    width: clamp(280px, 30vw, 380px) !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+/* TABLETS */
+
+@media (max-width: 900px) {
+    .cineflix-profile-panel {
+        width: clamp(270px, 42vw, 340px) !important;
+    }
+}
+
+/* PHONES */
+
+@media (max-width: 600px) {
+    .cineflix-profile-panel {
+        width: min(340px, calc(100vw - 24px)) !important;
+        max-height: calc(100dvh - 90px);
+        padding: 14px !important;
+    }
+
+    .cineflix-profile-menu-item {
+        min-height: 49px !important;
+        font-size: 14px !important;
+    }
+}
+
+/* =====================================================
+   CINEFLIX — LARGER RESPONSIVE PROFILE MENU
+===================================================== */
+
+.cineflix-profile-panel {
+    width: clamp(340px, 38vw, 460px) !important;
+    max-width: calc(100vw - 24px) !important;
+    min-height: 390px;
+    padding: 23px !important;
+    box-sizing: border-box;
+}
+
+/* LARGER PROFILE HEADER */
+
+.cineflix-profile-header {
+    gap: 17px !important;
+    padding: 12px 9px 23px !important;
+}
+
+.cineflix-panel-avatar {
+    width: 65px !important;
+    height: 65px !important;
+}
+
+.cineflix-profile-user-info strong {
+    font-size: 17px !important;
+}
+
+.cineflix-profile-user-info span {
+    font-size: 12px !important;
+}
+
+/* MORE SPACIOUS MENU */
+
+.cineflix-profile-menu-item {
+    min-height: 55px !important;
+    padding: 0 15px !important;
+    gap: 15px !important;
+    font-size: 15px !important;
+}
+
+.cineflix-menu-icon {
+    width: 27px !important;
+    font-size: 19px !important;
+}
+
+.cineflix-menu-arrow {
+    font-size: 23px !important;
+}
+
+.cineflix-profile-divider {
+    margin: 9px 0 13px !important;
+}
+
+/* SMALL SCREENS */
+
+@media (max-width: 600px) {
+    .cineflix-profile-panel {
+        width: min(380px, calc(100vw - 24px)) !important;
+        min-height: 0;
+        padding: 17px !important;
+        max-height: calc(100dvh - 90px);
+        overflow-y: auto;
+    }
+
+    .cineflix-profile-menu-item {
+        min-height: 51px !important;
+        font-size: 14px !important;
+    }
+
+    .cineflix-panel-avatar {
+        width: 57px !important;
+        height: 57px !important;
+    }
+}
+
+/* =====================================================
+   CINEFLIX — CLEAR, LARGER PROFILE PHOTOS
+===================================================== */
+
+/* PHOTO INSIDE THE OPEN PROFILE MENU */
+
+.cineflix-panel-avatar {
+    width: 82px !important;
+    height: 82px !important;
+    min-width: 82px !important;
+    min-height: 82px !important;
+    flex: 0 0 82px !important;
+    overflow: hidden !important;
+    border-radius: 50% !important;
+    border: 3px solid #e50914 !important;
+}
+
+.cineflix-panel-avatar img {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+}
+
+/* PHOTO BESIDE YOUR NAME IN THE TOP HEADER */
+
+.cineflix-profile-avatar {
+    width: 43px !important;
+    height: 43px !important;
+    min-width: 43px !important;
+    min-height: 43px !important;
+    flex: 0 0 43px !important;
+    overflow: hidden !important;
+    border-radius: 50% !important;
+}
+
+.cineflix-profile-avatar img {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+}
+
+/* PHONE SCREENS */
+
+@media (max-width: 600px) {
+    .cineflix-panel-avatar {
+        width: 70px !important;
+        height: 70px !important;
+        min-width: 70px !important;
+        min-height: 70px !important;
+        flex-basis: 70px !important;
+    }
+}
+
 </style>
 
 </head>
