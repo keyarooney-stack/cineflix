@@ -7811,20 +7811,29 @@ async function findWhereToWatch(movieId){
     }
 
 
+    
     // =====================================================
-    // SIGN IN
+    // CINEFLIX EMAIL OTP LOGIN
     // =====================================================
+
+    let cineflixOtpPendingEmail = null;
 
     document.addEventListener("submit", async function (event) {
 
         const form = event.target;
 
-        if (!form || form.id !== "cineflixAuthForm") {
-            return;
-        }
+        if (!form || form.id !== "cineflixAuthForm") return;
 
         event.preventDefault();
         event.stopPropagation();
+
+        const client = window.cineflixAccountSupabase;
+
+        const emailInput =
+            document.getElementById("cineflixAuthEmail");
+
+        const codeInput =
+            document.getElementById("cineflixAuthPassword");
 
         const submitButton =
             document.getElementById("cineflixAuthSubmit");
@@ -7832,69 +7841,94 @@ async function findWhereToWatch(movieId){
         const originalButtonText =
             submitButton ? submitButton.innerHTML : "Sign In";
 
+        const email = emailInput ? emailInput.value.trim() : "";
+        const code = codeInput ? codeInput.value.trim() : "";
+
         try {
 
-            if (
-                !window.cineflixAccountSupabase ||
-                !window.cineflixAccountSupabase.auth
-            ) {
+            if (!client || !client.auth) {
+                throw new Error("CineFlix is still connecting. Please refresh.");
+            }
+
+            if (!email) {
+                throw new Error("Please enter your email address.");
+            }
+
+            if (!cineflixOtpPendingEmail) {
+
+                // SEND LOGIN CODE
+
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.textContent = "Sending code...";
+                }
+
+                showMessage("Sending your login code...", "");
+
+                const { error } = await client.auth.signInWithOtp({
+                    email: email,
+                    options: {
+                        shouldCreateUser: false
+                    }
+                });
+
+                if (error) throw error;
+
+                cineflixOtpPendingEmail = email;
+
+                if (codeInput) {
+                    codeInput.value = "";
+                    codeInput.type = "text";
+                    codeInput.inputMode = "numeric";
+                    codeInput.autocomplete = "one-time-code";
+                    codeInput.placeholder = "Enter your 6-digit code";
+                    codeInput.maxLength = 6;
+                }
+
+                if (submitButton) {
+                    submitButton.textContent = "Verify Code";
+                }
+
+                showMessage(
+                    "A login code has been sent to your email. Enter it here.",
+                    "success"
+                );
+
+                return;
+            }
+
+            // VERIFY LOGIN CODE
+
+            if (email.toLowerCase() !== cineflixOtpPendingEmail.toLowerCase()) {
                 throw new Error(
-                    "CineFlix is still connecting. Please refresh and try again."
+                    "The email address has changed. Please request a new code."
                 );
             }
 
-            const email =
-                document.getElementById("cineflixAuthEmail")
-                    .value.trim();
-
-            const password =
-                document.getElementById("cineflixAuthPassword")
-                    .value;
-
-            if (!email || !password) {
-                throw new Error(
-                    "Please enter your email and password."
-                );
+            if (!/^\d{6}$/.test(code)) {
+                throw new Error("Please enter the 6-digit code from your email.");
             }
 
             if (submitButton) {
                 submitButton.disabled = true;
-                submitButton.innerHTML = `
-                    <span class="cineflix-auth-loading">
-                        <span class="cineflix-auth-spinner"></span>
-                        <span>Signing in...</span>
-                    </span>
-                `;
+                submitButton.textContent = "Verifying...";
             }
 
-            showMessage("Checking your account...", "");
+            showMessage("Verifying your login code...", "");
 
-            const loginPromise =
-                window.cineflixAccountSupabase.auth
-                    .signInWithPassword({
-                        email: email,
-                        password: password
-                    });
+            const { error } = await client.auth.verifyOtp({
+                email: email,
+                token: code,
+                type: "email"
+            });
 
-            const minimumLoadingTime = new Promise(resolve =>
-                setTimeout(resolve, 800)
-            );
+            if (error) throw error;
 
-            const [loginResult] = await Promise.all([
-                loginPromise,
-                minimumLoadingTime
-            ]);
+            cineflixOtpPendingEmail = null;
 
-            if (loginResult.error) {
-                throw loginResult.error;
-            }
+            showMessage("Signed in successfully!", "success");
 
-            showMessage(
-                "Signed in successfully!",
-                "success"
-            );
-
-            console.log("CineFlix sign in successful.");
+            console.log("CineFlix email OTP login successful.");
 
             const overlay =
                 document.getElementById("cineflixAuthOverlay");
@@ -7907,13 +7941,10 @@ async function findWhereToWatch(movieId){
 
         } catch (error) {
 
-            console.error(
-                "CineFlix sign in failed:",
-                error
-            );
+            console.error("CineFlix OTP login failed:", error);
 
             showMessage(
-                error.message || "Sign in failed. Please try again.",
+                error.message || "Login failed. Please try again.",
                 "error"
             );
 
@@ -7921,12 +7952,17 @@ async function findWhereToWatch(movieId){
 
             if (submitButton) {
                 submitButton.disabled = false;
-                submitButton.innerHTML = originalButtonText;
+
+                submitButton.innerHTML =
+                    cineflixOtpPendingEmail
+                        ? "Verify Code"
+                        : originalButtonText;
             }
 
         }
 
     }, true);
+
 
 
     // =====================================================
