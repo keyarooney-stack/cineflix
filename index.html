@@ -7813,8 +7813,119 @@ async function findWhereToWatch(movieId){
 
     
     
+
 // =====================================================
-// NORMAL CINEFLIX PASSWORD LOGIN
+// CINEFLIX AUTHENTICATION — SIGN IN & SIGN UP
+// =====================================================
+
+let cineflixAuthMode = "signin";
+
+
+// =====================================================
+// SWITCH BETWEEN SIGN IN AND CREATE ACCOUNT
+// =====================================================
+
+document.addEventListener("click", function (event) {
+
+    const switchButton = event.target.closest(
+        "#cineflixAuthSwitchButton"
+    );
+
+    if (!switchButton) return;
+
+    event.preventDefault();
+
+    const nameGroup =
+        document.getElementById("cineflixAuthNameGroup");
+
+    const confirmGroup =
+        document.getElementById("cineflixAuthConfirmGroup");
+
+    const forgotButton =
+        document.getElementById("cineflixForgotPassword");
+
+    const title =
+        document.getElementById("cineflixAuthTitle");
+
+    const subtitle =
+        document.getElementById("cineflixAuthSubtitle");
+
+    const submitButton =
+        document.getElementById("cineflixAuthSubmit");
+
+    const switchText =
+        document.getElementById("cineflixAuthSwitchText");
+
+    const passwordInput =
+        document.getElementById("cineflixAuthPassword");
+
+    const message =
+        document.getElementById("cineflixAuthMessage");
+
+    cineflixAuthMode =
+        cineflixAuthMode === "signin" ? "signup" : "signin";
+
+    const isSignup = cineflixAuthMode === "signup";
+
+    if (nameGroup) {
+        nameGroup.classList.toggle(
+            "cineflix-auth-hidden",
+            !isSignup
+        );
+    }
+
+    if (confirmGroup) {
+        confirmGroup.classList.toggle(
+            "cineflix-auth-hidden",
+            !isSignup
+        );
+    }
+
+    if (forgotButton) {
+        forgotButton.style.display =
+            isSignup ? "none" : "";
+    }
+
+    if (title) {
+        title.textContent =
+            isSignup ? "Create Your Account" : "Welcome Back";
+    }
+
+    if (subtitle) {
+        subtitle.textContent =
+            isSignup
+                ? "Join CineFlix and enjoy your entertainment."
+                : "Sign in to continue to CineFlix.";
+    }
+
+    if (submitButton) {
+        submitButton.textContent =
+            isSignup ? "Create Account" : "Sign In";
+    }
+
+    if (switchText) {
+        switchText.textContent =
+            isSignup ? "Already have an account?" : "New to CineFlix?";
+    }
+
+    switchButton.textContent =
+        isSignup ? "Sign In" : "Create Account";
+
+    if (passwordInput) {
+        passwordInput.autocomplete =
+            isSignup ? "new-password" : "current-password";
+    }
+
+    if (message) {
+        message.textContent = "";
+        message.className = "cineflix-auth-message";
+    }
+
+});
+
+
+// =====================================================
+// HANDLE SIGN IN AND ACCOUNT REGISTRATION
 // =====================================================
 
 document.addEventListener("submit", async function (event) {
@@ -7828,26 +7939,127 @@ document.addEventListener("submit", async function (event) {
 
     const client = window.cineflixAccountSupabase;
 
-    const email = document.getElementById("cineflixAuthEmail").value.trim();
-    const password = document.getElementById("cineflixAuthPassword").value;
+    const email =
+        document.getElementById("cineflixAuthEmail").value.trim();
 
-    const button = document.getElementById("cineflixAuthSubmit");
-    const originalText = button ? button.innerHTML : "Sign In";
+    const password =
+        document.getElementById("cineflixAuthPassword").value;
+
+    const nameInput =
+        document.getElementById("cineflixAuthName");
+
+    const confirmInput =
+        document.getElementById("cineflixAuthConfirm");
+
+    const name = nameInput ? nameInput.value.trim() : "";
+
+    const confirmPassword =
+        confirmInput ? confirmInput.value : "";
+
+    const button =
+        document.getElementById("cineflixAuthSubmit");
+
+    const originalText =
+        button ? button.textContent : "Continue";
 
     try {
 
         if (!client) {
-            throw new Error("CineFlix is still connecting. Please refresh.");
+            throw new Error(
+                "CineFlix is still connecting. Please refresh."
+            );
         }
 
         if (!email || !password) {
-            throw new Error("Enter your email and password.");
+            throw new Error(
+                "Please enter your email and password."
+            );
         }
 
         if (button) {
             button.disabled = true;
-            button.textContent = "Signing in...";
+            button.textContent =
+                cineflixAuthMode === "signup"
+                    ? "Creating Account..."
+                    : "Signing In...";
         }
+
+        // ---------------------------------------------
+        // CREATE NEW ACCOUNT
+        // ---------------------------------------------
+
+        if (cineflixAuthMode === "signup") {
+
+            if (!name) {
+                throw new Error("Please enter your display name.");
+            }
+
+            if (password.length < 6) {
+                throw new Error(
+                    "Your password must be at least 6 characters."
+                );
+            }
+
+            if (password !== confirmPassword) {
+                throw new Error("Your passwords do not match.");
+            }
+
+            const { data, error } = await client.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        display_name: name
+                    }
+                }
+            });
+
+            if (error) throw error;
+
+            if (data.session) {
+
+                showMessage(
+                    "Your CineFlix account has been created successfully!",
+                    "success"
+                );
+
+                cineflixAuthMode = "signin";
+
+                const overlay =
+                    document.getElementById("cineflixAuthOverlay");
+
+                if (overlay) {
+                    setTimeout(function () {
+                        overlay.classList.remove("active");
+                    }, 1200);
+                }
+
+            } else {
+
+                showMessage(
+                    "Account created! Please check your email to verify your account before signing in.",
+                    "success"
+                );
+
+                form.reset();
+
+                if (confirmInput) confirmInput.value = "";
+                if (nameInput) nameInput.value = "";
+
+                // Return the form to sign-in mode.
+                const switchButton =
+                    document.getElementById("cineflixAuthSwitchButton");
+
+                if (switchButton) switchButton.click();
+
+            }
+
+            return;
+        }
+
+        // ---------------------------------------------
+        // NORMAL PASSWORD LOGIN
+        // ---------------------------------------------
 
         const { error } = await client.auth.signInWithPassword({
             email: email,
@@ -7856,9 +8068,13 @@ document.addEventListener("submit", async function (event) {
 
         if (error) throw error;
 
-        showMessage("Signed in successfully!", "success");
+        showMessage(
+            "Signed in successfully!",
+            "success"
+        );
 
-        const overlay = document.getElementById("cineflixAuthOverlay");
+        const overlay =
+            document.getElementById("cineflixAuthOverlay");
 
         if (overlay) {
             setTimeout(function () {
@@ -7868,10 +8084,13 @@ document.addEventListener("submit", async function (event) {
 
     } catch (error) {
 
-        console.error("CineFlix sign in failed:", error);
+        console.error(
+            "CineFlix authentication failed:",
+            error
+        );
 
         showMessage(
-            error.message || "Sign in failed.",
+            error.message || "Authentication failed.",
             "error"
         );
 
@@ -7879,7 +8098,7 @@ document.addEventListener("submit", async function (event) {
 
         if (button) {
             button.disabled = false;
-            button.innerHTML = originalText;
+            button.textContent = originalText;
         }
 
     }
@@ -7888,7 +8107,7 @@ document.addEventListener("submit", async function (event) {
 
 
 // =====================================================
-// FORGOT PASSWORD — SEND 6-DIGIT RECOVERY CODE
+// FORGOT PASSWORD — SEND 8-DIGIT RECOVERY CODE
 // =====================================================
 
 document.addEventListener("click", async function (event) {
@@ -7927,7 +8146,7 @@ document.addEventListener("click", async function (event) {
         if (error) throw error;
 
         showMessage(
-            "A 6-digit recovery code has been sent to your email. Enter it to continue.",
+            "An 8-digit recovery code has been sent to your email. Enter it to continue.",
             "success"
         );
 
@@ -18868,7 +19087,7 @@ h3 {
 
     <div class="cineflix-auth-heading">
         <h2>Verify Your Email</h2>
-        <p>Enter the 6-digit code sent to your email, then choose a new password.</p>
+        <p>Enter the 8-digit code sent to your email.</p>
     </div>
 
     <div class="cineflix-auth-form">
