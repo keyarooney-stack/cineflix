@@ -2621,6 +2621,1441 @@ footer{
     }
 
 }
+/* =====================================================
+   CINEFLIX USER SYSTEM — PROFILE AREA
+===================================================== */
+
+.cineflix-user-area {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    z-index: 1000;
+}
+
+
+/* =====================================================
+   PROFILE BUTTON
+===================================================== */
+
+.cineflix-profile-button {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    min-height: 42px;
+    padding: 5px 12px 5px 6px;
+
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.09),
+            rgba(255,255,255,.035)
+        );
+
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,.28),
+        inset 0 1px 0 rgba(255,255,255,.06);
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.cineflix-profile-button:hover {
+    transform: translateY(-1px);
+
+    border-color: rgba(229,9,20,.55);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(229,9,20,.16),
+            rgba(255,255,255,.05)
+        );
+
+    box-shadow:
+        0 7px 25px rgba(0,0,0,.38),
+        0 0 18px rgba(229,9,20,.12);
+}
+
+.cineflix-profile-button:active {
+    transform: scale(.97);
+}
+
+
+/* =====================================================
+   PROFILE AVATAR
+===================================================== */
+
+.cineflix-profile-avatar {
+    width: 31px;
+    height: 31px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            145deg,
+            #242424,
+            #101010
+        );
+
+    border: 1px solid rgba(255,255,255,.16);
+
+    box-shadow:
+        0 2px 10px rgba(0,0,0,.35);
+}
+
+.cineflix-profile-avatar img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+
+/* =====================================================
+   DEFAULT PERSON ICON
+===================================================== */
+
+.cineflix-default-avatar {
+    position: relative;
+
+    width: 16px;
+    height: 16px;
+
+    display: block;
+}
+
+.cineflix-default-avatar::before {
+    content: "";
+
+    position: absolute;
+
+    width: 6px;
+    height: 6px;
+
+    top: 0;
+    left: 5px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.85);
+}
+
+.cineflix-default-avatar::after {
+    content: "";
+
+    position: absolute;
+
+    width: 14px;
+    height: 7px;
+
+    left: 1px;
+    bottom: 0;
+
+    border-radius: 9px 9px 5px 5px;
+
+    background: rgba(255,255,255,.85);
+}
+
+
+/* =====================================================
+   PROFILE NAME
+===================================================== */
+
+.cineflix-profile-name {
+    max-width: 120px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   PROFILE ARROW
+===================================================== */
+
+.cineflix-profile-arrow {
+    font-size: 12px;
+
+    opacity: .65;
+
+    transition:
+        transform .2s ease,
+        opacity .2s ease;
+}
+
+.cineflix-profile-button:hover
+.cineflix-profile-arrow {
+    opacity: 1;
+}
+
+
+/* =====================================================
+   PROFILE PANEL
+===================================================== */
+
+.cineflix-profile-panel {
+    position: absolute;
+
+    top: calc(100% + 12px);
+    right: 0;
+
+    width: 285px;
+
+    padding: 10px;
+
+    border: 1px solid rgba(255,255,255,.11);
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(28,28,28,.98),
+            rgba(12,12,12,.98)
+        );
+
+    box-shadow:
+        0 20px 55px rgba(0,0,0,.65),
+        0 0 35px rgba(0,0,0,.25);
+
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform:
+        translateY(-8px)
+        scale(.97);
+
+    transform-origin: top right;
+
+    pointer-events: none;
+
+    transition:
+        opacity .18s ease,
+        visibility .18s ease,
+        transform .18s ease;
+}
+
+
+/* =====================================================
+   OPEN PANEL
+===================================================== */
+
+.cineflix-profile-panel.active {
+    opacity: 1;
+
+    visibility: visible;
+
+    transform:
+        translateY(0)
+        scale(1);
+
+    pointer-events: auto;
+}
+
+
+/* =====================================================
+   PANEL TOP GLOW
+===================================================== */
+
+.cineflix-profile-panel::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 22px;
+    right: 22px;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(229,9,20,.8),
+            transparent
+        );
+}
+
+
+/* =====================================================
+   PROFILE HEADER
+===================================================== */
+
+.cineflix-profile-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 10px;
+}
+
+
+/* =====================================================
+   LARGE PANEL AVATAR
+===================================================== */
+
+.cineflix-panel-avatar {
+    width: 46px;
+    height: 46px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            145deg,
+            #292929,
+            #101010
+        );
+
+    border: 1px solid rgba(255,255,255,.14);
+
+    box-shadow:
+        0 5px 18px rgba(0,0,0,.4);
+}
+
+.cineflix-panel-avatar img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+
+/* =====================================================
+   USER INFORMATION
+===================================================== */
+
+.cineflix-profile-user-info {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.cineflix-profile-user-info strong {
+    color: #fff;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.cineflix-profile-user-info span {
+    color: rgba(255,255,255,.52);
+
+    font-size: 12px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   DIVIDER
+===================================================== */
+
+.cineflix-profile-divider {
+    height: 1px;
+
+    margin: 6px 4px;
+
+    background:
+        rgba(255,255,255,.08);
+}
+
+
+/* =====================================================
+   MENU ITEMS
+===================================================== */
+
+.cineflix-profile-menu-item {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-height: 44px;
+
+    padding: 8px 10px;
+
+    border: 0;
+
+    border-radius: 11px;
+
+    background: transparent;
+
+    color: rgba(255,255,255,.86);
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background .18s ease,
+        color .18s ease,
+        transform .18s ease;
+}
+
+.cineflix-profile-menu-item:hover {
+    background:
+        rgba(255,255,255,.07);
+
+    color: #fff;
+
+    transform: translateX(2px);
+}
+
+
+/* =====================================================
+   MENU ICON
+===================================================== */
+
+.cineflix-menu-icon {
+    width: 24px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: rgba(255,255,255,.68);
+
+    font-size: 17px;
+}
+
+.cineflix-profile-menu-item:hover
+.cineflix-menu-icon {
+    color: #fff;
+}
+
+
+/* =====================================================
+   MENU ARROW
+===================================================== */
+
+.cineflix-menu-arrow {
+    margin-left: auto;
+
+    color: rgba(255,255,255,.3);
+
+    font-size: 20px;
+
+    line-height: 1;
+
+    transition:
+        color .18s ease,
+        transform .18s ease;
+}
+
+.cineflix-profile-menu-item:hover
+.cineflix-menu-arrow {
+    color: rgba(255,255,255,.75);
+
+    transform: translateX(2px);
+}
+
+
+/* =====================================================
+   SIGN OUT
+===================================================== */
+
+.cineflix-signout-button {
+    color: rgba(255,255,255,.72);
+}
+
+.cineflix-signout-button:hover {
+    color: #ff4b55;
+
+    background:
+        rgba(229,9,20,.10);
+}
+
+.cineflix-signout-button:hover
+.cineflix-menu-icon {
+    color: #ff4b55;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+    .cineflix-profile-name {
+        display: none;
+    }
+
+    .cineflix-profile-button {
+        padding: 5px 7px;
+    }
+
+    .cineflix-profile-arrow {
+        display: none;
+    }
+
+    .cineflix-profile-panel {
+        right: 0;
+
+        width: min(
+            285px,
+            calc(100vw - 24px)
+        );
+    }
+}
+/* =====================================================
+   CINEFLIX AUTHENTICATION PANEL
+===================================================== */
+
+.cineflix-auth-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background:
+        rgba(0,0,0,.78);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    opacity: 0;
+    visibility: hidden;
+
+    pointer-events: none;
+
+    z-index: 99999;
+
+    transition:
+        opacity .22s ease,
+        visibility .22s ease;
+}
+
+.cineflix-auth-overlay.active {
+    opacity: 1;
+
+    visibility: visible;
+
+    pointer-events: auto;
+}
+
+
+/* =====================================================
+   AUTH PANEL
+===================================================== */
+
+.cineflix-auth-panel {
+    position: relative;
+
+    width: min(
+        430px,
+        100%
+    );
+
+    padding: 30px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.11);
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(30,30,30,.98),
+            rgba(10,10,10,.98)
+        );
+
+    box-shadow:
+        0 30px 90px rgba(0,0,0,.75),
+        0 0 45px rgba(229,9,20,.08);
+
+    overflow: hidden;
+
+    transform:
+        translateY(18px)
+        scale(.97);
+
+    transition:
+        transform .22s ease;
+}
+
+.cineflix-auth-overlay.active
+.cineflix-auth-panel {
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+
+/* =====================================================
+   RED TOP GLOW
+===================================================== */
+
+.cineflix-auth-panel::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 35px;
+    right: 35px;
+
+    height: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #e50914,
+            transparent
+        );
+
+    box-shadow:
+        0 0 18px
+        rgba(229,9,20,.55);
+}
+
+
+/* =====================================================
+   CLOSE BUTTON
+===================================================== */
+
+.cineflix-auth-close {
+    position: absolute;
+
+    top: 15px;
+    right: 15px;
+
+    width: 34px;
+    height: 34px;
+
+    border: 1px solid
+        rgba(255,255,255,.09);
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,.05);
+
+    color:
+        rgba(255,255,255,.72);
+
+    font-size: 23px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background .18s ease,
+        color .18s ease,
+        transform .18s ease;
+}
+
+.cineflix-auth-close:hover {
+    background:
+        rgba(229,9,20,.15);
+
+    color: #fff;
+
+    transform:
+        rotate(90deg);
+}
+
+
+/* =====================================================
+   BRAND
+===================================================== */
+
+.cineflix-auth-brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    margin-bottom: 28px;
+}
+
+.cineflix-auth-logo {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #e50914,
+            #9b050c
+        );
+
+    color: #fff;
+
+    font-size: 19px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(229,9,20,.28);
+}
+
+.cineflix-auth-brand strong {
+    display: block;
+
+    color: #fff;
+
+    font-size: 18px;
+
+    letter-spacing: 1.5px;
+}
+
+.cineflix-auth-brand span {
+    display: block;
+
+    margin-top: 3px;
+
+    color:
+        rgba(255,255,255,.42);
+
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   HEADING
+===================================================== */
+
+.cineflix-auth-heading {
+    margin-bottom: 22px;
+}
+
+.cineflix-auth-heading h2 {
+    margin: 0;
+
+    color: #fff;
+
+    font-size: 25px;
+
+    font-weight: 750;
+
+    letter-spacing: -.4px;
+}
+
+.cineflix-auth-heading p {
+    margin: 7px 0 0;
+
+    color:
+        rgba(255,255,255,.48);
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.cineflix-auth-form {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+.cineflix-auth-field {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.cineflix-auth-field label {
+    color:
+        rgba(255,255,255,.68);
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+.cineflix-auth-field input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    min-height: 46px;
+
+    padding:
+        0 14px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.10);
+
+    border-radius: 12px;
+
+    outline: none;
+
+    background:
+        rgba(255,255,255,.045);
+
+    color: #fff;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    transition:
+        border-color .18s ease,
+        background .18s ease,
+        box-shadow .18s ease;
+}
+
+.cineflix-auth-field input::placeholder {
+    color:
+        rgba(255,255,255,.28);
+}
+
+.cineflix-auth-field input:focus {
+    border-color:
+        rgba(229,9,20,.65);
+
+    background:
+        rgba(255,255,255,.065);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(229,9,20,.09);
+}
+
+
+/* =====================================================
+   HIDDEN FORM ELEMENTS
+===================================================== */
+
+.cineflix-auth-hidden {
+    display: none;
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+.cineflix-auth-message {
+    min-height: 18px;
+
+    color:
+        rgba(255,255,255,.62);
+
+    font-size: 12px;
+
+    line-height: 1.4;
+}
+
+.cineflix-auth-message.error {
+    color: #ff6870;
+}
+
+.cineflix-auth-message.success {
+    color: #69d391;
+}
+
+
+/* =====================================================
+   SUBMIT BUTTON
+===================================================== */
+
+.cineflix-auth-submit {
+    width: 100%;
+
+    min-height: 47px;
+
+    border: 0;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #e50914,
+            #b4060d
+        );
+
+    color: #fff;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 24px
+        rgba(229,9,20,.22);
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        filter .18s ease;
+}
+
+.cineflix-auth-submit:hover {
+    transform:
+        translateY(-1px);
+
+    filter:
+        brightness(1.08);
+
+    box-shadow:
+        0 11px 30px
+        rgba(229,9,20,.32);
+}
+
+.cineflix-auth-submit:active {
+    transform:
+        scale(.98);
+}
+
+
+/* =====================================================
+   LOGIN / SIGNUP SWITCH
+===================================================== */
+
+.cineflix-auth-switch {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    margin-top: 20px;
+
+    color:
+        rgba(255,255,255,.42);
+
+    font-size: 12px;
+}
+
+.cineflix-auth-switch button {
+    padding: 0;
+
+    border: 0;
+
+    background: transparent;
+
+    color:
+        #ff4b55;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.cineflix-auth-switch button:hover {
+    color: #ff737b;
+
+    text-decoration:
+        underline;
+}
+
+
+/* =====================================================
+   SECURITY NOTE
+===================================================== */
+
+.cineflix-auth-security {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    margin-top: 20px;
+
+    padding-top: 16px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.07);
+
+    color:
+        rgba(255,255,255,.28);
+
+    font-size: 10px;
+
+    text-align: center;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 520px) {
+
+    .cineflix-auth-overlay {
+        padding: 12px;
+    }
+
+    .cineflix-auth-panel {
+        padding: 24px 20px;
+
+        border-radius: 20px;
+    }
+
+    .cineflix-auth-brand {
+        margin-bottom: 23px;
+    }
+
+    .cineflix-auth-heading h2 {
+        font-size: 22px;
+    }
+
+}
+/* =====================================================
+   CINEFLIX — PROFILE EDITOR
+===================================================== */
+
+.cineflix-profile-editor-overlay {
+    position: fixed;
+    inset: 0;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    z-index: 100000;
+}
+
+.cineflix-profile-editor-overlay.active {
+    display: flex;
+}
+
+
+/* =====================================================
+   PROFILE EDITOR CARD
+===================================================== */
+
+.cineflix-profile-editor {
+    position: relative;
+
+    width: 100%;
+    max-width: 430px;
+
+    padding: 30px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(27, 27, 27, 0.98),
+            rgba(10, 10, 10, 0.98)
+        );
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.7),
+        0 -2px 20px rgba(229, 9, 20, 0.12);
+
+    color: #ffffff;
+}
+
+.cineflix-profile-editor::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: 40px;
+    right: 40px;
+
+    height: 2px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #e50914,
+        transparent
+    );
+}
+
+
+/* =====================================================
+   CLOSE BUTTON
+===================================================== */
+
+.cineflix-profile-editor-close {
+    position: absolute;
+
+    top: 15px;
+    right: 17px;
+
+    width: 34px;
+    height: 34px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    color: #aaaaaa;
+    font-size: 24px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.cineflix-profile-editor-close:hover {
+    background: rgba(229, 9, 20, 0.15);
+    color: #ffffff;
+}
+
+
+/* =====================================================
+   HEADING
+===================================================== */
+
+.cineflix-profile-editor-heading {
+    text-align: center;
+
+    margin-bottom: 25px;
+}
+
+.cineflix-profile-editor-heading h2 {
+    margin: 0 0 7px;
+
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.cineflix-profile-editor-heading p {
+    margin: 0;
+
+    color: #8e8e8e;
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   PROFILE PHOTO
+===================================================== */
+
+.cineflix-profile-photo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 26px;
+}
+
+.cineflix-profile-editor-avatar {
+    width: 92px;
+    height: 92px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 50%;
+
+    border: 2px solid rgba(229, 9, 20, 0.8);
+
+    background: #171717;
+
+    box-shadow:
+        0 0 0 5px rgba(229, 9, 20, 0.07);
+}
+
+.cineflix-profile-editor-avatar img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.cineflix-profile-editor-avatar .cineflix-default-avatar {
+    width: 52%;
+    height: 52%;
+}
+
+
+/* =====================================================
+   CHANGE PHOTO
+===================================================== */
+
+.cineflix-change-photo-button {
+    border: none;
+
+    padding: 8px 15px;
+
+    border-radius: 8px;
+
+    background: rgba(255, 255, 255, 0.07);
+
+    color: #dddddd;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.cineflix-change-photo-button:hover {
+    background: rgba(229, 9, 20, 0.14);
+    color: #ffffff;
+}
+
+
+/* =====================================================
+   PROFILE FORM
+===================================================== */
+
+.cineflix-profile-editor-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 17px;
+}
+
+.cineflix-profile-editor-field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.cineflix-profile-editor-field label {
+    color: #b8b8b8;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.cineflix-profile-editor-field input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 12px 13px;
+
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 9px;
+
+    outline: none;
+
+    background: rgba(255, 255, 255, 0.045);
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    transition: 0.2s ease;
+}
+
+.cineflix-profile-editor-field input:focus {
+    border-color: rgba(229, 9, 20, 0.8);
+
+    box-shadow:
+        0 0 0 3px rgba(229, 9, 20, 0.08);
+}
+
+.cineflix-profile-editor-field input[readonly] {
+    color: #777777;
+
+    cursor: default;
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+.cineflix-profile-editor-message {
+    min-height: 17px;
+
+    text-align: center;
+
+    font-size: 12px;
+
+    color: #aaaaaa;
+}
+
+.cineflix-profile-editor-message.error {
+    color: #ff6666;
+}
+
+.cineflix-profile-editor-message.success {
+    color: #67d98a;
+}
+
+
+/* =====================================================
+   SAVE BUTTON
+===================================================== */
+
+.cineflix-profile-save-button {
+    width: 100%;
+
+    padding: 12px 15px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: #e50914;
+
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        background 0.2s ease;
+}
+
+.cineflix-profile-save-button:hover {
+    background: #f3131e;
+}
+
+.cineflix-profile-save-button:active {
+    transform: scale(0.985);
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .cineflix-profile-editor-overlay {
+        padding: 14px;
+    }
+
+    .cineflix-profile-editor {
+        max-width: none;
+
+        padding:
+            27px
+            20px
+            22px;
+
+        border-radius: 16px;
+    }
+
+    .cineflix-profile-editor-avatar {
+        width: 84px;
+        height: 84px;
+    }
+
+}
 </style>
 
 </head>
@@ -2723,11 +4158,12 @@ footer{
     <!-- TOP NAVIGATION ROW -->
     <div class="navbar-main">
 
+        <!-- CINEFLIX LOGO -->
         <div
             class="logo"
             onclick="window.scrollTo({
-                top:0,
-                behavior:'smooth'
+                top: 0,
+                behavior: 'smooth'
             })">
 
             <div class="logo-icon">
@@ -2739,25 +4175,249 @@ footer{
         </div>
 
 
-      <nav class="nav">
+        <!-- MAIN NAVIGATION -->
+        <nav class="nav">
 
-    <a href="#">HOME</a>
-    <a href="#trending">TRENDING</a>
-    <a href="#latest">LATEST</a>
-    <a href="#popular">POPULAR</a>
-    <a href="#toprated">TOP RATED</a>
+            <a href="#">HOME</a>
 
-    <a
-        href="#tvshows"
-        id="tvShowsNavButton">
-        TV SHOWS
-    </a>
+            <a href="#trending">
+                TRENDING
+            </a>
 
-    </nav>
+            <a href="#latest">
+                LATEST
+            </a>
+
+            <a href="#popular">
+                POPULAR
+            </a>
+
+            <a href="#toprated">
+                TOP RATED
+            </a>
+
+            <a
+                href="#tvshows"
+                id="tvShowsNavButton">
+                TV SHOWS
+            </a>
+
+        </nav>
+
+
+        <!-- =================================================
+             CINEFLIX USER AREA
+        ================================================= -->
+
+        <div
+            class="cineflix-user-area"
+            id="cineflixUserArea">
+
+            <!-- SIGNED OUT / SIGNED IN BUTTON -->
+
+            <button
+                type="button"
+                id="cineflixProfileButton"
+                class="cineflix-profile-button">
+
+                <span
+                    id="cineflixProfileAvatar"
+                    class="cineflix-profile-avatar">
+
+                    <span
+                        class="cineflix-default-avatar">
+                    </span>
+
+                </span>
+
+                <span
+                    id="cineflixProfileName"
+                    class="cineflix-profile-name">
+                    Sign In
+                </span>
+
+                <span
+                    class="cineflix-profile-arrow">
+                    ▾
+                </span>
+
+            </button>
+
+
+            <!-- =================================================
+                 SIGNED-IN USER MENU
+            ================================================= -->
+
+            <div
+                id="cineflixProfilePanel"
+                class="cineflix-profile-panel">
+
+                <!-- USER INFORMATION -->
+
+                <div class="cineflix-profile-header">
+
+                    <div
+                        id="cineflixPanelAvatar"
+                        class="cineflix-panel-avatar">
+
+                        <span
+                            class="cineflix-default-avatar">
+                        </span>
+
+                    </div>
+
+
+                    <div class="cineflix-profile-user-info">
+
+                        <strong
+                            id="cineflixPanelName">
+                            CineFlix User
+                        </strong>
+
+                        <span
+                            id="cineflixPanelEmail">
+                            Signed in
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MENU DIVIDER -->
+
+                <div
+                    class="cineflix-profile-divider">
+                </div>
+
+
+                <!-- PROFILE -->
+
+                <button
+                    type="button"
+                    id="cineflixProfileMenuButton"
+                    class="cineflix-profile-menu-item">
+
+                    <span class="cineflix-menu-icon">
+                        👤
+                    </span>
+
+                    <span>
+                        Profile
+                    </span>
+
+                    <span class="cineflix-menu-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+
+                <!-- MY LIST -->
+
+                <button
+                    type="button"
+                    id="cineflixMyListButton"
+                    class="cineflix-profile-menu-item">
+
+                    <span class="cineflix-menu-icon">
+                        ♡
+                    </span>
+
+                    <span>
+                        My List
+                    </span>
+
+                    <span class="cineflix-menu-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+
+                <!-- WATCH HISTORY -->
+
+                <button
+                    type="button"
+                    id="cineflixHistoryButton"
+                    class="cineflix-profile-menu-item">
+
+                    <span class="cineflix-menu-icon">
+                        ◷
+                    </span>
+
+                    <span>
+                        Watch History
+                    </span>
+
+                    <span class="cineflix-menu-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+
+                <!-- SETTINGS -->
+
+                <button
+                    type="button"
+                    id="cineflixSettingsButton"
+                    class="cineflix-profile-menu-item">
+
+                    <span class="cineflix-menu-icon">
+                        ⚙
+                    </span>
+
+                    <span>
+                        Settings
+                    </span>
+
+                    <span class="cineflix-menu-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+
+                <!-- DIVIDER -->
+
+                <div
+                    class="cineflix-profile-divider">
+                </div>
+
+
+                <!-- SIGN OUT -->
+
+                <button
+                    type="button"
+                    id="cineflixSignOutButton"
+                    class="cineflix-profile-menu-item cineflix-signout-button">
+
+                    <span class="cineflix-menu-icon">
+                        ↪
+                    </span>
+
+                    <span>
+                        Sign Out
+                    </span>
+
+                    <span class="cineflix-menu-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
     </div>
 
 
-    <!-- LARGE SEARCH ROW -->
+    <!-- =====================================================
+         LARGE SEARCH ROW
+    ===================================================== -->
+
     <div class="navbar-search-row">
 
         <div class="search">
@@ -2768,17 +4428,18 @@ footer{
                 placeholder="Search movies..."
                 autocomplete="off">
 
-        
 
-            <!-- Live search results -->
-            <div id="liveSearchResults"></div>
+            <!-- LIVE SEARCH RESULTS -->
+
+            <div
+                id="liveSearchResults">
+            </div>
 
         </div>
 
     </div>
 
 </header>
-
 <!-- =====================================================
      CINEFLIX FEATURED HERO
 ===================================================== -->
@@ -4800,6 +6461,178 @@ async function findWhereToWatch(movieId){
 
 }
 /* =====================================================
+   CINEFLIX — AUTHENTICATION FORM
+===================================================== */
+
+(function () {
+
+    document.addEventListener(
+        "submit",
+        async function (event) {
+
+            const form = event.target;
+
+            if (!form || form.id !== "cineflixAuthForm") {
+                return;
+            }
+
+            /* STOP THE BROWSER FROM RELOADING */
+            event.preventDefault();
+            event.stopPropagation();
+
+            console.log(
+                "CineFlix authentication submit intercepted."
+            );
+            console.log(
+             "CineFlix: starting Supabase sign in..."
+            );
+            console.log(
+            "CineFlix Supabase client:",
+              window.cineflixAccountSupabase
+            );
+            if (
+                !window.cineflixAccountSupabase ||
+                !window.cineflixAccountSupabase.auth
+            ) {
+
+                console.error(
+                    "CineFlix Supabase is not ready."
+                );
+
+                return;
+            }
+            console.log(
+          "CineFlix: reading login fields..."
+            );
+         const emailInput =
+    form.querySelector(
+        "#cineflixAuthEmail"
+    );
+
+const passwordInput =
+    form.querySelector(
+        "#cineflixAuthPassword"
+    );
+
+const email =
+    emailInput
+        ? emailInput.value.trim()
+        : "";
+
+const password =
+    passwordInput
+        ? passwordInput.value
+        : "";
+            console.log(
+             "CineFlix login values:",
+            email,
+              password ? "PASSWORD ENTERED" : "NO PASSWORD"
+              );
+            const message =
+                document.getElementById(
+                    "cineflixAuthMessage"
+                );
+
+            if (!email || !password) {
+
+                if (message) {
+
+                    message.textContent =
+                        "Please enter your email and password.";
+
+                    message.className =
+                        "cineflix-auth-message error";
+                }
+
+                return;
+            }
+
+            if (message) {
+
+                message.textContent =
+                    "Signing in...";
+
+                message.className =
+                    "cineflix-auth-message";
+            }
+
+            try {
+
+                const {
+                    data,
+                    error
+                } =
+                    await window.cineflixAccountSupabase
+                        .auth
+                        .signInWithPassword({
+                            email: email,
+                            password: password
+                        });
+
+                if (error) {
+                    throw error;
+                }
+
+                console.log(
+                    "CineFlix sign in successful."
+                );
+
+                if (message) {
+
+                    message.textContent =
+                        "Signed in successfully.";
+
+                    message.className =
+                        "cineflix-auth-message success";
+                }
+
+                const overlay =
+                    document.getElementById(
+                        "cineflixAuthOverlay"
+                    );
+
+                if (overlay) {
+
+                    setTimeout(
+                        function () {
+
+                            overlay.classList.remove(
+                                "active"
+                            );
+
+                        },
+                        500
+                    );
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "CineFlix sign in failed:",
+                    error
+                );
+
+                if (message) {
+
+                    message.textContent =
+                        error.message ||
+                        "Sign in failed.";
+
+                    message.className =
+                        "cineflix-auth-message error";
+                }
+            }
+
+        },
+        true
+    );
+
+    console.log(
+        "CineFlix authentication form ready."
+    );
+
+})();
+/* =====================================================
    TRAILER PLAYER
 ===================================================== */
 
@@ -6015,6 +7848,1452 @@ if (document.readyState === "loading") {
     startCineFlixInstagramPrompt();
 
 }
+/* =====================================================
+   CINEFLIX PROFILE / SIGN IN SYSTEM
+===================================================== */
+
+const cineflixProfileButton =
+    document.getElementById(
+        "cineflixProfileButton"
+    );
+
+const cineflixProfilePanel =
+    document.getElementById(
+        "cineflixProfilePanel"
+    );
+
+
+
+/* =====================================================
+   AUTH PANEL CONTROLS
+===================================================== */
+
+/*
+   These use document-level click detection because
+   the authentication panel appears later in the HTML.
+*/
+
+
+document.addEventListener(
+    "click",
+    function (event) {
+
+
+        /* =================================================
+           CLOSE BUTTON
+        ================================================= */
+
+        if (
+            event.target.closest(
+                "#cineflixAuthClose"
+            )
+        ) {
+
+            const authOverlay =
+                document.getElementById(
+                    "cineflixAuthOverlay"
+                );
+
+
+            if (authOverlay) {
+
+                authOverlay.classList.remove(
+                    "active"
+                );
+
+            }
+
+
+            document.body.style.overflow =
+                "";
+
+            return;
+        }
+
+
+        /* =================================================
+           CLICK OUTSIDE AUTH PANEL
+        ================================================= */
+
+        const authOverlay =
+            document.getElementById(
+                "cineflixAuthOverlay"
+            );
+
+
+        if (
+            authOverlay &&
+            event.target === authOverlay
+        ) {
+
+            authOverlay.classList.remove(
+                "active"
+            );
+
+            document.body.style.overflow =
+                "";
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   CLOSE PROFILE PANEL WHEN CLICKING OUTSIDE
+===================================================== */
+
+document.addEventListener(
+    "click",
+    function (event) {
+
+        if (
+            cineflixProfilePanel &&
+            !event.target.closest(
+                "#cineflixProfileButton"
+            ) &&
+            !event.target.closest(
+                "#cineflixProfilePanel"
+            )
+        ) {
+
+            cineflixProfilePanel.classList.remove(
+                "active"
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   KEEP PROFILE PANEL OPEN
+===================================================== */
+
+if (cineflixProfilePanel) {
+
+    cineflixProfilePanel.addEventListener(
+        "click",
+        function (event) {
+
+            event.stopPropagation();
+
+        }
+    );
+
+}
+
+/* =====================================================
+   CINEFLIX — USER SESSION SYSTEM
+===================================================== */
+
+(function () {
+
+    /* =================================================
+       WAIT FOR SHARED SUPABASE CLIENT
+    ================================================= */
+
+    function startCineFlixSessionSystem() {
+
+        if (
+            !window.cineflixAccountSupabase ||
+            !window.cineflixAccountSupabase.auth
+        ) {
+
+            setTimeout(
+                startCineFlixSessionSystem,
+                100
+            );
+
+            return;
+        }
+
+
+        /* =================================================
+           UPDATE USER UI
+        ================================================= */
+
+        async function updateCineFlixUserUI() {
+
+            try {
+
+                const {
+                    data,
+                    error
+                } =
+                    await window.cineflixAccountSupabase
+                        .auth
+                        .getSession();
+
+
+                if (error) {
+
+                    console.warn(
+                        "CineFlix session check failed:",
+                        error.message
+                    );
+
+                    return;
+                }
+
+
+                const session =
+                    data.session;
+
+
+                /* =================================================
+                   HEADER ELEMENTS
+                ================================================= */
+
+                const profileName =
+                    document.getElementById(
+                        "cineflixProfileName"
+                    );
+
+                const panelName =
+                    document.getElementById(
+                        "cineflixPanelName"
+                    );
+
+                const panelEmail =
+                    document.getElementById(
+                        "cineflixPanelEmail"
+                    );
+
+                const profileAvatar =
+                    document.getElementById(
+                        "cineflixProfileAvatar"
+                    );
+
+                const panelAvatar =
+                    document.getElementById(
+                        "cineflixPanelAvatar"
+                    );
+
+
+                /* =================================================
+                   SIGNED OUT
+                ================================================= */
+
+                if (!session) {
+
+                    if (profileName) {
+
+                        profileName.textContent =
+                            "Sign In";
+
+                    }
+
+                    if (panelName) {
+
+                        panelName.textContent =
+                            "CineFlix User";
+
+                    }
+
+                    if (panelEmail) {
+
+                        panelEmail.textContent =
+                            "Sign in to your account";
+
+                    }
+
+                    return;
+                }
+
+
+                /* =================================================
+                   SIGNED IN
+                ================================================= */
+
+                const user =
+                    session.user;
+
+                const metadata =
+                    user.user_metadata || {};
+                /* =============================================
+   LOAD SAVED CINEFLIX PROFILE
+============================================= */
+
+let savedProfile = null;
+
+try {
+
+    const {
+        data: profileData,
+        error: profileError
+    } =
+        await window.cineflixAccountSupabase
+            .from("profiles")
+            .select(
+                "display_name, avatar_url"
+            )
+            .eq(
+                "id",
+                user.id
+            )
+            .maybeSingle();
+
+    if (profileError) {
+
+        console.warn(
+            "CineFlix saved profile load failed:",
+            profileError.message
+        );
+
+    } else {
+
+        savedProfile =
+            profileData;
+
+    }
+
+} catch (error) {
+
+    console.warn(
+        "CineFlix saved profile unavailable:",
+        error.message
+    );
+
+}
+
+             const displayName =
+    savedProfile?.display_name ||
+    metadata.display_name ||
+    metadata.full_name ||
+    metadata.name ||
+    user.email?.split("@")[0] ||
+    "CineFlix User";
+
+
+                /* =================================================
+                   UPDATE NAME
+                ================================================= */
+
+                if (profileName) {
+
+                    profileName.textContent =
+                        displayName;
+
+                }
+
+                if (panelName) {
+
+                    panelName.textContent =
+                        displayName;
+
+                }
+
+
+                /* =================================================
+                   UPDATE EMAIL
+                ================================================= */
+
+                if (panelEmail) {
+
+                    panelEmail.textContent =
+                        user.email ||
+                        "Signed in";
+
+                }
+
+
+                /* =================================================
+                   PROFILE PHOTO
+                ================================================= */
+
+               const avatarUrl =
+    savedProfile?.avatar_url ||
+    metadata.avatar_url ||
+    metadata.picture ||
+    null;
+
+
+                if (avatarUrl) {
+
+                    if (profileAvatar) {
+
+                        profileAvatar.innerHTML = "";
+
+                        const profileImage =
+                            document.createElement(
+                                "img"
+                            );
+
+                        profileImage.src =
+                            avatarUrl;
+
+                        profileImage.alt =
+                            "Profile";
+
+                        profileAvatar.appendChild(
+                            profileImage
+                        );
+
+                    }
+
+
+                    if (panelAvatar) {
+
+                        panelAvatar.innerHTML = "";
+
+                        const panelImage =
+                            document.createElement(
+                                "img"
+                            );
+
+                        panelImage.src =
+                            avatarUrl;
+
+                        panelImage.alt =
+                            "Profile";
+
+                        panelAvatar.appendChild(
+                            panelImage
+                        );
+
+                    }
+
+                }
+
+
+                console.log(
+                    "CineFlix user detected:",
+                    displayName
+                );
+
+            } catch (error) {
+
+                console.warn(
+                    "CineFlix user detection failed:",
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        /* =================================================
+           INITIAL SESSION CHECK
+        ================================================= */
+
+        updateCineFlixUserUI();
+
+
+        /* =================================================
+           WATCH FOR LOGIN / LOGOUT
+        ================================================= */
+
+        window.cineflixAccountSupabase.auth.onAuthStateChange(
+            function () {
+
+                updateCineFlixUserUI();
+
+            }
+        );
+
+    }
+
+
+    /* =================================================
+       START SESSION SYSTEM
+    ================================================= */
+
+    startCineFlixSessionSystem();
+
+})();
+
+/* =====================================================
+   CINEFLIX — PROFILE PANEL + SIGN OUT
+===================================================== */
+
+(function () {
+
+    function setupCineFlixProfilePanel() {
+
+        const profileButton =
+            document.getElementById(
+                "cineflixProfileButton"
+            );
+
+        const profilePanel =
+            document.getElementById(
+                "cineflixProfilePanel"
+            );
+
+        const signOutButton =
+            document.getElementById(
+                "cineflixSignOutButton"
+            );
+
+        if (
+            !profileButton ||
+            !profilePanel ||
+            !signOutButton
+        ) {
+
+            setTimeout(
+                setupCineFlixProfilePanel,
+                100
+            );
+
+            return;
+        }
+
+
+        /* =============================================
+           PROFILE BUTTON
+        ============================================= */
+
+        profileButton.addEventListener(
+            "click",
+            async function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (
+                    !window.cineflixAccountSupabase ||
+                    !window.cineflixAccountSupabase.auth
+                ) {
+                    return;
+                }
+
+                const {
+                    data
+                } =
+                    await window.cineflixAccountSupabase
+                        .auth
+                        .getSession();
+
+                const session =
+                    data.session;
+
+
+                /* NOT SIGNED IN */
+
+                if (!session) {
+
+                    profilePanel.classList.remove(
+                        "active"
+                    );
+
+                    const authOverlay =
+                        document.getElementById(
+                            "cineflixAuthOverlay"
+                        );
+
+                    if (authOverlay) {
+
+                        authOverlay.classList.add(
+                            "active"
+                        );
+
+                    }
+
+                    return;
+                }
+
+
+                /* SIGNED IN */
+
+                profilePanel.classList.toggle(
+                    "active"
+                );
+
+            }
+        );
+
+
+        /* =============================================
+           CLICK OUTSIDE TO CLOSE
+        ============================================= */
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    !profilePanel.contains(
+                        event.target
+                    ) &&
+                    !profileButton.contains(
+                        event.target
+                    )
+                ) {
+
+                    profilePanel.classList.remove(
+                        "active"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =============================================
+           SIGN OUT
+        ============================================= */
+
+        signOutButton.addEventListener(
+            "click",
+            async function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                try {
+
+                    const {
+                        error
+                    } =
+                        await window.cineflixAccountSupabase
+                            .auth
+                            .signOut();
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    profilePanel.classList.remove(
+                        "active"
+                    );
+
+                    console.log(
+                        "CineFlix user signed out."
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "CineFlix sign out failed:",
+                        error.message
+                    );
+
+                }
+
+            }
+        );
+
+
+        console.log(
+            "CineFlix profile panel ready."
+        );
+
+    }
+
+
+    setupCineFlixProfilePanel();
+
+})();
+/* =====================================================
+   CINEFLIX — PROFILE EDITOR CONTROLS
+===================================================== */
+
+(function () {
+
+    function setupCineFlixProfileEditor() {
+
+        const profileMenuButton =
+            document.getElementById(
+                "cineflixProfileMenuButton"
+            );
+
+        const profilePanel =
+            document.getElementById(
+                "cineflixProfilePanel"
+            );
+
+        const editorOverlay =
+            document.getElementById(
+                "cineflixProfileEditorOverlay"
+            );
+
+        const closeButton =
+            document.getElementById(
+                "cineflixProfileEditorClose"
+            );
+
+        const displayNameInput =
+            document.getElementById(
+                "cineflixProfileDisplayName"
+            );
+
+        const emailInput =
+            document.getElementById(
+                "cineflixProfileEmail"
+            );
+
+        const editorAvatar =
+            document.getElementById(
+                "cineflixProfileEditorAvatar"
+            );
+
+
+        if (
+            !profileMenuButton ||
+            !editorOverlay ||
+            !closeButton
+        ) {
+
+            setTimeout(
+                setupCineFlixProfileEditor,
+                100
+            );
+
+            return;
+        }
+
+
+        /* =============================================
+           OPEN PROFILE EDITOR
+        ============================================= */
+
+        profileMenuButton.addEventListener(
+            "click",
+            async function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (
+                    !window.cineflixAccountSupabase ||
+                    !window.cineflixAccountSupabase.auth
+                ) {
+                    return;
+                }
+
+
+                const {
+                    data: sessionData,
+                    error: sessionError
+                } =
+                    await window.cineflixAccountSupabase
+                        .auth
+                        .getSession();
+
+
+                if (sessionError) {
+
+                    console.error(
+                        "CineFlix profile session error:",
+                        sessionError.message
+                    );
+
+                    return;
+                }
+
+
+                const session =
+                    sessionData.session;
+
+
+                if (!session) {
+                    return;
+                }
+
+
+                const user =
+                    session.user;
+
+
+                /* CLOSE SMALL PROFILE MENU */
+
+                if (profilePanel) {
+
+                    profilePanel.classList.remove(
+                        "active"
+                    );
+
+                }
+
+
+                /* LOAD EMAIL */
+
+                if (emailInput) {
+
+                    emailInput.value =
+                        user.email || "";
+
+                }
+
+
+                /* =====================================
+                   LOAD PROFILE FROM SUPABASE
+                ===================================== */
+
+                const {
+                    data: profile,
+                    error: profileError
+                } =
+                    await window.cineflixAccountSupabase
+                        .from("profiles")
+                        .select(
+                            "display_name, avatar_url"
+                        )
+                        .eq(
+                            "id",
+                            user.id
+                        )
+                        .maybeSingle();
+
+
+                if (profileError) {
+
+                    console.warn(
+                        "CineFlix profile load failed:",
+                        profileError.message
+                    );
+
+                }
+
+
+                /* DISPLAY NAME */
+
+                const fallbackName =
+                    user.user_metadata?.display_name ||
+                    user.user_metadata?.name ||
+                    user.email?.split("@")[0] ||
+                    "CineFlix User";
+
+
+                if (displayNameInput) {
+
+                    displayNameInput.value =
+                        profile?.display_name ||
+                        fallbackName;
+
+                }
+
+
+                /* PROFILE PICTURE */
+
+                if (editorAvatar) {
+
+                    editorAvatar.innerHTML = "";
+
+
+                    if (profile?.avatar_url) {
+
+                        const image =
+                            document.createElement(
+                                "img"
+                            );
+
+                        image.src =
+                            profile.avatar_url;
+
+                        image.alt =
+                            "Profile";
+
+                        editorAvatar.appendChild(
+                            image
+                        );
+
+                    } else {
+
+                        const defaultAvatar =
+                            document.createElement(
+                                "span"
+                            );
+
+                        defaultAvatar.className =
+                            "cineflix-default-avatar";
+
+                        editorAvatar.appendChild(
+                            defaultAvatar
+                        );
+
+                    }
+
+                }
+
+
+                /* OPEN EDITOR */
+
+                editorOverlay.classList.add(
+                    "active"
+                );
+
+                document.body.style.overflow =
+                    "hidden";
+
+            }
+        );
+
+
+        /* =============================================
+           CLOSE BUTTON
+        ============================================= */
+
+        closeButton.addEventListener(
+            "click",
+            function () {
+
+                editorOverlay.classList.remove(
+                    "active"
+                );
+
+                document.body.style.overflow =
+                    "";
+
+            }
+        );
+
+
+        /* =============================================
+           CLICK BACKGROUND TO CLOSE
+        ============================================= */
+
+        editorOverlay.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    editorOverlay
+                ) {
+
+                    editorOverlay.classList.remove(
+                        "active"
+                    );
+
+                    document.body.style.overflow =
+                        "";
+
+                }
+
+            }
+        );
+
+
+        console.log(
+            "CineFlix profile editor ready."
+        );
+
+    }
+
+
+    setupCineFlixProfileEditor();
+
+})();
+/* =====================================================
+   CINEFLIX — SAVE PROFILE
+===================================================== */
+
+(function () {
+
+    function setupCineFlixProfileSave() {
+
+        const form =
+            document.getElementById(
+                "cineflixProfileEditorForm"
+            );
+
+        if (!form) {
+
+            setTimeout(
+                setupCineFlixProfileSave,
+                100
+            );
+
+            return;
+        }
+
+        if (
+            form.dataset.cineflixSaveReady ===
+            "true"
+        ) {
+            return;
+        }
+
+        form.dataset.cineflixSaveReady =
+            "true";
+
+
+        form.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+
+                const nameInput =
+                    document.getElementById(
+                        "cineflixProfileDisplayName"
+                    );
+
+                const message =
+                    document.getElementById(
+                        "cineflixProfileEditorMessage"
+                    );
+
+                const saveButton =
+                    document.getElementById(
+                        "cineflixProfileSaveButton"
+                    );
+
+
+                const displayName =
+                    nameInput
+                        ? nameInput.value.trim()
+                        : "";
+
+
+                if (!displayName) {
+
+                    if (message) {
+
+                        message.textContent =
+                            "Please enter a display name.";
+
+                        message.className =
+                            "cineflix-profile-editor-message error";
+
+                    }
+
+                    return;
+                }
+
+
+                if (
+                    !window.cineflixAccountSupabase ||
+                    !window.cineflixAccountSupabase.auth
+                ) {
+                    return;
+                }
+
+
+                try {
+
+                    if (saveButton) {
+
+                        saveButton.disabled = true;
+                        saveButton.textContent =
+                            "Saving...";
+
+                    }
+
+
+                    if (message) {
+
+                        message.textContent = "";
+                        message.className =
+                            "cineflix-profile-editor-message";
+
+                    }
+
+
+                    /* GET CURRENT USER */
+
+                    const {
+                        data: sessionData,
+                        error: sessionError
+                    } =
+                        await window.cineflixAccountSupabase
+                            .auth
+                            .getSession();
+
+
+                    if (sessionError) {
+                        throw sessionError;
+                    }
+
+
+                    const user =
+                        sessionData.session?.user;
+
+
+                    if (!user) {
+
+                        throw new Error(
+                            "You are not signed in."
+                        );
+
+                    }
+                   /* =============================================
+   UPLOAD NEW PROFILE PICTURE
+============================================= */
+
+let avatarUrl = null;
+
+const selectedPhoto =
+    window.cineflixSelectedProfilePhoto;
+
+if (selectedPhoto) {
+
+    if (message) {
+        message.textContent =
+            "Uploading profile picture...";
+    }
+
+    const extension =
+        selectedPhoto.name
+            .split(".")
+            .pop()
+            .toLowerCase();
+
+    const photoPath =
+    user.id +
+    "/avatar-" +
+    Date.now() +
+    "." +
+    extension;
+
+
+    const {
+        error: uploadError
+    } =
+        await window.cineflixAccountSupabase
+            .storage
+            .from("profile-pictures")
+            .upload(
+                photoPath,
+                selectedPhoto,
+                {
+                    cacheControl: "3600",
+                    upsert: false,
+                    contentType:
+                        selectedPhoto.type
+                }
+            );
+
+
+    if (uploadError) {
+        throw uploadError;
+    }
+
+
+    const {
+        data: publicUrlData
+    } =
+        window.cineflixAccountSupabase
+            .storage
+            .from("profile-pictures")
+            .getPublicUrl(
+                photoPath
+            );
+
+
+    avatarUrl =
+        publicUrlData.publicUrl +
+        "?v=" +
+        Date.now();
+               }
+
+                    /* UPDATE PROFILE TABLE */
+
+                    const {
+                        error: profileError
+                    } =
+                        await window.cineflixAccountSupabase
+                            .from("profiles")
+                            .update({
+                               display_name:
+                                 displayName,
+
+                                    ...(avatarUrl
+                                           ? {
+                                           avatar_url:
+                                avatarUrl
+                     }
+                                : {}),
+
+                                   updated_at:
+                               new Date().toISOString()
+                              })
+                            .eq(
+                                "id",
+                                user.id
+                            );
+
+
+                    if (profileError) {
+                        throw profileError;
+                    }
+
+
+                    /* UPDATE AUTH METADATA */
+
+                    const {
+                        error: metadataError
+                    } =
+                        await window.cineflixAccountSupabase
+                            .auth
+                            .updateUser({
+                                data: {
+                                    display_name:
+                                        displayName
+                                }
+                            });
+
+
+                    if (metadataError) {
+                        throw metadataError;
+                    }
+
+
+                    /* UPDATE PAGE IMMEDIATELY */
+
+                    const topName =
+                        document.getElementById(
+                            "cineflixProfileName"
+                        );
+
+                    const panelName =
+                        document.getElementById(
+                            "cineflixPanelName"
+                        );
+
+
+                    if (topName) {
+                        topName.textContent =
+                            displayName;
+                    }
+
+
+                    if (panelName) {
+                        panelName.textContent =
+                            displayName;
+                    }
+             
+                    if (message) {
+
+                        message.textContent =
+                            "Profile saved successfully.";
+
+                        message.className =
+                            "cineflix-profile-editor-message success";
+
+                    }
+
+
+                    console.log(
+                        "CineFlix profile saved."
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "CineFlix profile save failed:",
+                        error
+                    );
+
+
+                    if (message) {
+
+                        message.textContent =
+                            error.message ||
+                            "Unable to save profile.";
+
+                        message.className =
+                            "cineflix-profile-editor-message error";
+
+                    }
+
+
+                } finally {
+
+                    if (saveButton) {
+
+                        saveButton.disabled = false;
+                        saveButton.textContent =
+                            "Save Profile";
+
+                    }
+
+                }
+
+            }
+        );
+
+
+        console.log(
+            "CineFlix profile save ready."
+        );
+
+    }
+
+
+    setupCineFlixProfileSave();
+
+})();
+/* =====================================================
+   CINEFLIX — PROFILE PHOTO DEVICE IMPORT
+===================================================== */
+
+(function () {
+
+    function setupCineFlixProfilePhoto() {
+
+        const changePhotoButton =
+            document.getElementById(
+                "cineflixChangePhotoButton"
+            );
+
+        const photoInput =
+            document.getElementById(
+                "cineflixProfilePhotoInput"
+            );
+
+        const editorAvatar =
+            document.getElementById(
+                "cineflixProfileEditorAvatar"
+            );
+
+        if (
+            !changePhotoButton ||
+            !photoInput ||
+            !editorAvatar
+        ) {
+
+            setTimeout(
+                setupCineFlixProfilePhoto,
+                100
+            );
+
+            return;
+        }
+
+        if (
+            changePhotoButton.dataset
+                .cineflixPhotoReady === "true"
+        ) {
+            return;
+        }
+
+        changePhotoButton.dataset
+            .cineflixPhotoReady = "true";
+
+
+        /* =============================================
+           OPEN DEVICE / GALLERY
+        ============================================= */
+
+        changePhotoButton.addEventListener(
+            "click",
+            function () {
+
+                photoInput.click();
+
+            }
+        );
+
+
+        /* =============================================
+           USER SELECTED A PHOTO
+        ============================================= */
+
+        photoInput.addEventListener(
+            "change",
+            function () {
+
+                const file =
+                    photoInput.files?.[0];
+
+                if (!file) {
+                    return;
+                }
+
+
+                /* ONLY ALLOW IMAGES */
+
+                if (
+                    !file.type.startsWith(
+                        "image/"
+                    )
+                ) {
+
+                    alert(
+                        "Please select an image."
+                    );
+
+                    photoInput.value = "";
+
+                    return;
+                }
+
+
+                /* MAXIMUM 5 MB */
+
+                const maximumSize =
+                    5 * 1024 * 1024;
+
+                if (
+                    file.size >
+                    maximumSize
+                ) {
+
+                    alert(
+                        "Please choose an image smaller than 5 MB."
+                    );
+
+                    photoInput.value = "";
+
+                    return;
+                }
+
+
+                /* =====================================
+                   PREVIEW SELECTED PHOTO
+                ===================================== */
+
+                const imageURL =
+                    URL.createObjectURL(
+                        file
+                    );
+
+
+                editorAvatar.innerHTML = "";
+
+
+                const image =
+                    document.createElement(
+                        "img"
+                    );
+
+                image.src =
+                    imageURL;
+
+                image.alt =
+                    "Selected profile picture";
+
+
+                editorAvatar.appendChild(
+                    image
+                );
+
+
+                /* SAVE FILE FOR NEXT STEP */
+
+                window.cineflixSelectedProfilePhoto =
+                    file;
+
+
+                console.log(
+                    "CineFlix profile photo selected:",
+                    file.name
+                );
+
+            }
+        );
+
+
+        console.log(
+            "CineFlix profile photo import ready."
+        );
+
+    }
+
+
+    setupCineFlixProfilePhoto();
+
+})();
 
 </script>
 <!-- =====================================================
@@ -10559,11 +13838,11 @@ document.addEventListener(
     }
 );
 
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-
 /* =====================================================
    CINEFLIX — SUPABASE VISITOR COUNTER
 ===================================================== */
@@ -10577,12 +13856,20 @@ document.addEventListener(
         "sb_publishable_4_YKkk9pwke0snF-dIrQ1w_kvfFJzDQ";
 
 
-    const cineflixVisitorDatabase =
+    /* =================================================
+       CREATE SHARED CINEFLIX SUPABASE CLIENT
+    ================================================= */
+
+    window.cineflixAccountSupabase =
         window.supabase.createClient(
             CINEFLIX_SUPABASE_URL,
             CINEFLIX_SUPABASE_KEY
         );
 
+
+    /* =================================================
+       RECORD VISITOR
+    ================================================= */
 
     async function recordCineFlixVisit() {
 
@@ -10614,7 +13901,7 @@ document.addEventListener(
             const {
                 data: sessionData
             } =
-                await cineflixVisitorDatabase
+                await window.cineflixAccountSupabase
                     .auth
                     .getSession();
 
@@ -10630,7 +13917,7 @@ document.addEventListener(
             const {
                 error
             } =
-                await cineflixVisitorDatabase
+                await window.cineflixAccountSupabase
                     .from("visits")
                     .insert({
                         visitor_id: visitorId,
@@ -10662,12 +13949,18 @@ document.addEventListener(
     }
 
 
+    /* =================================================
+       START VISITOR RECORDING
+    ================================================= */
+
     if (document.readyState === "loading") {
 
         document.addEventListener(
             "DOMContentLoaded",
             recordCineFlixVisit,
-            { once: true }
+            {
+                once: true
+            }
         );
 
     } else {
@@ -10677,7 +13970,6 @@ document.addEventListener(
     }
 
 })();
-
 
 /* =====================================================
    CINEFLIX — OWN MOBILE FULLSCREEN
@@ -12130,6 +15422,7 @@ h3 {
     position: relative !important;
     z-index: 101 !important;
 }
+
 </style>
 
 <!-- =====================================================
@@ -12377,6 +15670,455 @@ h3 {
 
 </div>
 
+            <div>
+
+                <strong>
+                    CINEFLIX
+                </strong>
+
+                <span>
+                    Your entertainment, your account.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- TITLE -->
+
+        <div class="cineflix-auth-heading">
+
+            <h2 id="cineflixAuthTitle">
+                Welcome Back
+            </h2>
+
+            <p id="cineflixAuthSubtitle">
+                Sign in to continue to CineFlix.
+            </p>
+
+        </div>
+
+
+        <!-- AUTH FORM -->
+
+        <form
+            id="cineflixAuthForm"
+            class="cineflix-auth-form">
+
+            <!-- NAME -->
+
+            <div
+                id="cineflixAuthNameGroup"
+                class="cineflix-auth-field cineflix-auth-hidden">
+
+                <label for="cineflixAuthName">
+                    Display Name
+                </label>
+
+                <input
+                    id="cineflixAuthName"
+                    type="text"
+                    placeholder="Your name"
+                    autocomplete="name">
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="cineflix-auth-field">
+
+                <label for="cineflixAuthEmail">
+                    Email
+                </label>
+
+                <input
+                    id="cineflixAuthEmail"
+                    type="email"
+                    placeholder="Enter your email"
+                    autocomplete="email"
+                    required>
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="cineflix-auth-field">
+
+                <label for="cineflixAuthPassword">
+                    Password
+                </label>
+
+                <input
+                    id="cineflixAuthPassword"
+                    type="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required>
+
+            </div>
+
+
+            <!-- CONFIRM PASSWORD -->
+
+            <div
+                id="cineflixAuthConfirmGroup"
+                class="cineflix-auth-field cineflix-auth-hidden">
+
+                <label for="cineflixAuthConfirm">
+                    Confirm Password
+                </label>
+
+                <input
+                    id="cineflixAuthConfirm"
+                    type="password"
+                    placeholder="Confirm your password"
+                    autocomplete="new-password">
+
+            </div>
+
+
+            <!-- MESSAGE -->
+
+            <div
+                id="cineflixAuthMessage"
+                class="cineflix-auth-message">
+            </div>
+
+
+            <!-- SUBMIT -->
+
+            <button
+                type="submit"
+                id="cineflixAuthSubmit"
+                class="cineflix-auth-submit">
+
+                Sign In
+
+            </button>
+
+        </form>
+
+
+        <!-- SWITCH LOGIN / SIGNUP -->
+
+        <div class="cineflix-auth-switch">
+
+            <span id="cineflixAuthSwitchText">
+                New to CineFlix?
+            </span>
+
+            <button
+                type="button"
+                id="cineflixAuthSwitchButton">
+
+                Create Account
+
+            </button>
+
+        </div>
+
+
+        <!-- SECURITY NOTE -->
+
+        <div class="cineflix-auth-security">
+
+            <span>🔒</span>
+
+            <span>
+                Your CineFlix account is securely protected.
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     CINEFLIX PROFILE EDITOR
+===================================================== -->
+
+<div
+    id="cineflixProfileEditorOverlay"
+    class="cineflix-profile-editor-overlay">
+
+    <div class="cineflix-profile-editor">
+
+        <!-- CLOSE BUTTON -->
+
+        <button
+            type="button"
+            id="cineflixProfileEditorClose"
+            class="cineflix-profile-editor-close">
+            ×
+        </button>
+
+
+        <!-- HEADER -->
+
+        <div class="cineflix-profile-editor-heading">
+
+            <h2>My Profile</h2>
+
+            <p>
+                Manage your CineFlix profile.
+            </p>
+
+        </div>
+
+
+        <!-- PROFILE PICTURE -->
+
+        <div class="cineflix-profile-photo-section">
+
+            <div
+                id="cineflixProfileEditorAvatar"
+                class="cineflix-profile-editor-avatar">
+
+                <span class="cineflix-default-avatar"></span>
+
+            </div>
+
+            <button
+                type="button"
+                id="cineflixChangePhotoButton"
+                class="cineflix-change-photo-button">
+
+                Change Photo
+
+            </button>
+
+            <input
+                type="file"
+                id="cineflixProfilePhotoInput"
+                accept="image/*"
+                hidden>
+
+        </div>
+
+
+        <!-- PROFILE FORM -->
+
+        <form
+            id="cineflixProfileEditorForm"
+            class="cineflix-profile-editor-form">
+
+
+            <!-- DISPLAY NAME -->
+
+            <div class="cineflix-profile-editor-field">
+
+                <label for="cineflixProfileDisplayName">
+                    Display Name
+                </label>
+
+                <input
+                    type="text"
+                    id="cineflixProfileDisplayName"
+                    placeholder="Your display name"
+                    autocomplete="name">
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="cineflix-profile-editor-field">
+
+                <label for="cineflixProfileEmail">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="cineflixProfileEmail"
+                    readonly>
+
+            </div>
+
+
+            <!-- STATUS MESSAGE -->
+
+            <div
+                id="cineflixProfileEditorMessage"
+                class="cineflix-profile-editor-message">
+            </div>
+
+
+            <!-- SAVE -->
+
+            <button
+                type="submit"
+                id="cineflixProfileSaveButton"
+                class="cineflix-profile-save-button">
+
+                Save Profile
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     CINEFLIX USER AUTHENTICATION PANEL
+===================================================== -->
+
+<div
+    id="cineflixAuthOverlay"
+    class="cineflix-auth-overlay">
+
+    <div
+        id="cineflixAuthPanel"
+        class="cineflix-auth-panel">
+
+        <button
+            type="button"
+            id="cineflixAuthClose"
+            class="cineflix-auth-close">
+            ×
+        </button>
+
+        <div class="cineflix-auth-brand">
+
+            <div class="cineflix-auth-logo">
+                <span>▶</span>
+            </div>
+
+            <div>
+                <strong>CINEFLIX</strong>
+
+                <span>
+                    Your entertainment, your account.
+                </span>
+            </div>
+
+        </div>
+
+        <div class="cineflix-auth-heading">
+
+            <h2 id="cineflixAuthTitle">
+                Welcome Back
+            </h2>
+
+            <p id="cineflixAuthSubtitle">
+                Sign in to continue to CineFlix.
+            </p>
+
+        </div>
+
+        <form
+            id="cineflixAuthForm"
+            class="cineflix-auth-form">
+
+            <div
+                id="cineflixAuthNameGroup"
+                class="cineflix-auth-field cineflix-auth-hidden">
+
+                <label for="cineflixAuthName">
+                    Display Name
+                </label>
+
+                <input
+                    id="cineflixAuthName"
+                    type="text"
+                    placeholder="Your name"
+                    autocomplete="name">
+
+            </div>
+
+            <div class="cineflix-auth-field">
+
+                <label for="cineflixAuthEmail">
+                    Email
+                </label>
+
+                <input
+                    id="cineflixAuthEmail"
+                    type="email"
+                    placeholder="Enter your email"
+                    autocomplete="email"
+                    required>
+
+            </div>
+
+            <div class="cineflix-auth-field">
+
+                <label for="cineflixAuthPassword">
+                    Password
+                </label>
+
+                <input
+                    id="cineflixAuthPassword"
+                    type="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required>
+
+            </div>
+
+            <div
+                id="cineflixAuthConfirmGroup"
+                class="cineflix-auth-field cineflix-auth-hidden">
+
+                <label for="cineflixAuthConfirm">
+                    Confirm Password
+                </label>
+
+                <input
+                    id="cineflixAuthConfirm"
+                    type="password"
+                    placeholder="Confirm your password"
+                    autocomplete="new-password">
+
+            </div>
+
+            <div
+                id="cineflixAuthMessage"
+                class="cineflix-auth-message">
+            </div>
+
+            <button
+                type="submit"
+                id="cineflixAuthSubmit"
+                class="cineflix-auth-submit">
+                Sign In
+            </button>
+
+        </form>
+
+        <div class="cineflix-auth-switch">
+
+            <span id="cineflixAuthSwitchText">
+                New to CineFlix?
+            </span>
+
+            <button
+                type="button"
+                id="cineflixAuthSwitchButton">
+                Create Account
+            </button>
+
+        </div>
+
+        <div class="cineflix-auth-security">
+
+            <span>🔒</span>
+
+            <span>
+                Your CineFlix account is securely protected.
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>
