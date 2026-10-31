@@ -8060,9 +8060,9 @@ document.addEventListener("click", async function (event) {
         return;
     }
 
-    if (!/^\d{6}$/.test(code)) {
+    if (!/^\d{8}$/.test(code)) {
         showResetMessage(
-            "Please enter the 6-digit recovery code.",
+            "Please enter the 8-digit recovery code.",
             "error"
         );
         return;
@@ -18881,7 +18881,7 @@ h3 {
                 placeholder="Enter 6-digit code"
                 inputmode="numeric"
                 autocomplete="one-time-code"
-                maxlength="6">
+                maxlength="8">
         </div>
 
         <div class="cineflix-auth-field">
