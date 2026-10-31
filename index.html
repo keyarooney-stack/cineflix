@@ -10560,49 +10560,97 @@ document.addEventListener(
 );
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+
 /* =====================================================
-   CINEFLIX VISITOR COUNTER
+   CINEFLIX — SUPABASE VISITOR COUNTER
 ===================================================== */
 
 (function () {
 
-    const VISITOR_API =
-        "https://cineflix-notification-backend-lv17.onrender.com/visit";
+    const CINEFLIX_SUPABASE_URL =
+        "https://ybujymclvcyujcdosfcu.supabase.co";
+
+    const CINEFLIX_SUPABASE_KEY =
+        "sb_publishable_4_YKkk9pwke0snF-dIrQ1w_kvfFJzDQ";
+
+
+    const cineflixVisitorDatabase =
+        window.supabase.createClient(
+            CINEFLIX_SUPABASE_URL,
+            CINEFLIX_SUPABASE_KEY
+        );
+
 
     async function recordCineFlixVisit() {
 
         try {
 
-            const response = await fetch(
-                VISITOR_API,
-                {
-                    method: "POST",
-                    mode: "cors",
-                    cache: "no-store"
-                }
-            );
+            /* CREATE OR READ VISITOR ID */
 
-            if (!response.ok) {
-                throw new Error(
-                    "Backend returned HTTP " +
-                    response.status
+            let visitorId =
+                localStorage.getItem(
+                    "cineflix_visitor_id"
                 );
+
+
+            if (!visitorId) {
+
+                visitorId =
+                    crypto.randomUUID();
+
+                localStorage.setItem(
+                    "cineflix_visitor_id",
+                    visitorId
+                );
+
             }
 
-            const data = await response.json();
+
+            /* CHECK CURRENT USER */
+
+            const {
+                data: sessionData
+            } =
+                await cineflixVisitorDatabase
+                    .auth
+                    .getSession();
+
+
+            const userId =
+                sessionData.session
+                    ? sessionData.session.user.id
+                    : null;
+
+
+            /* RECORD VISIT */
+
+            const {
+                error
+            } =
+                await cineflixVisitorDatabase
+                    .from("visits")
+                    .insert({
+                        visitor_id: visitorId,
+                        user_id: userId,
+                        page_path:
+                            window.location.pathname
+                    });
+
+
+            if (error) {
+                throw error;
+            }
+
 
             console.log(
-                "CineFlix visitor recorded:",
-                data.visitors
+                "CineFlix visit recorded."
             );
 
-        } catch (error) {
 
-            /*
-             * Visitor-counter failure must NEVER
-             * stop CineFlix from loading.
-             */
+        } catch (error) {
 
             console.warn(
                 "CineFlix visitor counter unavailable:",
@@ -10628,7 +10676,9 @@ document.addEventListener(
 
     }
 
-    })();
+})();
+
+
 /* =====================================================
    CINEFLIX — OWN MOBILE FULLSCREEN
 ===================================================== */
@@ -10654,6 +10704,7 @@ document.addEventListener("DOMContentLoaded", function () {
     button.addEventListener("click", async function () {
 
         /* PHONE ONLY */
+
         if (
             !window.matchMedia("(max-width: 600px)").matches
         ) {
@@ -10729,6 +10780,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
+});
+
 
     /* =================================================
        FULLSCREEN EXIT
@@ -10765,8 +10818,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
     );
-
-});
 
 /* =====================================================
    CINEFLIX — MAIN NAVIGATION
