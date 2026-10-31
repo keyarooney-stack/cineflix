@@ -16679,16 +16679,23 @@ document.addEventListener(
     const CINEFLIX_SUPABASE_KEY =
         "sb_publishable_4_YKkk9pwke0snF-dIrQ1w_kvfFJzDQ";
 
+/* =================================================
+   CREATE SHARED CINEFLIX SUPABASE CLIENT
+================================================= */
 
-    /* =================================================
-       CREATE SHARED CINEFLIX SUPABASE CLIENT
-    ================================================= */
-
-    window.cineflixAccountSupabase =
-        window.supabase.createClient(
-            CINEFLIX_SUPABASE_URL,
-            CINEFLIX_SUPABASE_KEY
-        );
+window.cineflixAccountSupabase =
+    window.supabase.createClient(
+        CINEFLIX_SUPABASE_URL,
+        CINEFLIX_SUPABASE_KEY,
+        {
+            auth: {
+                flowType: "pkce",
+                detectSessionInUrl: true,
+                persistSession: true,
+                autoRefreshToken: true
+            }
+        }
+    );
 
 
     /* =================================================
