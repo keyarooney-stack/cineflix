@@ -4081,7 +4081,36 @@ footer{
 .cineflix-mylist-overlay.active {
     display: flex;
 }
+arch Results
+        </h2>
 
+    </div>
+
+    <div
+        id="searchResults"
+        class="grid">
+    </div>
+
+</section>
+
+
+<!-- TRENDING -->
+
+<section
+    class="section"
+    id="trending">
+
+    <div class="section-header">
+
+        <h2 class="section-title">
+            🔥 Trending
+        </h2>
+
+        <p class="section-subtitle">
+            What's popular right now
+        </p>
+
+    </div>
 
 /* =====================================================
    PANEL
@@ -5603,36 +5632,7 @@ footer{
     <div class="section-header">
 
         <h2 class="section-title">
-            🔎 Search Results
-        </h2>
-
-    </div>
-
-    <div
-        id="searchResults"
-        class="grid">
-    </div>
-
-</section>
-
-
-<!-- TRENDING -->
-
-<section
-    class="section"
-    id="trending">
-
-    <div class="section-header">
-
-        <h2 class="section-title">
-            🔥 Trending
-        </h2>
-
-        <p class="section-subtitle">
-            What's popular right now
-        </p>
-
-    </div>
+            🔎 Se
 
     <div
         id="trendingMovies"
@@ -10956,500 +10956,285 @@ if (selectedPhoto) {
     setupCineFlixProfileSave();
 
 })();
+
 /* =====================================================
    CINEFLIX — MY LIST PANEL CONTROLS
 ===================================================== */
 
+const CINEFLIX_LOCAL_MY_LIST_KEY = "cineflix_my_list_v1";
+
+function cineflixGetLocalMyList() {
+    try {
+        const saved = JSON.parse(
+            localStorage.getItem(CINEFLIX_LOCAL_MY_LIST_KEY) || "[]"
+        );
+        return Array.isArray(saved) ? saved : [];
+    } catch (error) {
+        console.warn("CineFlix: could not read the local My List.", error);
+        return [];
+    }
+}
+
+function cineflixSaveLocalMyList(items) {
+    try {
+        localStorage.setItem(
+            CINEFLIX_LOCAL_MY_LIST_KEY,
+            JSON.stringify(items)
+        );
+    } catch (error) {
+        console.warn("CineFlix: could not save the local My List.", error);
+    }
+}
+
 (function () {
+
+    let myListReady = false;
 
     function setupCineFlixMyListPanel() {
 
+        const client = window.cineflixAccountSupabase;
+
         const myListButton =
-            document.getElementById(
-                "cineflixMyListButton"
-            );
+            document.getElementById("cineflixMyListButton");
 
         const profilePanel =
-            document.getElementById(
-                "cineflixProfilePanel"
-            );
+            document.getElementById("cineflixProfilePanel");
 
         const myListOverlay =
-            document.getElementById(
-                "cineflixMyListOverlay"
-            );
+            document.getElementById("cineflixMyListOverlay");
 
         const closeButton =
-            document.getElementById(
-                "cineflixMyListClose"
-            );
+            document.getElementById("cineflixMyListClose");
 
-
-        if (
-            !myListButton ||
-            !myListOverlay ||
-            !closeButton
-        ) {
-
-            setTimeout(
-                setupCineFlixMyListPanel,
-                100
-            );
-
+        if (!client || !myListButton || !myListOverlay || !closeButton) {
+            setTimeout(setupCineFlixMyListPanel, 300);
             return;
         }
 
+        if (myListReady) return;
+        myListReady = true;
 
-        if (
-            myListButton.dataset
-                .cineflixMyListReady === "true"
-        ) {
-            return;
-        }
+        const myListGrid =
+            document.getElementById("cineflixMyListGrid");
 
-
-        myListButton.dataset
-            .cineflixMyListReady = "true";
+        const myListMessage =
+            document.getElementById("cineflixMyListMessage");
 
 
         /* =============================================
-           OPEN MY LIST
+           LOAD SIGNED-IN USER'S LIST
         ============================================= */
 
-        myListButton.addEventListener(
-            "click",
-            async function (event) {
+async function loadMyList() {
 
-                event.preventDefault();
-                event.stopPropagation();
+    if (myListGrid) myListGrid.innerHTML = "";
+    if (myListMessage) myListMessage.textContent = "Loading your list...";
 
+    try {
+        let cloudFavorites = [];
+        let user = null;
 
-                if (
-                    !window.cineflixAccountSupabase ||
-                    !window.cineflixAccountSupabase.auth
-                ) {
-                    return;
-                }
+        if (client) {
+            const { data: sessionData, error: sessionError } =
+                await client.auth.getSession();
 
+            if (sessionError) throw sessionError;
+            user = sessionData?.session?.user || null;
 
-                const {
-                    data,
-                    error
-                } =
-                    await window.cineflixAccountSupabase
-                        .auth
-                        .getSession();
+            if (user) {
+                const { data, error } = await client
+                    .from("favorites")
+                    .select("id, tmdb_id, media_type, title, poster_path")
+                    .eq("user_id", user.id);
 
-
-                if (error) {
-
-                    console.error(
-                        "CineFlix My List session error:",
-                        error.message
-                    );
-
-                    return;
-                }
-
-
-                if (!data.session) {
-                    return;
-                }
-
-
-                /* CLOSE PROFILE DROPDOWN */
-
-                if (profilePanel) {
-
-                    profilePanel.classList.remove(
-                        "active"
-                    );
-
-                }
-
-
-              /* =============================================
-   OPEN MY LIST
-============================================= */
-
-myListOverlay.classList.add(
-    "active"
-);
-
-document.body.style.overflow =
-    "hidden";
-
-
-/* =============================================
-   LOAD USER'S SAVED TITLES
-============================================= */
-
-const myListGrid =
-    document.getElementById(
-        "cineflixMyListGrid"
-    );
-
-const myListMessage =
-    document.getElementById(
-        "cineflixMyListMessage"
-    );
-
-
-if (myListGrid) {
-    myListGrid.innerHTML = "";
-}
-
-if (myListMessage) {
-    myListMessage.textContent =
-        "Loading your list...";
-}
-
-
-try {
-
-    const user =
-        data.session.user;
-
-
-  const {
-    data: favorites,
-    error: favoritesError
-} =
-    await window.cineflixAccountSupabase
-        .from("favorites")
-        .select(
-            "id, tmdb_id, media_type, title, poster_path"
-        )
-        .eq(
-            "user_id",
-            user.id
-        );
-
-
-    if (favoritesError) {
-        throw favoritesError;
-    }
-
-
-    /* =========================================
-       EMPTY LIST
-    ========================================= */
-
-    if (
-        !favorites ||
-        favorites.length === 0
-    ) {
-
-        if (myListMessage) {
-            myListMessage.textContent =
-                "Your list is empty.";
+                if (error) throw error;
+                cloudFavorites = data || [];
+            }
         }
 
-        return;
-    }
+        const localFavorites = cineflixGetLocalMyList();
+        const favoritesByKey = new Map();
 
+        [...localFavorites, ...cloudFavorites].forEach(function (favorite) {
+            const key = `${favorite.media_type || "movie"}:${favorite.tmdb_id}`;
+            const existing = favoritesByKey.get(key) || {};
+            favoritesByKey.set(key, { ...existing, ...favorite });
+        });
 
-    if (myListMessage) {
-        myListMessage.textContent = "";
-    }
+        const favorites = [...favoritesByKey.values()];
 
-
-  /* =========================================
-   CREATE MY LIST CARDS
-========================================= */
-
-favorites.forEach(
-    function (favorite) {
-
-        const card =
-            document.createElement(
-                "div"
-            );
-
-        card.className =
-            "cineflix-mylist-card";
-
-
-        /* =====================================
-           POSTER
-        ===================================== */
-
-        const image =
-            document.createElement(
-                "img"
-            );
-
-
-        if (favorite.poster_path) {
-
-            image.src =
-                "https://image.tmdb.org/t/p/w500" +
-                favorite.poster_path;
-
-        } else {
-
-            image.alt =
-                "No poster available";
-
+        if (!favorites.length) {
+            if (myListMessage) {
+                myListMessage.textContent = user
+                    ? "Your list is empty."
+                    : "Your list is empty. Sign in to sync your saved titles.";
+            }
+            return;
         }
 
+        if (myListMessage) myListMessage.textContent = "";
 
-        image.alt =
-            favorite.title ||
-            "CineFlix title";
+        favorites.forEach(function (favorite) {
+            const card = document.createElement("div");
+            card.className = "cineflix-mylist-card";
 
+            const image = document.createElement("img");
+            image.alt = favorite.title || "CineFlix title";
 
-        /* =====================================
-           INFORMATION
-        ===================================== */
+            if (favorite.poster_path) {
+                image.src = "https://image.tmdb.org/t/p/w500" + favorite.poster_path;
+            }
 
-        const info =
-            document.createElement(
-                "div"
-            );
+            const info = document.createElement("div");
+            info.className = "cineflix-mylist-card-info";
 
-        info.className =
-            "cineflix-mylist-card-info";
+            const title = document.createElement("div");
+            title.className = "cineflix-mylist-card-title";
+            title.textContent = favorite.title || "Untitled";
 
+            const type = document.createElement("div");
+            type.className = "cineflix-mylist-card-type";
+            type.textContent = favorite.media_type === "tv" ? "TV Show" : "Movie";
 
-        const title =
-            document.createElement(
-                "div"
-            );
+            info.append(title, type);
 
-        title.className =
-            "cineflix-mylist-card-title";
+            const removeButton = document.createElement("button");
+            removeButton.type = "button";
+            removeButton.className = "cineflix-mylist-remove";
+            removeButton.textContent = "×";
+            removeButton.title = "Remove from My List";
 
-        title.textContent =
-            favorite.title ||
-            "Untitled";
-
-
-        const type =
-            document.createElement(
-                "div"
-            );
-
-        type.className =
-            "cineflix-mylist-card-type";
-
-        type.textContent =
-            favorite.media_type === "tv"
-                ? "TV Show"
-                : "Movie";
-
-
-        info.appendChild(title);
-        info.appendChild(type);
-
-
-        /* =====================================
-           REMOVE BUTTON
-        ===================================== */
-
-        const removeButton =
-            document.createElement(
-                "button"
-            );
-
-        removeButton.type =
-            "button";
-
-        removeButton.className =
-            "cineflix-mylist-remove";
-
-        removeButton.textContent =
-            "×";
-
-        removeButton.title =
-            "Remove from My List";
-
-
-        removeButton.addEventListener(
-            "click",
-            async function (event) {
-
+            removeButton.addEventListener("click", async function (event) {
                 event.preventDefault();
                 event.stopPropagation();
-
-                removeButton.disabled =
-                    true;
-
+                removeButton.disabled = true;
 
                 try {
+                    const remaining = cineflixGetLocalMyList().filter(item =>
+                        !(Number(item.tmdb_id) === Number(favorite.tmdb_id) &&
+                          (item.media_type || "movie") === (favorite.media_type || "movie"))
+                    );
 
-                    const {
-                        error: removeError
-                    } =
-                        await window
-                            .cineflixAccountSupabase
+                    cineflixSaveLocalMyList(remaining);
+
+                    if (user && favorite.id) {
+                        const { error } = await client
                             .from("favorites")
                             .delete()
-                            .eq(
-                                "id",
-                                favorite.id
-                            );
+                            .eq("id", favorite.id)
+                            .eq("user_id", user.id);
 
-
-                    if (removeError) {
-                        throw removeError;
+                        if (error) throw error;
                     }
-
-
-                    /* REMOVE FROM SCREEN */
 
                     card.remove();
 
-
-                    console.log(
-                        "CineFlix removed from My List:",
-                        favorite.title
-                    );
-
-
-                    /* =================================
-                       LIST NOW EMPTY
-                    ================================= */
-
-                    if (
-                        myListGrid &&
-                        myListGrid.children.length === 0
-                    ) {
-
-                        if (myListMessage) {
-
-                            myListMessage.textContent =
-                                "Your list is empty.";
-
-                        }
-
+                    if (myListGrid && !myListGrid.children.length && myListMessage) {
+                        myListMessage.textContent = "Your list is empty.";
                     }
 
-
                 } catch (error) {
+                    console.error("My List removal failed:", error);
+                    removeButton.disabled = false;
+                }
+            });
 
-                    console.error(
-                        "CineFlix remove from My List failed:",
-                        error
-                    );
+            card.append(image, info, removeButton);
+            myListGrid.appendChild(card);
+        });
 
-                    removeButton.disabled =
-                        false;
+        console.log("MY LIST: Successfully displayed", favorites.length, "items.");
 
+    } catch (error) {
+        console.error("CineFlix My List load failed:", error);
+
+        const localFavorites = cineflixGetLocalMyList();
+
+        if (localFavorites.length && myListGrid) {
+            localFavorites.forEach(function (favorite) {
+                const card = document.createElement("div");
+                card.className = "cineflix-mylist-card";
+
+                const image = document.createElement("img");
+                image.alt = favorite.title || "CineFlix title";
+
+                if (favorite.poster_path) {
+                    image.src = "https://image.tmdb.org/t/p/w500" + favorite.poster_path;
                 }
 
+                const info = document.createElement("div");
+                info.className = "cineflix-mylist-card-info";
+
+                const title = document.createElement("div");
+                title.className = "cineflix-mylist-card-title";
+                title.textContent = favorite.title || "Untitled";
+
+                const type = document.createElement("div");
+                type.className = "cineflix-mylist-card-type";
+                type.textContent = favorite.media_type === "tv" ? "TV Show" : "Movie";
+
+                info.append(title, type);
+                card.append(image, info);
+                myListGrid.appendChild(card);
+            });
+
+            if (myListMessage) {
+                myListMessage.textContent = "Showing saved titles stored on this device.";
             }
-        );
+
+        } else if (myListMessage) {
+            myListMessage.textContent = error.message || "Unable to load your list.";
+        }
+    }
+}
 
 
-        /* =====================================
-           BUILD CARD
-        ===================================== */
+        /* =============================================
+           OPEN MY LIST IMMEDIATELY
+        ============================================= */
 
-        card.appendChild(image);
-        card.appendChild(info);
-        card.appendChild(removeButton);
+        myListButton.addEventListener("click", function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (profilePanel) {
+                profilePanel.classList.remove("active");
+            }
+
+            myListOverlay.classList.add("active");
+            document.body.style.overflow = "hidden";
+
+            loadMyList();
+
+        });
 
 
-        if (myListGrid) {
+        /* =============================================
+           CLOSE MY LIST
+        ============================================= */
 
-            myListGrid.appendChild(
-                card
-            );
-
+        function closeMyList() {
+            myListOverlay.classList.remove("active");
+            document.body.style.overflow = "";
         }
 
-    }
-);
+        closeButton.addEventListener("click", closeMyList);
 
-    console.log(
-        "CineFlix My List loaded:",
-        favorites.length
-    );
-
-
-} catch (error) {
-
-    console.error(
-        "CineFlix My List load failed:",
-        error
-    );
-
-
-    if (myListMessage) {
-
-        myListMessage.textContent =
-            error.message ||
-            "Unable to load your list.";
-
-    }
-
-}
-
-
-/* =============================================
-   END MY LIST BUTTON CLICK
-============================================= */
-
-}
-);
-
-
-        /* =============================================
-           CLOSE BUTTON
-        ============================================= */
-
-        closeButton.addEventListener(
-            "click",
-            function () {
-
-                myListOverlay.classList.remove(
-                    "active"
-                );
-
-                document.body.style.overflow =
-                    "";
-
+        myListOverlay.addEventListener("click", function (event) {
+            if (event.target === myListOverlay) {
+                closeMyList();
             }
-        );
+        });
 
-
-        /* =============================================
-           CLICK OUTSIDE PANEL
-        ============================================= */
-
-        myListOverlay.addEventListener(
-            "click",
-            function (event) {
-
-                if (
-                    event.target ===
-                    myListOverlay
-                ) {
-
-                    myListOverlay.classList.remove(
-                        "active"
-                    );
-
-                    document.body.style.overflow =
-                        "";
-
-                }
-
-            }
-        );
-
-
-        console.log(
-            "CineFlix My List panel ready."
-        );
+        console.log("CineFlix My List panel ready.");
 
     }
-
 
     setupCineFlixMyListPanel();
 
 })();
+
 /* =====================================================
    CINEFLIX — ADD MOVIE TO MY LIST
 ===================================================== */
@@ -11521,8 +11306,23 @@ favorites.forEach(
                 }
 
 
-                /* SUPABASE */
+                                /* Save locally so the title appears in My List immediately. */
+                const localList = cineflixGetLocalMyList();
+                const alreadySavedLocally = localList.some(item =>
+                    Number(item.tmdb_id) === Number(movie.tmdb_id) &&
+                    (item.media_type || "movie") === (movie.media_type || "movie")
+                );
 
+                if (!alreadySavedLocally) {
+                    localList.push(movie);
+                    cineflixSaveLocalMyList(localList);
+                }
+
+                addButton.classList.add("saved");
+                if (addIcon) addIcon.textContent = "✓";
+                if (addText) addText.textContent = "In My List";
+
+                /* SUPABASE account sync is optional; local My List still works. */
                 if (
                     !window.cineflixAccountSupabase ||
                     !window.cineflixAccountSupabase.auth
@@ -11532,6 +11332,7 @@ favorites.forEach(
 
 
                 try {
+
 
                     addButton.disabled = true;
 
@@ -19184,62 +18985,7 @@ h3 {
     </div>
 
 </div>
-
-<!-- =====================================================
-     CINEFLIX — MY LIST
-===================================================== -->
-
-<div
-    id="cineflixMyListOverlay"
-    class="cineflix-mylist-overlay">
-
-    <div class="cineflix-mylist-panel">
-
-        <!-- CLOSE -->
-
-        <button
-            type="button"
-            id="cineflixMyListClose"
-            class="cineflix-mylist-close">
-            ×
-        </button>
-
-
-        <!-- HEADER -->
-
-        <div class="cineflix-mylist-heading">
-
-            <div>
-                <h2>My List</h2>
-
-                <p>
-                    Movies and shows you've saved.
-                </p>
             </div>
-
-        </div>
-
-
-        <!-- LOADING / MESSAGE -->
-
-        <div
-            id="cineflixMyListMessage"
-            class="cineflix-mylist-message">
-
-            Loading your list...
-
-        </div>
-
-
-        <!-- SAVED TITLES -->
-
-        <div
-            id="cineflixMyListGrid"
-            class="cineflix-mylist-grid">
-        </div>
-
-    </div>
-
 </div>
 <!-- =====================================================
      CINEFLIX — WATCH HISTORY
@@ -19285,6 +19031,38 @@ h3 {
 
     </div>
 
+</div>
+<!-- CINEFLIX MY LIST PANEL -->
+<div id="cineflixMyListOverlay" class="cineflix-mylist-overlay">
+
+    <div class="cineflix-mylist-panel">
+
+        <button
+            type="button"
+            id="cineflixMyListClose"
+            class="cineflix-mylist-close">
+            ×
+        </button>
+
+        <div class="cineflix-mylist-heading">
+            <div>
+                <h2>My List</h2>
+                <p>Movies and shows you've saved.</p>
+            </div>
+        </div>
+
+        <div
+            id="cineflixMyListMessage"
+            class="cineflix-mylist-message">
+            Loading your list...
+        </div>
+
+        <div
+            id="cineflixMyListGrid"
+            class="cineflix-mylist-grid">
+        </div>
+
+    </div>
 </div>
 </body>
 </html>
