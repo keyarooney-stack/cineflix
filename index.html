@@ -5557,6 +5557,7 @@ arch Results
     </div>
 
 </header>
+
 <!-- =====================================================
      CINEFLIX FEATURED HERO
 ===================================================== -->
@@ -5575,54 +5576,36 @@ arch Results
             Loading...
         </h1>
 
-        <div
-            class="hero-meta"
-            id="heroMeta">
-        </div>
+        <div class="hero-meta" id="heroMeta"></div>
 
-        <p
-            class="hero-description"
-            id="heroDescription">
+        <p class="hero-description" id="heroDescription">
             Loading movies...
         </p>
 
         <div class="hero-buttons">
 
-            <button
-                class="hero-watch"
-                onclick="openHeroMovie()">
-
+            <button class="hero-watch" onclick="openHeroMovie()">
                 ▶ WATCH NOW
-
             </button>
 
-            <button
-                class="hero-info"
-                onclick="openHeroMovie()">
-
+            <button class="hero-info" onclick="openHeroMovie()">
                 + MORE INFO
-
             </button>
 
         </div>
 
     </div>
 
-
     <!-- FEATURED MOVIE NAVIGATION -->
-
-    <div
-        class="hero-dots"
-        id="heroDots">
-    </div>
+    <div class="hero-dots" id="heroDots"></div>
 
 </section>
 
 
 <main class="container">
-
-
-<!-- SEARCH RESULTS -->
+<!-- =====================================================
+     CINEFLIX SEARCH RESULTS
+===================================================== -->
 
 <section
     class="section"
@@ -5630,13 +5613,33 @@ arch Results
     style="display:none;">
 
     <div class="section-header">
+        <h2 class="section-title">
+            🔎 Search Results
+        </h2>
+    </div>
+
+    <div id="searchResults" class="grid"></div>
+
+</section>
+
+
+<!-- TRENDING MOVIES -->
+
+<section class="section" id="trending">
+
+    <div class="section-header">
 
         <h2 class="section-title">
-            🔎 Se
+            🔥 Trending Movies
+        </h2>
 
-    <div
-        id="trendingMovies"
-        class="movie-row">
+        <p class="section-subtitle">
+            What everyone is watching
+        </p>
+
+    </div>
+
+    <div id="trendingMovies" class="movie-row">
 
         <div class="loading">
             Loading...
@@ -5649,9 +5652,7 @@ arch Results
 
 <!-- LATEST -->
 
-<section
-    class="section"
-    id="latest">
+<section class="section" id="latest">
 
     <div class="section-header">
 
@@ -5665,9 +5666,7 @@ arch Results
 
     </div>
 
-    <div
-        id="latestMovies"
-        class="movie-row">
+    <div id="latestMovies" class="movie-row">
 
         <div class="loading">
             Loading...
@@ -5680,9 +5679,7 @@ arch Results
 
 <!-- POPULAR -->
 
-<section
-    class="section"
-    id="popular">
+<section class="section" id="popular">
 
     <div class="section-header">
 
@@ -5696,9 +5693,7 @@ arch Results
 
     </div>
 
-    <div
-        id="popularMovies"
-        class="movie-row">
+    <div id="popularMovies" class="movie-row">
 
         <div class="loading">
             Loading...
@@ -5707,6 +5702,7 @@ arch Results
     </div>
 
 </section>
+</main>
 
 
 <!-- TOP RATED -->
@@ -6862,18 +6858,22 @@ function applyGenre(){
 
 async function searchMovies(query) {
 
-    query = query.trim();
+    query = String(query || "").trim();
 
-    const section =
-        document.getElementById("searchSection");
+    const section = document.getElementById("searchSection");
+    const results = document.getElementById("searchResults");
 
-    const results =
-        document.getElementById("searchResults");
+    // Check that the required HTML elements exist.
+    if (!section || !results) {
+        console.error(
+            "CineFlix Search: Missing searchSection or searchResults HTML element."
+        );
+        return;
+    }
 
     if (!query) {
-
         section.style.display = "none";
-
+        results.innerHTML = "";
         return;
     }
 
@@ -6887,181 +6887,119 @@ async function searchMovies(query) {
 
     try {
 
-        /* =================================================
-           SEARCH MOVIES
-        ================================================= */
+        /* SEARCH MOVIES */
+        const movieData = await tmdb(
+            "/search/movie?query=" +
+            encodeURIComponent(query) +
+            "&include_adult=false&language=en-US&page=1"
+        );
 
-        const movieData =
-            await tmdb(
-                "/search/movie" +
-                "?query=" +
-                encodeURIComponent(query) +
-                "&include_adult=false" +
-                "&language=en-US&page=1"
-            );
+        /* SEARCH TV SHOWS */
+        const tvData = await tmdb(
+            "/search/tv?query=" +
+            encodeURIComponent(query) +
+            "&language=en-US&page=1"
+        );
 
+        const movies = (movieData.results || []).map(function(movie) {
+            return {
+                ...movie,
+                media_type: "movie"
+            };
+        });
 
-        /* =================================================
-           SEARCH TV SHOWS
-        ================================================= */
+        const shows = (tvData.results || []).map(function(show) {
+            return {
+                ...show,
+                media_type: "tv"
+            };
+        });
 
-        const tvData =
-            await tmdb(
-                "/search/tv" +
-                "?query=" +
-                encodeURIComponent(query) +
-                "&language=en-US&page=1"
-            );
-
-
-        const movies =
-            (movieData.results || [])
-                .map(function(movie) {
-
-                    return {
-                        ...movie,
-                        media_type: "movie"
-                    };
-
-                });
-
-
-        const shows =
-            (tvData.results || [])
-                .map(function(show) {
-
-                    return {
-                        ...show,
-                        media_type: "tv"
-                    };
-
-                });
-
-
-        const found =
-            [...movies, ...shows];
-
+        const found = [...movies, ...shows];
 
         if (!found.length) {
-
             results.innerHTML = `
                 <div class="loading">
                     No movies or TV shows found.
                 </div>
             `;
-
             return;
         }
 
+        /* DISPLAY RESULTS */
+        results.innerHTML = found.map(function(item) {
 
-        /* =================================================
-           DISPLAY RESULTS
-        ================================================= */
+            // MOVIE RESULT
+            if (item.media_type === "movie") {
+                return movieCard(item);
+            }
 
-        results.innerHTML =
-            found.map(function(item) {
+            // TV SHOW RESULT
+            const title =
+                item.name ||
+                item.original_name ||
+                "Unknown TV Show";
 
+            const year = item.first_air_date
+                ? item.first_air_date.substring(0, 4)
+                : "N/A";
 
-                /* =========================================
-                   MOVIE RESULT
-                ========================================= */
+            const rating = item.vote_average
+                ? Number(item.vote_average).toFixed(1)
+                : "N/A";
 
-                if (item.media_type === "movie") {
+            const poster = item.poster_path
+                ? "https://image.tmdb.org/t/p/w500" + item.poster_path
+                : "https://placehold.co/500x750/111/fff?text=No+Poster";
 
-                    return movieCard(item);
+            return `
+                <div
+                    class="movie"
+                    onclick="openCineFlixTVShowFromSearch(${Number(item.id)})"
+                >
+                    <div class="poster">
+                        <img
+                            src="${poster}"
+                            alt="${escapeHTML(title)}"
+                            loading="lazy"
+                            onerror="this.src='https://placehold.co/500x750/111/fff?text=No+Poster'"
+                        >
 
-                }
-
-
-                /* =========================================
-                   TV SHOW RESULT
-                ========================================= */
-
-                const title =
-                    item.name ||
-                    item.original_name ||
-                    "Unknown TV Show";
-
-                const year =
-                    item.first_air_date
-                        ? item.first_air_date.substring(0, 4)
-                        : "N/A";
-
-                const rating =
-                    item.vote_average
-                        ? Number(
-                            item.vote_average
-                          ).toFixed(1)
-                        : "N/A";
-
-                const poster =
-                    item.poster_path
-                        ? "https://image.tmdb.org/t/p/w500" +
-                          item.poster_path
-                        : "https://placehold.co/500x750/111/fff?text=No+Poster";
-
-
-                return `
-                    <div
-                        class="movie"
-                       onclick="openCineFlixTVShowFromSearch(${item.id})"
-                    >
-
-                        <div class="poster">
-
-                            <img
-                                src="${poster}"
-                                alt="${escapeHTML(title)}"
-                                loading="lazy"
-                                onerror="
-                                    this.src='https://placehold.co/500x750/111/fff?text=No+Poster'
-                                "
-                            >
-
-                            <div class="rating">
-                                ★ ${rating}
-                            </div>
-
+                        <div class="rating">
+                            ★ ${rating}
                         </div>
-
-                        <div class="movie-title">
-                            ${escapeHTML(title)}
-                        </div>
-
-                        <div class="movie-year">
-                            TV · ${year}
-                        </div>
-
                     </div>
-                `;
 
-            }).join("");
+                    <div class="movie-title">
+                        ${escapeHTML(title)}
+                    </div>
 
+                    <div class="movie-year">
+                        TV · ${year}
+                    </div>
+                </div>
+            `;
+
+        }).join("");
 
         section.scrollIntoView({
             behavior: "smooth"
         });
 
+    } catch (error) {
 
-    }
-    catch(error) {
-
-        console.error(
-            "Search error:",
-            error
-        );
+        console.error("Search error:", error);
 
         results.innerHTML = `
             <div class="loading">
                 ❌ Search failed.
                 <br><br>
-                ${escapeHTML(error.message)}
+                ${escapeHTML(error.message || "Unknown error")}
             </div>
         `;
-
     }
-
 }
+
 
 /* =====================================================
    CINEFLIX — OPEN TV SHOW FROM SEARCH
