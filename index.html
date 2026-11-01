@@ -10101,184 +10101,227 @@ try {
 
 (function () {
 
-    function setupCineFlixProfilePanel() {
+    let profileInitialized = false;
 
-        const profileButton =
-            document.getElementById(
-                "cineflixProfileButton"
-            );
+    /* =============================================
+       UPDATE PROFILE DISPLAY
+    ============================================= */
 
-        const profilePanel =
-            document.getElementById(
-                "cineflixProfilePanel"
-            );
+    function updateCineFlixProfile(user) {
 
-        const signOutButton =
-            document.getElementById(
-                "cineflixSignOutButton"
-            );
+        const profileName =
+            document.getElementById("cineflixProfileName");
 
-        if (
-            !profileButton ||
-            !profilePanel ||
-            !signOutButton
-        ) {
+        const panelName =
+            document.getElementById("cineflixPanelName");
 
-            setTimeout(
-                setupCineFlixProfilePanel,
-                100
-            );
+        const panelEmail =
+            document.getElementById("cineflixPanelEmail");
+
+        const profileAvatar =
+            document.getElementById("cineflixProfileAvatar");
+
+        const panelAvatar =
+            document.getElementById("cineflixPanelAvatar");
+
+        if (!user) {
+
+            if (profileName) profileName.textContent = "Sign In";
+            if (panelName) panelName.textContent = "CineFlix User";
+            if (panelEmail) panelEmail.textContent = "Signed out";
+
+            [profileAvatar, panelAvatar].forEach(function (avatar) {
+                if (!avatar) return;
+
+                avatar.innerHTML =
+                    '<span class="cineflix-default-avatar"></span>';
+            });
 
             return;
         }
 
+        const name =
+            user.user_metadata?.display_name ||
+            user.user_metadata?.full_name ||
+            user.email?.split("@")[0] ||
+            "CineFlix User";
 
-        /* =============================================
-           PROFILE BUTTON
-        ============================================= */
+        if (profileName) profileName.textContent = name;
+        if (panelName) panelName.textContent = name;
+        if (panelEmail) panelEmail.textContent = user.email || "";
 
-        profileButton.addEventListener(
-            "click",
-            async function (event) {
+        const initial = name.charAt(0).toUpperCase();
 
-                event.preventDefault();
-                event.stopPropagation();
+        [profileAvatar, panelAvatar].forEach(function (avatar) {
+            if (!avatar) return;
 
-                if (
-                    !window.cineflixAccountSupabase ||
-                    !window.cineflixAccountSupabase.auth
-                ) {
+            avatar.textContent = initial;
+        });
+    }
+
+
+    /* =============================================
+       SETUP PROFILE PANEL
+    ============================================= */
+
+    function setupCineFlixProfilePanel() {
+
+        const client = window.cineflixAccountSupabase;
+
+        if (!client || profileInitialized) return;
+
+        const profileButton =
+            document.getElementById("cineflixProfileButton");
+
+        const profilePanel =
+            document.getElementById("cineflixProfilePanel");
+
+        const signOutButton =
+            document.getElementById("cineflixSignOutButton");
+
+        if (!profileButton || !profilePanel || !signOutButton) {
+            return;
+        }
+
+        profileInitialized = true;
+
+
+        /* PROFILE BUTTON */
+
+        profileButton.addEventListener("click", async function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            try {
+
+                const { data, error } =
+                    await client.auth.getSession();
+
+                if (error) throw error;
+
+                if (!data.session) {
+
+                    profilePanel.classList.remove("active");
+
+                    document.getElementById("cineflixAuthOverlay")
+                        ?.classList.add("active");
+
                     return;
                 }
 
-                const {
-                    data
-                } =
-                    await window.cineflixAccountSupabase
-                        .auth
-                        .getSession();
+                profilePanel.classList.toggle("active");
 
-                const session =
-                    data.session;
+            } catch (error) {
 
-
-                /* NOT SIGNED IN */
-
-                if (!session) {
-
-                    profilePanel.classList.remove(
-                        "active"
-                    );
-
-                    const authOverlay =
-                        document.getElementById(
-                            "cineflixAuthOverlay"
-                        );
-
-                    if (authOverlay) {
-
-                        authOverlay.classList.add(
-                            "active"
-                        );
-
-                    }
-
-                    return;
-                }
-
-
-                /* SIGNED IN */
-
-                profilePanel.classList.toggle(
-                    "active"
-                );
+                console.error("CineFlix profile error:", error);
 
             }
-        );
+
+        });
 
 
-        /* =============================================
-           CLICK OUTSIDE TO CLOSE
-        ============================================= */
+        /* CLICK OUTSIDE TO CLOSE */
 
-        document.addEventListener(
-            "click",
-            function (event) {
+        document.addEventListener("click", function (event) {
 
-                if (
-                    !profilePanel.contains(
-                        event.target
-                    ) &&
-                    !profileButton.contains(
-                        event.target
-                    )
-                ) {
+            if (
+                !profilePanel.contains(event.target) &&
+                !profileButton.contains(event.target)
+            ) {
+                profilePanel.classList.remove("active");
+            }
 
-                    profilePanel.classList.remove(
-                        "active"
-                    );
+        });
 
-                }
+
+        /* SIGN OUT */
+
+        signOutButton.addEventListener("click", async function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            try {
+
+                const { error } = await client.auth.signOut();
+
+                if (error) throw error;
+
+                profilePanel.classList.remove("active");
+                updateCineFlixProfile(null);
+
+                console.log("CineFlix user signed out.");
+
+            } catch (error) {
+
+                console.error("CineFlix sign out failed:", error);
 
             }
-        );
+
+        });
 
 
-        /* =============================================
-           SIGN OUT
-        ============================================= */
+        /* RESTORE SESSION */
 
-        signOutButton.addEventListener(
-            "click",
-            async function (event) {
+        client.auth.getSession().then(function ({ data, error }) {
 
-                event.preventDefault();
-                event.stopPropagation();
-
-                try {
-
-                    const {
-                        error
-                    } =
-                        await window.cineflixAccountSupabase
-                            .auth
-                            .signOut();
-
-                    if (error) {
-                        throw error;
-                    }
-
-                    profilePanel.classList.remove(
-                        "active"
-                    );
-
-                    console.log(
-                        "CineFlix user signed out."
-                    );
-
-                } catch (error) {
-
-                    console.error(
-                        "CineFlix sign out failed:",
-                        error.message
-                    );
-
-                }
-
+            if (error) {
+                console.error("CineFlix session error:", error);
+                return;
             }
-        );
+
+            updateCineFlixProfile(data.session?.user || null);
+
+        });
 
 
-        console.log(
-            "CineFlix profile panel ready."
-        );
+        /* AUTHENTICATION STATE CHANGES */
+
+        client.auth.onAuthStateChange(function (event, session) {
+
+            updateCineFlixProfile(session?.user || null);
+
+        });
+
+        console.log("CineFlix profile panel ready.");
 
     }
 
 
-    setupCineFlixProfilePanel();
+    /* =============================================
+       WAIT FOR SUPABASE AND PAGE ELEMENTS
+    ============================================= */
+
+    function waitForCineFlixProfile() {
+
+        if (!window.cineflixAccountSupabase) {
+            setTimeout(waitForCineFlixProfile, 300);
+            return;
+        }
+
+        const profileButton =
+            document.getElementById("cineflixProfileButton");
+
+        const profilePanel =
+            document.getElementById("cineflixProfilePanel");
+
+        const signOutButton =
+            document.getElementById("cineflixSignOutButton");
+
+        if (!profileButton || !profilePanel || !signOutButton) {
+            setTimeout(waitForCineFlixProfile, 300);
+            return;
+        }
+
+        setupCineFlixProfilePanel();
+
+    }
+
+    waitForCineFlixProfile();
 
 })();
+
 /* =====================================================
    CINEFLIX — PROFILE EDITOR CONTROLS
 ===================================================== */
