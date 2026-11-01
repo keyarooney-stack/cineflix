@@ -2698,14 +2698,13 @@ footer{
     transform: scale(.97);
 }
 
-
 /* =====================================================
-   PROFILE AVATAR
+   CINEFLIX — HIGH-QUALITY PROFILE AVATAR
 ===================================================== */
 
 .cineflix-profile-avatar {
-    width: 31px;
-    height: 31px;
+    width: 40px;
+    height: 40px;
 
     flex-shrink: 0;
 
@@ -2714,32 +2713,27 @@ footer{
     justify-content: center;
 
     overflow: hidden;
-
     border-radius: 50%;
 
-    background:
-        linear-gradient(
-            145deg,
-            #242424,
-            #101010
-        );
+    background: #151515;
 
-    border: 1px solid rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.18);
 
     box-shadow:
-        0 2px 10px rgba(0,0,0,.35);
+        0 3px 14px rgba(0,0,0,.4);
 }
 
 .cineflix-profile-avatar img {
     width: 100%;
     height: 100%;
 
-    object-fit: cover;
-
     display: block;
+
+    object-fit: cover;
+    object-position: center;
+
+    image-rendering: auto;
 }
-
-
 /* =====================================================
    DEFAULT PERSON ICON
 ===================================================== */
@@ -2925,14 +2919,13 @@ footer{
     padding: 12px 10px;
 }
 
-
 /* =====================================================
-   LARGE PANEL AVATAR
+   CINEFLIX — LARGE HIGH-QUALITY PROFILE AVATAR
 ===================================================== */
 
 .cineflix-panel-avatar {
-    width: 46px;
-    height: 46px;
+    width: 64px;
+    height: 64px;
 
     flex-shrink: 0;
 
@@ -2941,31 +2934,27 @@ footer{
     justify-content: center;
 
     overflow: hidden;
-
     border-radius: 50%;
 
-    background:
-        linear-gradient(
-            145deg,
-            #292929,
-            #101010
-        );
+    background: #151515;
 
-    border: 1px solid rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.18);
 
     box-shadow:
-        0 5px 18px rgba(0,0,0,.4);
+        0 5px 20px rgba(0,0,0,.45);
 }
 
 .cineflix-panel-avatar img {
     width: 100%;
     height: 100%;
 
-    object-fit: cover;
-
     display: block;
-}
 
+    object-fit: cover;
+    object-position: center;
+
+    image-rendering: auto;
+}
 
 /* =====================================================
    USER INFORMATION
@@ -5172,6 +5161,110 @@ arch Results
 #cineflixForgotPassword:hover {
     color: #ff4b55;
     text-decoration: underline;
+}
+/* =====================================================
+   CINEFLIX — MOBILE HEADER LAYOUT
+===================================================== */
+
+@media (max-width: 600px) {
+
+    /* Hide logo on mobile */
+    .navbar-main .logo {
+        display: none !important;
+    }
+
+    /* Main navigation row */
+    .navbar-main {
+        height: 48px !important;
+        min-height: 48px !important;
+        width: 100% !important;
+        padding: 0 10px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        overflow: visible !important;
+    }
+
+    /* Navigation scrolls horizontally */
+    .navbar-main .nav {
+        flex: 1 !important;
+        min-width: 0 !important;
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        white-space: nowrap !important;
+        gap: 18px !important;
+        scrollbar-width: none !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .navbar-main .nav::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    /* Keep profile fixed at the right corner */
+    .cineflix-user-area {
+        flex: 0 0 auto !important;
+        position: relative !important;
+        z-index: 1002 !important;
+    }
+
+    /* Search directly below navigation */
+    .navbar-search-row {
+        width: 100% !important;
+        padding: 5px 4% 7px !important;
+        margin: 0 !important;
+    }
+
+    .navbar-search-row .search {
+        width: 100% !important;
+    }
+
+    .navbar-search-row .search input {
+        height: 38px !important;
+        border-radius: 10px !important;
+    }
+
+    .navbar {
+        padding: 0 !important;
+        gap: 0 !important;
+    }
+}
+/* =====================================================
+   CINEFLIX — MOBILE PROFILE CORNER POSITION
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .navbar-main {
+        position: relative !important;
+        padding-right: 55px !important;
+    }
+
+    .navbar-main .nav {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        padding-right: 5px !important;
+    }
+
+    .cineflix-user-area {
+        position: absolute !important;
+        right: 7px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        z-index: 1010 !important;
+        background: rgba(5, 5, 5, 0.9) !important;
+        border-radius: 50% !important;
+    }
+
+    .cineflix-profile-button {
+        padding: 2px !important;
+        min-height: 43px !important;
+        width: 43px !important;
+        justify-content: center !important;
+    }
+
 }
 </style>
 
@@ -10686,8 +10779,8 @@ try {
                         );
 
                     }
-                   /* =============================================
-   UPLOAD NEW PROFILE PICTURE
+                /* =============================================
+   HIGH-QUALITY PROFILE PICTURE UPLOAD
 ============================================= */
 
 let avatarUrl = null;
@@ -10699,22 +10792,97 @@ if (selectedPhoto) {
 
     if (message) {
         message.textContent =
-            "Uploading profile picture...";
+            "Optimizing profile picture...";
     }
 
-    const extension =
-        selectedPhoto.name
-            .split(".")
-            .pop()
-            .toLowerCase();
+    /* RESIZE IMAGE WITHOUT DISTORTING IT */
+
+    let uploadPhoto = selectedPhoto;
+
+    if (
+        selectedPhoto.type.startsWith("image/") &&
+        typeof createImageBitmap === "function"
+    ) {
+
+        const bitmap =
+            await createImageBitmap(selectedPhoto);
+
+        const MAX_SIZE = 1024;
+
+        const scale = Math.min(
+            1,
+            MAX_SIZE / Math.max(
+                bitmap.width,
+                bitmap.height
+            )
+        );
+
+        const width =
+            Math.round(bitmap.width * scale);
+
+        const height =
+            Math.round(bitmap.height * scale);
+
+        const canvas =
+            document.createElement("canvas");
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const context =
+            canvas.getContext("2d");
+
+        context.drawImage(
+            bitmap,
+            0,
+            0,
+            width,
+            height
+        );
+
+        bitmap.close();
+
+        /* CONVERT TO HIGH-QUALITY WEBP */
+
+        const optimizedBlob =
+            await new Promise(resolve => {
+
+                canvas.toBlob(
+                    resolve,
+                    "image/webp",
+                    0.94
+                );
+
+            });
+
+        if (optimizedBlob) {
+
+            uploadPhoto = new File(
+                [optimizedBlob],
+                "avatar.webp",
+                {
+                    type: "image/webp"
+                }
+            );
+
+        }
+
+    }
+
+    if (message) {
+        message.textContent =
+            "Uploading high-quality profile picture...";
+    }
+
+    /* CREATE UNIQUE STORAGE PATH */
 
     const photoPath =
-    user.id +
-    "/avatar-" +
-    Date.now() +
-    "." +
-    extension;
+        user.id +
+        "/avatar-" +
+        Date.now() +
+        ".webp";
 
+    /* UPLOAD TO SUPABASE */
 
     const {
         error: uploadError
@@ -10724,20 +10892,19 @@ if (selectedPhoto) {
             .from("profile-pictures")
             .upload(
                 photoPath,
-                selectedPhoto,
+                uploadPhoto,
                 {
                     cacheControl: "3600",
                     upsert: false,
-                    contentType:
-                        selectedPhoto.type
+                    contentType: uploadPhoto.type
                 }
             );
-
 
     if (uploadError) {
         throw uploadError;
     }
 
+    /* GET PUBLIC IMAGE URL */
 
     const {
         data: publicUrlData
@@ -10745,17 +10912,14 @@ if (selectedPhoto) {
         window.cineflixAccountSupabase
             .storage
             .from("profile-pictures")
-            .getPublicUrl(
-                photoPath
-            );
-
+            .getPublicUrl(photoPath);
 
     avatarUrl =
         publicUrlData.publicUrl +
         "?v=" +
         Date.now();
-               }
 
+}
                     /* UPDATE PROFILE TABLE */
 
                     const {
