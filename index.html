@@ -7628,7 +7628,7 @@ results.innerHTML = found.map(function(item) {
     return `
         <div
             class="movie"
-            onclick="openCineFlixTVShowFromSearch(${Number(item.id)})"
+        onclick="openCineFlixAniListDetails(${item.id})"
         >
             <div class="poster">
                 <img
@@ -16108,7 +16108,7 @@ async function loadCineFlixAnime(reset = true) {
                 return `
                     <div
                         class="movie-card"
-                      onclick="window.cineflixAniListOpenedFromSearch = true; openCineFlixAniListDetails(${Number(item.id)})"
+                       onclick="window.cineflixAniListOpenedFromSearch = false; openCineFlixAniListDetails(${Number(item.id)})"
                     >
 
                         <img
