@@ -10266,7 +10266,7 @@ try {
         });
 
 
-        /* SIGN OUT */
+              /* SIGN OUT + LOG HISTORY */
 
         signOutButton.addEventListener("click", async function (event) {
 
@@ -10275,9 +10275,37 @@ try {
 
             try {
 
-                const { error } = await client.auth.signOut();
+                // Get the currently signed-in user
+                const { data: sessionData, error: sessionError } =
+                    await client.auth.getSession();
 
-                if (error) throw error;
+                if (sessionError) throw sessionError;
+
+                const user = sessionData.session?.user;
+
+                if (!user) {
+                    profilePanel.classList.remove("active");
+                    updateCineFlixProfile(null);
+                    return;
+                }
+
+                // Record this sign-out event
+                const { error: logError } = await client
+                    .from("cineflix_logout_history")
+                    .insert({
+                        user_id: user.id,
+                        email: user.email
+                    });
+
+                if (logError) {
+                    console.error("Logout history recording failed:", logError);
+                }
+
+                // Sign out even if history recording fails
+                const { error: signOutError } =
+                    await client.auth.signOut();
+
+                if (signOutError) throw signOutError;
 
                 profilePanel.classList.remove("active");
                 updateCineFlixProfile(null);
