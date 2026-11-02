@@ -7575,14 +7575,18 @@ results.innerHTML = found.map(function(item) {
             "https://placehold.co/500x750/111/fff?text=No+Poster";
 
         return `
-            <div
-                class="movie"
-                onclick="
-                    window.cineflixAniListOpenedFromSearch = true;
-                    openCineFlixAniListDetails(${Number(item.id)});
-                "
-                style="cursor:pointer;"
-            >
+         <div
+    class="movie"
+    onclick="
+        window.cineflixAniListOpenedFromSearch = true;
+        recordCineFlixAnimeView(
+            ${Number(item.id)},
+            this.querySelector('.movie-title').textContent.trim()
+        );
+        openCineFlixAniListDetails(${Number(item.id)});
+    "
+    style="cursor:pointer;"
+>
                 <div class="poster">
                     <img
                         src="${escapeHTML(poster)}"
@@ -7628,7 +7632,7 @@ results.innerHTML = found.map(function(item) {
     return `
         <div
             class="movie"
-        onclick="openCineFlixAniListDetails(${item.id})"
+        onclick="window.cineflixAniListOpenedFromSearch = true; recordCineFlixAnimeView(${Number(item.id)}, this.querySelector('.movie-title').textContent.trim()); openCineFlixAniListDetails(${Number(item.id)})"
         >
             <div class="poster">
                 <img
