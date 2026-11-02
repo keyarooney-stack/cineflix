@@ -16108,7 +16108,7 @@ async function loadCineFlixAnime(reset = true) {
                 return `
                     <div
                         class="movie-card"
-                       onclick="window.cineflixAniListOpenedFromSearch = false; openCineFlixAniListDetails(${Number(item.id)})"
+                    onclick="window.cineflixAniListOpenedFromSearch = false; recordCineFlixAnimeView(${Number(item.id)}, this.querySelector('.movie-title').textContent.trim()); openCineFlixAniListDetails(${Number(item.id)})"
                     >
 
                         <img
@@ -18788,7 +18788,37 @@ async function playCineFlixAnimeEpisode(
 
     }
 }
+/* =============================================
+   CINEFLIX — RECORD ANIME VIEWS
+============================================= */
 
+async function recordCineFlixAnimeView(animeId, animeTitle) {
+    try {
+        const client = window.cineflixAccountSupabase;
+
+        if (!client) {
+            console.error("CineFlix Supabase client not found.");
+            return;
+        }
+
+        const { error } = await client.rpc(
+            "record_cineflix_anime_view",
+            {
+                p_anilist_id: Number(animeId),
+                p_anime_title: String(animeTitle || "Unknown Anime")
+            }
+        );
+
+        if (error) {
+            console.error("Anime view tracking error:", error);
+        } else {
+            console.log("Anime view recorded:", animeTitle);
+        }
+
+    } catch (error) {
+        console.error("Anime view tracking failed:", error);
+    }
+}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
