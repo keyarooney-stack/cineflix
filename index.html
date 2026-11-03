@@ -1528,12 +1528,12 @@ footer{
     border-top:1px solid #222;
     padding:45px 20px;
     text-align:center;
-    color:#e50914;
+    color:#777;
 }
 
 .made-by{
     margin-top:12px;
-    color:#e50914;
+    color:#aaa;
 }
 
 .made-by strong{
@@ -5340,24 +5340,10 @@ arch Results
 ===================================================== */
 
 .cineflix-anime-details {
-    position: relative;
-    isolation: isolate;
     width: 100%;
     box-sizing: border-box;
-    padding: 25px;
-    overflow: hidden;
-    border-radius: 12px;
+    padding: 25px 0;
     color: white;
-}
-
-.cineflix-anime-details::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background:
-        linear-gradient(rgba(0, 0, 0, .72), rgba(0, 0, 0, .88)),
-        var(--cineflix-anime-poster) center top / cover no-repeat;
 }
 
 .anime-back-button {
@@ -5473,9 +5459,9 @@ arch Results
     margin-bottom: 20px;
 }
 
- .anime-season-card {
-    background: rgba(15, 15, 15, .78);
-    border: 2px solid #e50914;
+.anime-season-card {
+    background: #151515;
+    border: 1px solid #303030;
     border-radius: 10px;
     padding: 20px;
     margin-bottom: 18px;
@@ -5512,9 +5498,9 @@ arch Results
 }
 
 .anime-episode-button {
-    background: rgba(25, 25, 25, .88);
+    background: #252525;
     color: white;
-    border: 2px solid #e50914;
+    border: 1px solid #444;
     padding: 12px 8px;
     border-radius: 6px;
     cursor: pointer;
@@ -6536,12 +6522,18 @@ arch Results
 
 <footer>
 
-    <div class="made-by">
-        MADE BY ROONEY KEYA
+    <div>
+        © 2026 CineFlix
     </div>
 
-    <div>
-        COPYRIGHT © 2026
+    <div class="made-by">
+        Made by
+        <strong>Rooney Keya</strong>
+    </div>
+
+    <div class="tmdb">
+        This product uses the TMDB API
+        but is not endorsed or certified by TMDB.
     </div>
 
 </footer>
@@ -7545,12 +7537,15 @@ async function searchMovies(query) {
 
         }));
 
-        /* Sort all search results together by star rating, highest first. */
-        const found = [...movies, ...anime, ...shows].sort((a, b) => {
-            const ratingA = Number(a.vote_average ?? a.rating ?? 0);
-            const ratingB = Number(b.vote_average ?? b.rating ?? 0);
-            return ratingB - ratingA;
-        });
+        /* =============================================
+           COMBINE RESULTS
+        ============================================= */
+
+        const found = [
+            ...movies,
+            ...shows,
+            ...anime
+        ];
 
         if (!found.length) {
             results.innerHTML = `
@@ -15842,12 +15837,9 @@ animeGrid.innerHTML = `
            RENDER DETAILS PAGE
         ============================================= */
 
-                animeGrid.innerHTML = `
+        animeGrid.innerHTML = `
 
-            <div
-                class="cineflix-anime-details"
-                style="--cineflix-anime-poster: url('${escapeHTML(poster)}');"
-            >
+            <div class="cineflix-anime-details">
 
                 <button
                     type="button"
@@ -18345,47 +18337,15 @@ async function cineflixResolveAniListId(content) {
 async function cineflixSetPlayerContent(content) {
     window.cineflixActivePlayerContent = content;
 
-        const animeServerButton =
+    const animeServerButton =
         document.getElementById("cineflixServer4Button");
 
-    const regularServerButtons = [
-        "cineflixServer1Button",
-        "cineflixServer2Button",
-        "cineflixServer3Button"
-    ].map(id => document.getElementById(id));
-
-    if (content.anime) {
-        cineflixSelectedServer = "server4";
-    } else if (cineflixSelectedServer === "server4") {
+    if (!content.anime && cineflixSelectedServer === "server4") {
         cineflixSelectedServer = "server1";
     }
 
-    regularServerButtons.forEach(button => {
-        if (button) {
-            button.style.setProperty(
-                "display",
-                content.anime ? "none" : "inline-flex",
-                "important"
-            );
-            button.style.setProperty(
-                "background",
-                !content.anime && button.id === "cineflixServer1Button" ? "#e50914" : "#111",
-                "important"
-            );
-        }
-    });
-
     if (animeServerButton) {
-        animeServerButton.style.setProperty(
-            "display",
-            content.anime ? "inline-flex" : "none",
-            "important"
-        );
-        animeServerButton.style.setProperty(
-            "background",
-            content.anime ? "#e50914" : "#111",
-            "important"
-        );
+        animeServerButton.style.display = content.anime ? "inline-flex" : "none";
     }
 
     const player = document.getElementById("cineflixPlayer");
@@ -18494,10 +18454,9 @@ async function playCineFlixAniListEpisode(
         episode: episodeNumber
     };
 
-        // AnimeEmbed needs the AniList ID directly in its episode URL.
+    // AnimeEmbed needs the AniList ID directly in its episode URL.
     cineflixSelectedServer = "server4";
     await cineflixSetPlayerContent(content);
-    await cineflixSelectServer("server4");
 
     const modal = document.getElementById("cineflixPlayerModal");
     const player = document.getElementById("cineflixPlayer");
@@ -20742,7 +20701,72 @@ h3 {
 
 </div>
 
-            <!-- =====================================================
+            <div>
+
+                <strong>
+                    CINEFLIX
+                </strong>
+
+                <span>
+                    Your entertainment, your account.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- TITLE -->
+
+        <div class="cineflix-auth-heading">
+
+            <h2 id="cineflixAuthTitle">
+                Welcome Back
+            </h2>
+
+            <p id="cineflixAuthSubtitle">
+                Sign in to continue to CineFlix.
+            </p>
+
+        </div>
+
+
+        <!-- SWITCH LOGIN / SIGNUP -->
+
+        <div class="cineflix-auth-switch">
+
+            <span id="cineflixAuthSwitchText">
+                New to CineFlix?
+            </span>
+
+            <button
+                type="button"
+                id="cineflixAuthSwitchButton">
+
+                Create Account
+
+            </button>
+
+        </div>
+
+
+        <!-- SECURITY NOTE -->
+
+        <div class="cineflix-auth-security">
+
+            <span>🔒</span>
+
+            <span>
+                Your CineFlix account is securely protected.
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
      CINEFLIX PROFILE EDITOR
 ===================================================== -->
 
