@@ -1528,12 +1528,12 @@ footer{
     border-top:1px solid #222;
     padding:45px 20px;
     text-align:center;
-    color:#777;
+    color:#e50914;
 }
 
 .made-by{
     margin-top:12px;
-    color:#aaa;
+    color:#e50914;
 }
 
 .made-by strong{
@@ -5340,10 +5340,24 @@ arch Results
 ===================================================== */
 
 .cineflix-anime-details {
+    position: relative;
+    isolation: isolate;
     width: 100%;
     box-sizing: border-box;
-    padding: 25px 0;
+    padding: 25px;
+    overflow: hidden;
+    border-radius: 12px;
     color: white;
+}
+
+.cineflix-anime-details::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        linear-gradient(rgba(0, 0, 0, .72), rgba(0, 0, 0, .88)),
+        var(--cineflix-anime-poster) center top / cover no-repeat;
 }
 
 .anime-back-button {
@@ -5459,9 +5473,9 @@ arch Results
     margin-bottom: 20px;
 }
 
-.anime-season-card {
-    background: #151515;
-    border: 1px solid #303030;
+ .anime-season-card {
+    background: rgba(15, 15, 15, .78);
+    border: 2px solid #e50914;
     border-radius: 10px;
     padding: 20px;
     margin-bottom: 18px;
@@ -5498,9 +5512,9 @@ arch Results
 }
 
 .anime-episode-button {
-    background: #252525;
+    background: rgba(25, 25, 25, .88);
     color: white;
-    border: 1px solid #444;
+    border: 2px solid #e50914;
     padding: 12px 8px;
     border-radius: 6px;
     cursor: pointer;
@@ -6522,18 +6536,12 @@ arch Results
 
 <footer>
 
-    <div>
-        © 2026 CineFlix
-    </div>
-
     <div class="made-by">
-        Made by
-        <strong>Rooney Keya</strong>
+        MADE BY ROONEY KEYA
     </div>
 
-    <div class="tmdb">
-        This product uses the TMDB API
-        but is not endorsed or certified by TMDB.
+    <div>
+        COPYRIGHT © 2026
     </div>
 
 </footer>
@@ -7537,15 +7545,12 @@ async function searchMovies(query) {
 
         }));
 
-        /* =============================================
-           COMBINE RESULTS
-        ============================================= */
-
-        const found = [
-            ...movies,
-            ...shows,
-            ...anime
-        ];
+        /* Sort all search results together by star rating, highest first. */
+        const found = [...movies, ...anime, ...shows].sort((a, b) => {
+            const ratingA = Number(a.vote_average ?? a.rating ?? 0);
+            const ratingB = Number(b.vote_average ?? b.rating ?? 0);
+            return ratingB - ratingA;
+        });
 
         if (!found.length) {
             results.innerHTML = `
@@ -15837,9 +15842,12 @@ animeGrid.innerHTML = `
            RENDER DETAILS PAGE
         ============================================= */
 
-        animeGrid.innerHTML = `
+                animeGrid.innerHTML = `
 
-            <div class="cineflix-anime-details">
+            <div
+                class="cineflix-anime-details"
+                style="--cineflix-anime-poster: url('${escapeHTML(poster)}');"
+            >
 
                 <button
                     type="button"
@@ -20701,72 +20709,7 @@ h3 {
 
 </div>
 
-            <div>
-
-                <strong>
-                    CINEFLIX
-                </strong>
-
-                <span>
-                    Your entertainment, your account.
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <!-- TITLE -->
-
-        <div class="cineflix-auth-heading">
-
-            <h2 id="cineflixAuthTitle">
-                Welcome Back
-            </h2>
-
-            <p id="cineflixAuthSubtitle">
-                Sign in to continue to CineFlix.
-            </p>
-
-        </div>
-
-
-        <!-- SWITCH LOGIN / SIGNUP -->
-
-        <div class="cineflix-auth-switch">
-
-            <span id="cineflixAuthSwitchText">
-                New to CineFlix?
-            </span>
-
-            <button
-                type="button"
-                id="cineflixAuthSwitchButton">
-
-                Create Account
-
-            </button>
-
-        </div>
-
-
-        <!-- SECURITY NOTE -->
-
-        <div class="cineflix-auth-security">
-
-            <span>🔒</span>
-
-            <span>
-                Your CineFlix account is securely protected.
-            </span>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- =====================================================
+            <!-- =====================================================
      CINEFLIX PROFILE EDITOR
 ===================================================== -->
 
