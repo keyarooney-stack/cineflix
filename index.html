@@ -18345,15 +18345,47 @@ async function cineflixResolveAniListId(content) {
 async function cineflixSetPlayerContent(content) {
     window.cineflixActivePlayerContent = content;
 
-    const animeServerButton =
+        const animeServerButton =
         document.getElementById("cineflixServer4Button");
 
-    if (!content.anime && cineflixSelectedServer === "server4") {
+    const regularServerButtons = [
+        "cineflixServer1Button",
+        "cineflixServer2Button",
+        "cineflixServer3Button"
+    ].map(id => document.getElementById(id));
+
+    if (content.anime) {
+        cineflixSelectedServer = "server4";
+    } else if (cineflixSelectedServer === "server4") {
         cineflixSelectedServer = "server1";
     }
 
+    regularServerButtons.forEach(button => {
+        if (button) {
+            button.style.setProperty(
+                "display",
+                content.anime ? "none" : "inline-flex",
+                "important"
+            );
+            button.style.setProperty(
+                "background",
+                !content.anime && button.id === "cineflixServer1Button" ? "#e50914" : "#111",
+                "important"
+            );
+        }
+    });
+
     if (animeServerButton) {
-        animeServerButton.style.display = content.anime ? "inline-flex" : "none";
+        animeServerButton.style.setProperty(
+            "display",
+            content.anime ? "inline-flex" : "none",
+            "important"
+        );
+        animeServerButton.style.setProperty(
+            "background",
+            content.anime ? "#e50914" : "#111",
+            "important"
+        );
     }
 
     const player = document.getElementById("cineflixPlayer");
@@ -18462,9 +18494,10 @@ async function playCineFlixAniListEpisode(
         episode: episodeNumber
     };
 
-    // AnimeEmbed needs the AniList ID directly in its episode URL.
+        // AnimeEmbed needs the AniList ID directly in its episode URL.
     cineflixSelectedServer = "server4";
     await cineflixSetPlayerContent(content);
+    await cineflixSelectServer("server4");
 
     const modal = document.getElementById("cineflixPlayerModal");
     const player = document.getElementById("cineflixPlayer");
