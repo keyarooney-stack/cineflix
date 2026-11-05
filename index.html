@@ -6538,21 +6538,9 @@ arch Results
 <!-- FOOTER -->
 
 <footer>
-
-    <div>
-        © 2026 CineFlix
-    </div>
-
     <div class="made-by">
-        Made by
-        <strong>Rooney Keya</strong>
+        <strong>Made by RONNEY KEYA</strong>
     </div>
-
-    <div class="tmdb">
-        This product uses the TMDB API
-        but is not endorsed or certified by TMDB.
-    </div>
-
 </footer>
 
 
@@ -6601,6 +6589,8 @@ let totalPages = 500;
 let loading = false;
 
 let searchTimer = null;
+const tmdbResponseCache = new Map();
+const TMDB_CACHE_TTL = 5 * 60 * 1000;
 
 
 /* =====================================================
@@ -6609,16 +6599,19 @@ let searchTimer = null;
 
 async function tmdb(endpoint){
 
-    if(
+    const cached = tmdbResponseCache.get(endpoint);
+    if (cached && Date.now() - cached.time < TMDB_CACHE_TTL) {
+        return cached.data;
+    }
+
+        if (
         !TMDB_TOKEN ||
-        TMDB_TOKEN ===
-        "my token"
-    ){
-
+        TMDB_TOKEN === "my token" ||
+        TMDB_TOKEN === "PASTE_YOUR_TMDB_READ_ACCESS_TOKEN_HERE"
+    ) {
         throw new Error(
-            "TMDB token is found."
+            "TMDB API Read Access Token is missing. Add a valid token to TMDB_TOKEN."
         );
-
     }
 
     const controller =
@@ -6660,19 +6653,33 @@ async function tmdb(endpoint){
         }
         catch(error){}
 
-        if(!response.ok){
+                if (!response.ok) {
+            const detail =
+                data.status_message || "No additional details provided.";
+
+            if (response.status === 401) {
+                throw new Error(
+                    "TMDB rejected the API token (401). Replace TMDB_TOKEN with a valid, active TMDB API Read Access Token. " +
+                    detail
+                );
+            }
+
+            if (response.status === 403) {
+                throw new Error(
+                    "TMDB denied this request (403). Check the token's permissions and account status. " +
+                    detail
+                );
+            }
 
             throw new Error(
-                "TMDB error: " +
-                response.status +
-                " - " +
-                (
-                    data.status_message ||
-                    "Authentication failed"
-                )
+                "TMDB request failed (" + response.status + "): " + detail
             );
-
         }
+
+                tmdbResponseCache.set(endpoint, {
+            data: data,
+            time: Date.now()
+        });
 
         return data;
 
@@ -6781,8 +6788,9 @@ function movieCard(movie){
 
             <img
                 src="${getPoster(movie)}"
-                alt="${escapeHTML(title)}"
+                                alt="${escapeHTML(title)}"
                 loading="lazy"
+                decoding="async"
                 onerror="
                     this.src='https://placehold.co/500x750/111/fff?text=No+Poster'
                 ">
@@ -6895,10 +6903,11 @@ async function loadRelatedMovies(id) {
 
                         <img
                             src="${getPoster(movie)}"
-                            alt="${escapeHTML(title)}"
-                            loading="lazy"
-                            onerror="
-                                this.src='https://placehold.co/500x750/111/fff?text=No+Poster'
+                                            alt="${escapeHTML(title)}"
+                loading="lazy"
+                decoding="async"
+                onerror="
+                    this.src='https://placehold.co/500x750/111/fff?text=No+Poster'
                             ">
 
                         <div class="rating">
@@ -10005,7 +10014,6 @@ async function start() {
    START WEBSITE
 ===================================================== */
 
-start();
 async function start() {
 
     const movieGrid =
@@ -10105,7 +10113,27 @@ async function start() {
 ===================================================== */
 
 start();
-loadHomepageTVAndAnime();
+
+/* Load secondary homepage content only as the visitor approaches it. */
+const homepageContentSections = [
+    document.getElementById("homeTVShows"),
+    document.getElementById("homeAnime")
+].filter(Boolean);
+
+if ("IntersectionObserver" in window) {
+    const homepageContentObserver = new IntersectionObserver(function(entries) {
+        if (entries.some(entry => entry.isIntersecting)) {
+            homepageContentObserver.disconnect();
+            loadHomepageTVAndAnime();
+        }
+    }, { rootMargin: "250px 0px" });
+
+    homepageContentSections.forEach(section =>
+        homepageContentObserver.observe(section)
+    );
+} else {
+    loadHomepageTVAndAnime();
+}
 
 
 /* =====================================================
@@ -15860,8 +15888,10 @@ animeGrid.innerHTML = `
                                 type="button"
                                 class="anime-episode-button"
                                 data-anime-id="${entry.id}"
-                                data-anime-title="${escapeHTML(entry.title)}"
+                                                                data-anime-title="${escapeHTML(entry.title)}"
+                                data-anime-poster="${escapeHTML(entry.poster || poster)}"
                                 data-anime-episode="${i + 1}"
+
                             >
                                 Episode ${i + 1}
                             </button>
@@ -16058,8 +16088,11 @@ animeGrid.innerHTML = `
                     const selectedId =
                         Number(this.dataset.animeId);
 
-                    const selectedTitle =
+                                        const selectedTitle =
                         this.dataset.animeTitle;
+
+                    const selectedPoster =
+                        this.dataset.animePoster;
 
                     const selectedEpisode =
                         Number(this.dataset.animeEpisode);
@@ -16067,7 +16100,8 @@ animeGrid.innerHTML = `
                     await playCineFlixAniListEpisode(
                         selectedId,
                         selectedTitle,
-                        selectedEpisode
+                        selectedEpisode,
+                        selectedPoster
                     );
 
                 });
@@ -18561,8 +18595,10 @@ async function cineflixSelectServer(server) {
 async function playCineFlixAniListEpisode(
     animeId,
     title,
-    episode
+    episode,
+    posterUrl
 ) {
+
     const anilistId = Number(animeId);
     const episodeNumber = Number(episode);
 
@@ -18572,7 +18608,7 @@ async function playCineFlixAniListEpisode(
         return;
     }
 
-    const content = {
+        const content = {
         type: "anime",
         anime: true,
         anilistId: anilistId,
@@ -18580,7 +18616,20 @@ async function playCineFlixAniListEpisode(
         episode: episodeNumber
     };
 
+    const playerPoster = document.getElementById("cineflixPlayerPoster");
+    const playerTitle = document.getElementById("cineflixPlayerTitle");
+
+    if (playerPoster && posterUrl) {
+        playerPoster.src = posterUrl;
+        playerPoster.alt = title + " poster";
+    }
+
+    if (playerTitle) {
+        playerTitle.textContent = title + " • Episode " + episodeNumber;
+    }
+
     // AnimeEmbed needs the AniList ID directly in its episode URL.
+
     cineflixSelectedServer = "server4";
     await cineflixSetPlayerContent(content);
 
