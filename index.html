@@ -219,8 +219,12 @@ body{
     animation:pulse 1.2s infinite;
 }
 
-.loader-logo span{
-    font-size:35px;
+.loader-logo img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:cover;
+    border-radius:inherit;
 }
 
 .loader-title{
@@ -467,6 +471,15 @@ body{
     color: #fff;
     font-size: 19px;
 }
+
+.logo-icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+}
+
 
 
 /* =====================================================
@@ -5580,11 +5593,7 @@ arch Results
 
 <div id="cineflixLoader">
 
-    <div class="loader-logo">
-        <span>▶</span>
-    </div>
-
-    <div class="loader-title">
+            <div class="loader-title">
         CINEFLIX
     </div>
 
@@ -5627,7 +5636,7 @@ arch Results
     <div class="mobile-app-logo">
 
         <div class="logo-icon">
-            <div class="logo-play">▶</div>
+            <img src="https://i.ibb.co/ccyx1CsT/icon-512.png" alt="CineFlix logo">
         </div>
 
         <span>CINEFLIX</span>
@@ -5654,7 +5663,7 @@ arch Results
             })">
 
             <div class="logo-icon">
-                <div class="logo-play">▶</div>
+                <img src="https://i.ibb.co/ccyx1CsT/icon-512.png" alt="CineFlix logo">
             </div>
 
             <span>CINEFLIX</span>
@@ -5665,11 +5674,18 @@ arch Results
         <!-- MAIN NAVIGATION -->
         <nav class="nav">
 
-           <a href="#">HOME</a>
+                      <a href="#">HOME</a>
 
-       <a href="#anime" id="animeNavButton">
-          ANIME
-         </a>
+            <a href="#anime" id="animeNavButton">
+                ANIME
+            </a>
+
+            <a
+                href="#tvshows"
+                id="tvShowsNavButton">
+                TV SHOWS
+            </a>
+
             <a href="#trending">
                 TRENDING
             </a>
@@ -5684,12 +5700,6 @@ arch Results
 
             <a href="#toprated">
                 TOP RATED
-            </a>
-
-            <a
-                href="#tvshows"
-                id="tvShowsNavButton">
-                TV SHOWS
             </a>
 
         </nav>
