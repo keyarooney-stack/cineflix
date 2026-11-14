@@ -6787,7 +6787,7 @@ function movieCard(movie){
             <img
                 src="${getPoster(movie)}"
                                 alt="${escapeHTML(title)}"
-                loading="lazy"
+                                loading="eager"
                 decoding="async"
                 onerror="
                     this.src='https://placehold.co/500x750/111/fff?text=No+Poster'
@@ -6902,11 +6902,11 @@ async function loadRelatedMovies(id) {
                         <img
                             src="${getPoster(movie)}"
                                             alt="${escapeHTML(title)}"
-                loading="lazy"
+                                loading="eager"
                 decoding="async"
                 onerror="
                     this.src='https://placehold.co/500x750/111/fff?text=No+Poster'
-                            ">
+                ">
 
                         <div class="rating">
                             ★ ${rating}
@@ -7031,9 +7031,9 @@ async function loadHomepageTVAndAnime() {
                 : `openCineFlixTVShowFromSearch(${Number(show.id)})`;
 
             return `
-                <div class="movie" onclick="${openDetails}">
+                                <div class="movie" onclick="${openDetails}">
                     <div class="poster">
-                        <img src="${escapeHTML(poster)}" alt="${escapeHTML(title)}" loading="lazy">
+                        <img src="${escapeHTML(poster)}" alt="${escapeHTML(title)}" loading="eager">
                         <div class="rating">★ ${rating}</div>
                     </div>
                     <div class="movie-title">${escapeHTML(title)}</div>
@@ -9554,33 +9554,7 @@ if (watchModal) {
 }
 
 
-/* =====================================================
-   AUTO LOAD
-===================================================== */
 
-window.addEventListener(
-    "scroll",
-    function() {
-
-        const nearBottom =
-            window.innerHeight +
-            window.scrollY >=
-            document.body.offsetHeight -
-            1000;
-
-
-        if (
-            nearBottom &&
-            !loading &&
-            currentPage <= totalPages
-        ) {
-
-            loadMoviePage();
-
-        }
-
-    }
-);
 
 
 /* =====================================================
@@ -10112,26 +10086,9 @@ async function start() {
 
 start();
 
-/* Load secondary homepage content only as the visitor approaches it. */
-const homepageContentSections = [
-    document.getElementById("homeTVShows"),
-    document.getElementById("homeAnime")
-].filter(Boolean);
+/* Load homepage TV and anime cards immediately, without waiting for scroll. */
+loadHomepageTVAndAnime();
 
-if ("IntersectionObserver" in window) {
-    const homepageContentObserver = new IntersectionObserver(function(entries) {
-        if (entries.some(entry => entry.isIntersecting)) {
-            homepageContentObserver.disconnect();
-            loadHomepageTVAndAnime();
-        }
-    }, { rootMargin: "250px 0px" });
-
-    homepageContentSections.forEach(section =>
-        homepageContentObserver.observe(section)
-    );
-} else {
-    loadHomepageTVAndAnime();
-}
 
 
 /* =====================================================
@@ -16289,80 +16246,7 @@ async function loadCineFlixAnime(reset = true) {
 
     }
 }
-/* =====================================================
-   CINEFLIX — ENDLESS TV SHOW SCROLL
-===================================================== */
 
-window.addEventListener(
-    "scroll",
-    function () {
-
-        const tvSection =
-            document.getElementById("tvshows");
-
-        if (!tvSection) {
-            return;
-        }
-
-
-        /* ONLY RUN ON TV SHOWS */
-
-        if (
-            window.getComputedStyle(
-                tvSection
-            ).display === "none"
-        ) {
-            return;
-        }
-
-
-        /* STOP WHEN TV SHOW DETAILS ARE OPEN */
-
-        const tvDetails =
-            document.querySelector(
-                ".tv-show-details"
-            );
-
-        if (tvDetails) {
-            return;
-        }
-
-
-        /* STOP WHILE SEARCH RESULTS ARE OPEN */
-
-        const searchSection =
-            document.getElementById(
-                "searchSection"
-            );
-
-        if (
-            searchSection &&
-            window.getComputedStyle(
-                searchSection
-            ).display !== "none"
-        ) {
-            return;
-        }
-
-
-        /* LOAD BEFORE REACHING BOTTOM */
-
-        const distanceFromBottom =
-            document.documentElement.scrollHeight -
-            window.innerHeight -
-            window.scrollY;
-
-
-        if (
-            distanceFromBottom <= 1000
-        ) {
-
-            loadCineFlixTVShows(false);
-
-        }
-
-    }
-);
 
 /* =====================================================
    CINEFLIX — TV SHOW DETAILS
@@ -19430,38 +19314,18 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
-/* =====================================================
-   CINEFLIX — ENDLESS ANIME SCROLL
-===================================================== */
-
-window.addEventListener("scroll", function () {
-
-    const animeSection =
-        document.getElementById("anime");
-
-    if (!animeSection) return;
-    if (window.cineflixAnimeDetailsOpen) return;
-    // Only load when the Anime section is visible
-    if (animeSection.style.display === "none") return;
-
-    // Prevent duplicate requests
-    if (cineflixAnimeLoading || cineflixAnimeFinished) return;
-
-    // Load more when the visitor approaches the bottom
-    const nearBottom =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 700;
-
-    if (nearBottom) {
-        loadCineFlixAnime(false);
-    }
-
-});
 
 
-/* =====================================================
-   ANIME LOAD MORE BUTTON
-===================================================== */
+
+/* LOAD MORE BUTTONS — fetch additional cards on click or near the catalogue end. */
+const loadMoreTVButton =
+    document.getElementById("loadMoreTVButton");
+
+if (loadMoreTVButton) {
+    loadMoreTVButton.addEventListener("click", function () {
+        loadCineFlixTVShows(false);
+    });
+}
 
 const loadMoreAnimeButton =
     document.getElementById("loadMoreAnimeButton");
@@ -19471,6 +19335,35 @@ if (loadMoreAnimeButton) {
         loadCineFlixAnime(false);
     });
 }
+
+if ("IntersectionObserver" in window) {
+    const catalogueObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+
+            switch (entry.target.id) {
+                case "loadMoreButton":
+                    loadMoviePage();
+                    break;
+                case "loadMoreTVButton":
+                    loadCineFlixTVShows(false);
+                    break;
+                case "loadMoreAnimeButton":
+                    loadCineFlixAnime(false);
+                    break;
+            }
+        });
+    }, { rootMargin: "300px 0px" });
+
+    [
+        document.getElementById("loadMoreButton"),
+        loadMoreTVButton,
+        loadMoreAnimeButton
+    ].forEach(function (button) {
+        if (button) catalogueObserver.observe(button);
+    });
+}
+
 /* =====================================================
    CINEFLIX — RETURN TO TV EPISODES AFTER PLAYER CLOSE
 ===================================================== */
