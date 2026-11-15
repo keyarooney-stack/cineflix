@@ -6143,6 +6143,22 @@ arch Results
 </section>
 
 
+<!-- DISCOVER BY CATEGORY — keeps the Movie Collection below intact -->
+
+<section class="section" id="homepageDiscovery">
+
+    <div class="section-header">
+        <h2 class="section-title">🎞️ Discover More</h2>
+        <p class="section-subtitle">Browse popular series, movies, and anime by category</p>
+    </div>
+
+    <div id="homepageShelves">
+        <div class="loading">Loading more to discover...</div>
+    </div>
+
+</section>
+
+
 <!-- LATEST -->
 
 <section class="section" id="latest">
@@ -7084,7 +7100,7 @@ async function loadRelatedAniListAnime(animeId) {
     }`;
 
     try {
-        const response = await fetch(CINEFLIX_ANILIST_URL, {
+        const response = await fetch("https://graphql.anilist.co", {
             method: "POST",
             headers: { "Content-Type": "application/json", "Accept": "application/json" },
             body: JSON.stringify({ query, variables: { id: Number(animeId) } })
@@ -7299,12 +7315,121 @@ async function loadHomepageTVAndAnime() {
 
 }
 
+async function loadHomepageDiscoveryShelves() {
+    const shelfHost = document.getElementById("homepageShelves");
+    if (!shelfHost) return;
+
+    const shelves = [
+        { title: "Popular Series", type: "tv", endpoint: "/tv/popular?language=en-US&page=1" },
+        { title: "Popular Movies", type: "movie", endpoint: "/movie/popular?language=en-US&page=1" },
+        { title: "Animated Series", type: "tv", endpoint: "/discover/tv?with_genres=16&sort_by=popularity.desc&language=en-US&page=1" },
+        { title: "Epic Fantasy", type: "tv", endpoint: "/discover/tv?with_genres=10765&sort_by=popularity.desc&language=en-US&page=1" },
+        { title: "Comedy", type: "tv", endpoint: "/discover/tv?with_genres=35&sort_by=popularity.desc&language=en-US&page=1" },
+        { title: "Gangster & Crime", type: "tv", endpoint: "/discover/tv?with_genres=80&sort_by=popularity.desc&language=en-US&page=1" },
+        { title: "K-Drama", type: "tv", endpoint: "/discover/tv?with_original_language=ko&sort_by=popularity.desc&language=en-US&page=1" },
+        { title: "C-Drama", type: "tv", endpoint: "/discover/tv?with_original_language=zh&sort_by=popularity.desc&language=en-US&page=1" },
+        { title: "Action Movies", type: "movie", endpoint: "/discover/movie?with_genres=28&sort_by=popularity.desc&language=en-US&page=1" },
+        { title: "Horror Movies", type: "movie", endpoint: "/discover/movie?with_genres=27&sort_by=popularity.desc&language=en-US&page=1" },
+        { title: "Christmas Movies", type: "movie", endpoint: "/search/movie?query=christmas&include_adult=false&language=en-US&page=1" }
+    ];
+
+    const renderShelf = function(title, type, items) {
+        const cards = (items || []).filter(item =>
+            item.poster_path || item.coverImage?.large
+        ).slice(0, 18).map(item => {
+            const itemTitle = item.title || item.name || item.original_title || item.original_name || "Untitled";
+            const poster = item.coverImage?.large || (item.poster_path ? POSTER + item.poster_path : "");
+            const year = String(item.release_date || item.first_air_date || item.seasonYear || "N/A").slice(0, 4);
+            const rating = item.averageScore
+                ? (item.averageScore / 10).toFixed(1)
+                : item.vote_average ? Number(item.vote_average).toFixed(1) : "N/A";
+
+            return `
+                <div class="movie" role="button" tabindex="0"
+                    data-discovery-type="${type}"
+                    data-discovery-id="${Number(item.id)}"
+                    data-discovery-title="${escapeHTML(itemTitle)}">
+                    <div class="poster">
+                        <img src="${escapeHTML(poster)}" alt="${escapeHTML(itemTitle)}" loading="lazy" decoding="async">
+                        <div class="rating">★ ${rating}</div>
+                    </div>
+                    <div class="movie-title">${escapeHTML(itemTitle)}</div>
+                    <div class="movie-year">${year}</div>
+                </div>
+            `;
+        }).join("");
+
+        if (!cards) return "";
+        return `
+            <div class="homepage-shelf">
+                <div class="section-header"><h3 class="section-title">${escapeHTML(title)}</h3></div>
+                <div class="movie-row">${cards}</div>
+            </div>
+        `;
+    };
+
+    const results = await Promise.all(shelves.map(async shelf => {
+        try {
+            const data = await tmdb(shelf.endpoint);
+            return renderShelf(shelf.title, shelf.type, data.results || []);
+        } catch (error) {
+            console.warn("Could not load homepage shelf:", shelf.title, error);
+            return "";
+        }
+    }));
+
+    try {
+        const response = await fetch("https://graphql.anilist.co", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify({
+                query: `query { Page(page: 1, perPage: 18) { media(type: ANIME, isAdult: false, sort: TRENDING_DESC) { id title { romaji english native } coverImage { large } averageScore seasonYear } } }`
+            })
+        });
+        if (!response.ok) throw new Error("AniList request failed: " + response.status);
+        const result = await response.json();
+        const anime = result.data?.Page?.media || [];
+        results.push(renderShelf("Trending Anime", "anime", anime.map(item => ({
+            ...item,
+            title: item.title?.english || item.title?.romaji || item.title?.native || "Anime"
+        }))));
+    } catch (error) {
+        console.warn("Could not load trending anime shelf:", error);
+    }
+
+    shelfHost.innerHTML = results.filter(Boolean).join("") || '<div class="loading">Could not load discovery shelves.</div>';
+}
+
+const homepageShelves = document.getElementById("homepageShelves");
+if (homepageShelves) {
+    homepageShelves.addEventListener("click", function(event) {
+        const card = event.target.closest("[data-discovery-type]");
+        if (!card) return;
+        const id = Number(card.dataset.discoveryId);
+        const type = card.dataset.discoveryType;
+        const discovery = document.getElementById("homepageDiscovery");
+        if (discovery) discovery.style.display = "none";
+
+        if (type === "movie") openMovie(id);
+        else if (type === "tv") openCineFlixTVShowFromSearch(id);
+        else openCineFlixHomepageAnime(id, card.dataset.discoveryTitle);
+    });
+
+    homepageShelves.addEventListener("keydown", function(event) {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        if (event.target.matches("[data-discovery-type]")) {
+            event.preventDefault();
+            event.target.click();
+        }
+    });
+}
+
 function openCineFlixHomepageAnime(animeId, animeTitle) {
     const animeSection = document.getElementById("anime");
     if (!animeSection) return;
 
     [
-        "trending", "homeTVShows", "homeAnime", "latest",
+        "trending", "homeTVShows", "homeAnime", "homepageDiscovery", "latest",
         "popular", "toprated", "genres", "movies", "tvshows", "searchSection"
     ].forEach(function(id) {
         const section = document.getElementById(id);
@@ -10321,6 +10446,7 @@ start();
 
 /* Load homepage TV and anime cards immediately, without waiting for scroll. */
 loadHomepageTVAndAnime();
+loadHomepageDiscoveryShelves();
 
 
 
@@ -18422,12 +18548,13 @@ function cineflixRestoreHome() {
     }
 
 
-    /* SHOW MOVIE SECTIONS */
+        /* SHOW MOVIE SECTIONS */
 
     [
                 "trending",
         "homeTVShows",
         "homeAnime",
+        "homepageDiscovery",
         "latest",
         "popular",
         "toprated",
@@ -19426,10 +19553,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const homeButton =
         document.querySelector('.nav a[href="#"]');
 
-        const movieSections = [
+            const movieSections = [
         "trending",
         "homeTVShows",
         "homeAnime",
+        "homepageDiscovery",
         "latest",
         "popular",
         "toprated",
