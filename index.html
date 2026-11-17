@@ -822,6 +822,69 @@ body{
     transform:scale(1.06);
 }
 
+.movie-trailer-preview {
+    position: fixed;
+    z-index: 10000;
+    width: min(400px, calc(100vw - 24px));
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 12px;
+    background: #151515;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, .75);
+    color: #fff;
+    pointer-events: auto;
+}
+
+.movie-trailer-preview iframe {
+    display: block;
+    width: 100%;
+    height: 200px;
+    border: 0;
+    background: #000;
+}
+
+.movie-trailer-preview-mute {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+    padding: 7px 10px;
+    border: 1px solid rgba(255, 255, 255, .25);
+    border-radius: 18px;
+    background: rgba(0, 0, 0, .78);
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.movie-trailer-preview-info {
+    padding: 9px 15px 11px;
+}
+
+.movie-trailer-preview-title {
+    overflow: hidden;
+    font-size: 16px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.movie-trailer-preview-meta {
+    margin-bottom: 11px;
+    color: #c5c5c5;
+    font-size: 12px;
+}
+
+.movie-trailer-preview-play {
+    padding: 8px 18px;
+    border: 0;
+    border-radius: 22px;
+    background: #fff;
+    color: #111;
+    font-weight: 700;
+    cursor: pointer;
+}
+
 .rating{
     position:absolute;
     right:7px;
@@ -5483,6 +5546,48 @@ arch Results
     grid-column: 1 / -1;
 }
 
+/* TV and anime details open as a dedicated view, not inside the homepage. */
+body.cineflix-detail-page-active > .navbar,
+body.cineflix-detail-page-active > .mobile-app-header,
+body.cineflix-detail-page-active > #hero,
+body.cineflix-detail-page-active > main,
+body.cineflix-detail-page-active > section.section,
+body.cineflix-detail-page-active > footer {
+    display: none !important;
+}
+
+body.cineflix-detail-page-active > #tvshows.details-page-open,
+body.cineflix-detail-page-active > #anime.details-page-open {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 1100 !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    margin: 0 !important;
+    padding: 24px clamp(16px, 4vw, 56px) !important;
+    overflow-y: auto !important;
+    background: #080808 !important;
+    box-sizing: border-box !important;
+}
+
+body.cineflix-detail-page-active > #tvshows.details-page-open,
+body.cineflix-detail-page-active > #anime.details-page-open {
+    display: block !important;
+}
+
+body.cineflix-detail-page-active #tvshows.details-page-open > .section-header,
+body.cineflix-detail-page-active #anime.details-page-open > .section-header,
+body.cineflix-detail-page-active #tvshows.details-page-open #loadMoreTVButton,
+body.cineflix-detail-page-active #anime.details-page-open #loadMoreAnimeButton {
+    display: none !important;
+}
+
+body.cineflix-detail-page-active .tv-show-details > button {
+    margin-top: 16px !important;
+}
+
 /* TV and anime catalogue cards use a different markup than movie cards. */
 .grid > .movie-card {
     display: block;
@@ -6860,8 +6965,9 @@ function movieCard(movie){
 
    return `
 
-    <div
+        <div
     class="movie"
+    data-cineflix-movie-id="${Number(movie.id)}"
     onclick="openMovie(${movie.id})">
 
         <div class="poster">
@@ -6893,6 +6999,143 @@ function movieCard(movie){
 
 `;
 }
+
+/* Load brief muted trailer previews for movie, TV, and anime cards. */
+const cineflixTrailerPreviewCache = new Map();
+
+async function showCineFlixMovieTrailerPreview(card) {
+    if (!card || document.querySelector(".movie-trailer-preview")) return;
+
+    const mediaType = card.dataset.cineflixMediaType || "movie";
+    const mediaId = Number(
+        card.dataset.cineflixMediaId || card.dataset.cineflixMovieId
+    );
+    if (!mediaId) return;
+
+    const cacheKey = `${mediaType}:${mediaId}`;
+
+    try {
+        let trailerKey = cineflixTrailerPreviewCache.get(cacheKey);
+
+        if (trailerKey === undefined) {
+            if (mediaType === "anime") {
+                const response = await fetch(CINEFLIX_ANILIST_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        query: `query ($id: Int) { Media(id: $id, type: ANIME) { trailer { id site } } }`,
+                        variables: { id: mediaId }
+                    })
+                });
+                if (!response.ok) throw new Error("AniList trailer request failed.");
+                const result = await response.json();
+                const trailer = result.data?.Media?.trailer;
+                trailerKey = trailer?.site?.toLowerCase() === "youtube" ? trailer.id : null;
+            } else {
+                const endpoint = mediaType === "movie" ? "movie" : "tv";
+                const videos = await tmdb(`/${endpoint}/${mediaId}/videos?language=en-US`);
+                const youtubeVideos = (videos.results || []).filter(video => video.site === "YouTube");
+                const trailer = youtubeVideos.find(video => video.type === "Trailer") ||
+                    youtubeVideos.find(video => video.type === "Teaser") ||
+                    youtubeVideos[0];
+                trailerKey = trailer?.key || null;
+            }
+
+            cineflixTrailerPreviewCache.set(cacheKey, trailerKey);
+        }
+
+        if (!trailerKey || !card.matches(":hover")) return;
+
+        const preview = document.createElement("div");
+        preview.className = "movie-trailer-preview";
+
+        const iframe = document.createElement("iframe");
+        iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(trailerKey)}?autoplay=1&mute=1&controls=0&playsinline=1&rel=0&start=0&end=20&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`;
+        iframe.title = "Muted trailer preview";
+        iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+        iframe.tabIndex = -1;
+
+        const muteButton = document.createElement("button");
+        muteButton.className = "movie-trailer-preview-mute";
+        muteButton.type = "button";
+        muteButton.textContent = "🔇 Unmute";
+        muteButton.setAttribute("aria-label", "Unmute trailer");
+        muteButton.addEventListener("pointerdown", function(event) {
+            event.stopPropagation();
+        });
+
+        muteButton.addEventListener("click", function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const isMuted = muteButton.dataset.muted !== "false";
+            const sendPlayerCommand = function(func) {
+                iframe.contentWindow?.postMessage(JSON.stringify({
+                    event: "command",
+                    func: func,
+                    args: []
+                }), "https://www.youtube-nocookie.com");
+            };
+
+            // Toggle audio only; do not send playback commands from this button.
+            sendPlayerCommand(isMuted ? "unMute" : "mute");
+
+            muteButton.dataset.muted = String(!isMuted);
+            muteButton.textContent = isMuted ? "🔊 Mute" : "🔇 Unmute";
+            muteButton.setAttribute("aria-label", isMuted ? "Mute trailer" : "Unmute trailer");
+        });
+
+        const title = card.querySelector(".movie-title")?.textContent.trim() || "Trailer preview";
+        const info = document.createElement("div");
+        info.className = "movie-trailer-preview-info";
+
+        const titleElement = document.createElement("div");
+        titleElement.className = "movie-trailer-preview-title";
+        titleElement.textContent = title;
+
+        info.append(titleElement);
+        preview.append(iframe, muteButton, info);
+        document.body.appendChild(preview);
+
+        const bounds = card.getBoundingClientRect();
+        const previewWidth = Math.min(400, window.innerWidth - 24);
+        const previewHeight = preview.offsetHeight;
+        preview.style.left = `${Math.max(12, Math.min(bounds.left + bounds.width / 2 - previewWidth / 2, window.innerWidth - previewWidth - 12))}px`;
+        preview.style.top = `${Math.max(12, Math.min(bounds.top - 24, window.innerHeight - previewHeight - 12))}px`;
+
+        preview.addEventListener("pointerleave", function() {
+            preview.remove();
+        });
+    } catch (error) {
+        console.warn("Could not load trailer preview:", error);
+    }
+}
+
+document.addEventListener("pointerover", function(event) {
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+    const card = event.target.closest("[data-cineflix-media-type][data-cineflix-media-id], .movie[data-cineflix-movie-id]");
+    if (!card || card.contains(event.relatedTarget)) return;
+
+    clearTimeout(card.cineflixPreviewTimer);
+    card.cineflixPreviewTimer = setTimeout(function() {
+        showCineFlixMovieTrailerPreview(card);
+    }, 450);
+});
+
+document.addEventListener("pointerout", function(event) {
+    const card = event.target.closest("[data-cineflix-media-type][data-cineflix-media-id], .movie[data-cineflix-movie-id]");
+    if (!card || card.contains(event.relatedTarget)) return;
+
+    clearTimeout(card.cineflixPreviewTimer);
+    const preview = document.querySelector(".movie-trailer-preview");
+    if (preview && preview.contains(event.relatedTarget)) return;
+    if (preview && !preview.matches(":hover")) preview.remove();
+});
+
 /* =====================================================
    RELATED MOVIES
 ===================================================== */
@@ -6977,9 +7220,10 @@ async function loadRelatedMovies(id) {
 
 
             return `
-                <div
-                    class="movie"
-                    onclick="openMovie(${movie.id})">
+                    <div
+    class="movie"
+    data-cineflix-movie-id="${Number(movie.id)}"
+    onclick="openMovie(${movie.id})">
 
                     <div class="poster">
 
@@ -7054,7 +7298,7 @@ function renderCineFlixRelatedCards(items, type) {
             : item.seasonYear || "N/A";
 
         return `
-            <div class="movie" data-cineflix-related-type="${type}" data-cineflix-related-id="${Number(item.id)}" data-cineflix-related-title="${escapeHTML(title)}" role="button" tabindex="0">
+            <div class="movie" data-cineflix-media-type="${type === "tmdb-anime" ? "tv" : type}" data-cineflix-media-id="${Number(item.id)}" data-cineflix-related-type="${type}" data-cineflix-related-id="${Number(item.id)}" data-cineflix-related-title="${escapeHTML(title)}" role="button" tabindex="0">
                 <div class="poster">
                     <img src="${escapeHTML(poster)}" alt="${escapeHTML(title)}" loading="lazy" onerror="this.src='https://placehold.co/500x750/111/fff?text=No+Poster'">
                     <div class="rating">★ ${rating}</div>
@@ -7158,8 +7402,9 @@ document.addEventListener("click", function(event) {
         });
         const hero = document.getElementById("hero");
         if (hero) hero.style.display = "none";
-        const section = document.getElementById("tvshows");
+                const section = document.getElementById("tvshows");
         if (section) section.style.display = "block";
+        window.cineflixDetailPageSource = "home";
         openCineFlixTVShow(id);
         return;
     }
@@ -7176,8 +7421,9 @@ document.addEventListener("click", function(event) {
         });
         const hero = document.getElementById("hero");
         if (hero) hero.style.display = "none";
-        const section = document.getElementById("anime");
+                const section = document.getElementById("anime");
         if (section) section.style.display = "block";
+        window.cineflixDetailPageSource = "home";
         openCineFlixAnime(id);
     }
 });
@@ -7275,12 +7521,12 @@ async function loadHomepageTVAndAnime() {
             const poster = isAnime
                 ? show.coverImage?.large || "https://placehold.co/500x750/111/fff?text=No+Poster"
                 : show.poster_path ? POSTER + show.poster_path : "https://placehold.co/500x750/111/fff?text=No+Poster";
-            const openDetails = isAnime
+                        const openDetails = isAnime
                 ? `openCineFlixHomepageAnime(${Number(show.id)}, this.querySelector('.movie-title').textContent.trim())`
-                : `openCineFlixTVShowFromSearch(${Number(show.id)})`;
+                : `openCineFlixTVShowFromSearch(${Number(show.id)}, 'home')`;
 
             return `
-                                <div class="movie" onclick="${openDetails}">
+                                                                <div class="movie" data-cineflix-media-type="${isAnime ? "anime" : "tv"}" data-cineflix-media-id="${Number(show.id)}" onclick="${openDetails}">
                     <div class="poster">
                         <img src="${escapeHTML(poster)}" alt="${escapeHTML(title)}" loading="eager">
                         <div class="rating">★ ${rating}</div>
@@ -7345,7 +7591,9 @@ async function loadHomepageDiscoveryShelves() {
                 : item.vote_average ? Number(item.vote_average).toFixed(1) : "N/A";
 
             return `
-                <div class="movie" role="button" tabindex="0"
+                                <div class="movie" role="button" tabindex="0"
+                    data-cineflix-media-type="${type === "anime" ? "anime" : type}"
+                    data-cineflix-media-id="${Number(item.id)}"
                     data-discovery-type="${type}"
                     data-discovery-id="${Number(item.id)}"
                     data-discovery-title="${escapeHTML(itemTitle)}">
@@ -7410,8 +7658,8 @@ if (homepageShelves) {
         const discovery = document.getElementById("homepageDiscovery");
         if (discovery) discovery.style.display = "none";
 
-        if (type === "movie") openMovie(id);
-        else if (type === "tv") openCineFlixTVShowFromSearch(id);
+                if (type === "movie") openMovie(id);
+        else if (type === "tv") openCineFlixTVShowFromSearch(id, "home");
         else openCineFlixHomepageAnime(id, card.dataset.discoveryTitle);
     });
 
@@ -7427,6 +7675,7 @@ if (homepageShelves) {
 function openCineFlixHomepageAnime(animeId, animeTitle) {
     const animeSection = document.getElementById("anime");
     if (!animeSection) return;
+    window.cineflixDetailPageSource = "home";
 
     [
         "trending", "homeTVShows", "homeAnime", "homepageDiscovery", "latest",
@@ -8012,8 +8261,10 @@ results.innerHTML = found.map(function(item) {
             "https://placehold.co/500x750/111/fff?text=No+Poster";
 
         return `
-         <div
+                  <div
     class="movie"
+    data-cineflix-media-type="anime"
+    data-cineflix-media-id="${Number(item.id)}"
     onclick="
         window.cineflixAniListOpenedFromSearch = true;
         recordCineFlixAnimeView(
@@ -8067,8 +8318,10 @@ results.innerHTML = found.map(function(item) {
         : "https://placehold.co/500x750/111/fff?text=No+Poster";
 
     return `
-                <div
+                                <div
             class="movie"
+            data-cineflix-media-type="tv"
+            data-cineflix-media-id="${Number(item.id)}"
             onclick="openCineFlixTVShowFromSearch(${Number(item.id)})"
         >
             <div class="poster">
@@ -8119,7 +8372,9 @@ section.scrollIntoView({
    CINEFLIX — OPEN TV SHOW FROM SEARCH
 ===================================================== */
 
-function openCineFlixTVShowFromSearch(tvId) {
+function openCineFlixTVShowFromSearch(tvId, source = "search") {
+
+    window.cineflixDetailPageSource = source;
 
     const tvSection =
         document.getElementById("tvshows");
@@ -8195,6 +8450,7 @@ function openCineFlixTVShowFromSearch(tvId) {
 ===================================================== */
 
 function openCineFlixAnimeFromSearch(animeId) {
+    window.cineflixDetailPageSource = "search";
     const animeSection = document.getElementById("anime");
 
     if (!animeSection) {
@@ -9731,6 +9987,66 @@ function updateHero(){
         );
 
 }
+/* =====================================================
+   CINEFLIX — DEDICATED TV / ANIME DETAILS VIEW
+===================================================== */
+
+function cineflixShowDetailsPage(sectionId, source) {
+    window.cineflixDetailPageSource = source || "home";
+
+    ["tvshows", "anime"].forEach(function(id) {
+        const section = document.getElementById(id);
+        if (section) section.classList.toggle("details-page-open", id === sectionId);
+    });
+
+    document.body.classList.add("cineflix-detail-page-active");
+}
+
+function cineflixReturnFromDetailsPage(sectionId) {
+    const source = window.cineflixDetailPageSource || "home";
+    const tvSection = document.getElementById("tvshows");
+    const animeSection = document.getElementById("anime");
+
+    document.body.classList.remove("cineflix-detail-page-active");
+    [tvSection, animeSection].forEach(section => {
+        if (section) section.classList.remove("details-page-open");
+    });
+    cineflixSetHomeURL();
+
+    if (source === "tv-catalog" || source === "anime-catalog") {
+        ["trending", "homeTVShows", "homeAnime", "homepageDiscovery", "latest", "popular", "toprated", "genres", "movies", "searchSection"].forEach(id => {
+            const section = document.getElementById(id);
+            if (section) section.style.display = "none";
+        });
+        const hero = document.getElementById("hero");
+        if (hero) hero.style.display = "none";
+
+        const isTV = source === "tv-catalog";
+        if (tvSection) tvSection.style.display = isTV ? "block" : "none";
+        if (animeSection) animeSection.style.display = isTV ? "none" : "block";
+        if (isTV) loadCineFlixTVShows();
+        else loadCineFlixAnime(true);
+        (isTV ? tvSection : animeSection)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+    }
+
+    cineflixRestoreHome();
+    if (tvSection) tvSection.style.display = "none";
+    if (animeSection) animeSection.style.display = "none";
+
+    if (source === "search") {
+        const searchSection = document.getElementById("searchSection");
+        if (searchSection) {
+            searchSection.style.display = "block";
+            searchSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    window.cineflixDetailPageSource = "home";
+}
+
 /* =====================================================
    CINEFLIX — SEO FRIENDLY URL HELPER
 ===================================================== */
@@ -15783,9 +16099,12 @@ async function loadCineFlixTVShows(reset = true) {
 
                 return `
 
-                    <div
+                                        <div
                         class="movie-card"
+                        data-cineflix-media-type="tv"
+                        data-cineflix-media-id="${Number(show.id)}"
                         onclick="
+                            window.cineflixDetailPageSource = 'tv-catalog';
                             openCineFlixTVShow(${show.id})
                         "
                     >
@@ -15950,22 +16269,22 @@ async function fetchCineFlixAniListAnime(page = 1) {
 
 async function openCineFlixAniListDetails(animeId) {
 
-   const openedFromSearch =
-    window.cineflixAniListOpenedFromSearch === true;
+    const openedFromSearch =
+        window.cineflixAniListOpenedFromSearch === true;
 
-window.cineflixAniListOpenedFromSearch = false;
+    window.cineflixAniListOpenedFromSearch = false;
 
-const animeGrid = openedFromSearch
-    ? document.getElementById("searchResults")
-    : document.getElementById("animeGrid");
+    const animeGrid = document.getElementById("animeGrid");
+    if (!animeGrid || !animeId) return;
 
-if (!animeGrid || !animeId) return;
+    cineflixShowDetailsPage(
+        "anime",
+        openedFromSearch
+            ? "search"
+            : window.cineflixDetailPageSource || "home"
+    );
 
-if (openedFromSearch) {
-    window.cineflixSavedSearchResultsHTML = animeGrid.innerHTML;
-}
-
-window.cineflixAnimeDetailsOpen = true;
+    window.cineflixAnimeDetailsOpen = true;
 animeGrid.classList.add("details-open");
 
 animeGrid.style.display = "block";
@@ -16451,47 +16770,16 @@ animeGrid.innerHTML = `
    BACK TO ANIME CATALOGUE
 ===================================================== */
 function closeCineFlixAniListDetails() {
-
     window.cineflixAnimeDetailsOpen = false;
-
-    // Restore search results if Anime was opened from Search
-    const searchResults = document.getElementById("searchResults");
-
-        if (
-        searchResults &&
-        window.cineflixSavedSearchResultsHTML !== undefined
-    ) {
-        searchResults.innerHTML =
-            window.cineflixSavedSearchResultsHTML;
-        searchResults.classList.remove("details-open");
-
-        window.cineflixSavedSearchResultsHTML = undefined;
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
-        return;
+    const animeGrid = document.getElementById("animeGrid");
+    if (animeGrid) {
+        animeGrid.classList.remove("details-open");
+        animeGrid.style.display = "";
+        animeGrid.style.width = "";
+        animeGrid.style.gridTemplateColumns = "";
+        animeGrid.innerHTML = "";
     }
-
-    // Otherwise return to the normal Anime catalogue
-        const animeGrid = document.getElementById("animeGrid");
-
-    if (!animeGrid) return;
-
-    animeGrid.classList.remove("details-open");
-    animeGrid.style.display = "";
-    animeGrid.style.width = "";
-    animeGrid.style.gridTemplateColumns = "";
-    animeGrid.innerHTML = "";
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-    loadCineFlixAnime(true);
+    cineflixReturnFromDetailsPage("anime");
 }
 /* =====================================================
    CINEFLIX — ANILIST ONLY ANIME CATALOGUE
@@ -16552,9 +16840,11 @@ async function loadCineFlixAnime(reset = true) {
                         : "N/A";
 
                 return `
-                    <div
+                                        <div
                         class="movie-card"
-                    onclick="window.cineflixAniListOpenedFromSearch = false; recordCineFlixAnimeView(${Number(item.id)}, this.querySelector('.movie-title').textContent.trim()); openCineFlixAniListDetails(${Number(item.id)})"
+                        data-cineflix-media-type="anime"
+                        data-cineflix-media-id="${Number(item.id)}"
+                    onclick="window.cineflixAniListOpenedFromSearch = false; window.cineflixDetailPageSource = 'anime-catalog'; recordCineFlixAnimeView(${Number(item.id)}, this.querySelector('.movie-title').textContent.trim()); openCineFlixAniListDetails(${Number(item.id)})"
                     >
 
                         <img
@@ -16617,6 +16907,11 @@ async function loadCineFlixAnime(reset = true) {
 ===================================================== */
 
 async function openCineFlixTVShow(tvId) {
+
+    cineflixShowDetailsPage(
+        "tvshows",
+        window.cineflixDetailPageSource || "home"
+    );
 
     console.log(
         "CineFlix TV Show selected:",
@@ -16707,11 +17002,7 @@ cineflixSetContentURL(
 
                <button
     type="button"
-      onclick="
-    cineflixSetHomeURL();
-    document.getElementById('tvShowsGrid').classList.remove('details-open');
-    loadCineFlixTVShows();
-"
+          onclick="cineflixReturnFromDetailsPage('tv');"
     style="
         margin-top:70px;
         margin-bottom:20px;
@@ -16889,9 +17180,14 @@ async function openCineFlixAnime(animeId) {
 
     console.log("CineFlix Anime selected:", animeId);
 
-    const animeGrid = document.getElementById("animeGrid");
+        const animeGrid = document.getElementById("animeGrid");
 
     if (!animeGrid) return;
+
+    cineflixShowDetailsPage(
+        "anime",
+        window.cineflixDetailPageSource || "home"
+    );
 
     try {
 
@@ -16953,20 +17249,7 @@ animeGrid.replaceChildren();
 
                 <button
                     type="button"
-             onclick="
-                              window.cineflixAnimeDetailsOpen = false;
-
-           cineflixSetHomeURL();
-
-          const grid = document.getElementById('animeGrid');
-          grid.classList.remove('details-open');
-
-          grid.style.display = '';
-            grid.style.width = '';
-           grid.style.gridTemplateColumns = '';
-
-          loadCineFlixAnime();
-         "
+                          onclick="cineflixReturnFromDetailsPage('anime');"
                     style="
                         margin-top:70px;
                         margin-bottom:20px;
@@ -18308,7 +18591,8 @@ async function cineflixOpenFromURL() {
         const hero = document.getElementById("hero");
         if (hero) hero.style.display = "none";
 
-        animeSection.style.display = "block";
+                animeSection.style.display = "block";
+        window.cineflixDetailPageSource = "route";
         openCineFlixAniListDetails(animeId);
         return;
     }
@@ -18457,6 +18741,7 @@ async function cineflixOpenFromURL() {
             }
 
 
+                        window.cineflixDetailPageSource = "route";
             openCineFlixTVShow(
                 selected.id
             );
@@ -18606,13 +18891,16 @@ window.addEventListener(
 
                 /* HOME */
 
-                if (
+                                if (
                     path === "/" ||
                     path === ""
                 ) {
-
+                    document.body.classList.remove("cineflix-detail-page-active");
+                    document.getElementById("tvshows")?.classList.remove("details-page-open");
+                    document.getElementById("anime")?.classList.remove("details-page-open");
                     cineflixRestoreHome();
-
+                    document.getElementById("tvshows").style.display = "none";
+                    document.getElementById("anime").style.display = "none";
                     return;
                 }
 
