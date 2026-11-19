@@ -5717,6 +5717,282 @@ body.cineflix-detail-page-active .tv-show-details > button {
     }
 
 }
+/* Fast cross-catalogue search suggestions and selected-title results view. */
+#liveSearchResults {
+    display: none;
+}
+
+#liveSearchResults.active {
+    display: block;
+}
+
+#liveSearchResults .cineflix-live-type {
+    flex: 0 0 auto;
+    margin-left: auto;
+    color: #e50914;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+}
+
+#searchSection .cineflix-search-feature {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(130px, 210px) minmax(0, 1fr);
+    gap: 22px;
+    align-items: center;
+    padding: 18px;
+    margin-bottom: 4px;
+    border: 1px solid rgba(229, 9, 20, .45);
+    border-radius: 12px;
+    background: linear-gradient(120deg, rgba(229, 9, 20, .14), #111 60%);
+}
+
+#searchSection .cineflix-search-feature .poster {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 3;
+}
+
+#searchSection .cineflix-search-feature-copy h3 {
+    margin: 0 0 10px;
+    font-size: clamp(20px, 3vw, 32px);
+}
+
+#searchSection .cineflix-search-feature-copy p {
+    margin-top: 10px;
+    color: #aaa;
+    line-height: 1.55;
+}
+
+#searchSection .cineflix-search-feature-label {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: #ff4652;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Dedicated search-results page */
+#searchSection.cineflix-search-page-active {
+    position: fixed !important;
+    inset: 162px 0 0 !important;
+    z-index: 900 !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 30px clamp(18px, 5vw, 76px) 60px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    background: #080808 !important;
+    box-sizing: border-box !important;
+}
+
+#searchSection.cineflix-search-page-active .section-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 22px;
+    margin-bottom: 28px;
+}
+
+.cineflix-search-page-heading h1 {
+    margin: 10px 0 8px;
+    color: #fff;
+    font-size: clamp(26px, 4vw, 42px);
+    line-height: 1.1;
+}
+
+.cineflix-search-home-button {
+    padding: 8px 12px;
+    border: 1px solid #333;
+    border-radius: 7px;
+    background: #151515;
+    color: #eee;
+    font: inherit;
+    cursor: pointer;
+}
+
+.cineflix-search-home-button:hover,
+.cineflix-search-filter:hover {
+    border-color: #e50914;
+    color: #fff;
+}
+
+.cineflix-search-eyebrow {
+    margin-top: 15px;
+    color: #e50914;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+}
+
+.cineflix-search-caption {
+    color: #888;
+    font-size: 14px;
+}
+
+.cineflix-search-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cineflix-search-filter {
+    padding: 9px 17px;
+    border: 1px solid #333;
+    border-radius: 22px;
+    background: #121212;
+    color: #bbb;
+    font: inherit;
+    cursor: pointer;
+}
+
+.cineflix-search-filter.active {
+    border-color: #e50914;
+    background: #e50914;
+    color: #fff;
+}
+
+#searchSection.cineflix-search-page-active #searchResults {
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)) !important;
+    gap: 28px 18px !important;
+}
+
+#searchSection .cineflix-search-card {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #1e1e1e;
+    border-radius: 10px;
+    background: #111;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+#searchSection .cineflix-search-card:hover,
+#searchSection .cineflix-search-card:focus-visible {
+    transform: translateY(-4px);
+    border-color: rgba(229, 9, 20, .7);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .45);
+    outline: none;
+}
+
+#searchSection .cineflix-search-card .poster {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 3;
+    border-radius: 0;
+}
+
+#searchSection .cineflix-search-card-copy {
+    padding: 12px;
+}
+
+#searchSection .cineflix-search-card .movie-title {
+    margin: 0 0 5px !important;
+    color: #fff;
+    font-size: 15px !important;
+}
+
+#searchSection .cineflix-search-card .movie-year {
+    color: #888 !important;
+}
+
+.cineflix-search-card-summary {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 9px 0 0;
+    color: #aaa;
+    font-size: 12px;
+    line-height: 1.45;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.cineflix-search-watch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding: 9px 11px;
+    border-radius: 6px;
+    background: #e50914;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+#searchSection .cineflix-search-feature {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(150px, 205px) minmax(0, 1fr);
+    align-items: stretch;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid rgba(229, 9, 20, .5);
+    background: linear-gradient(110deg, rgba(229, 9, 20, .13), #111 65%);
+}
+
+#searchSection .cineflix-search-feature .poster {
+    height: 100%;
+    min-height: 220px;
+}
+
+#searchSection .cineflix-search-feature .cineflix-search-card-copy {
+    align-self: center;
+    padding: 24px;
+}
+
+#searchSection .cineflix-search-feature .movie-title {
+    margin-top: 5px !important;
+    font-size: clamp(21px, 3vw, 32px) !important;
+}
+
+#searchSection .cineflix-search-feature .cineflix-search-watch {
+    width: min(220px, 100%);
+}
+
+@media (max-width: 850px) {
+    #searchSection.cineflix-search-page-active {
+        inset-block-start: 142px !important;
+    }
+}
+
+@media (max-width: 600px) {
+    #searchSection.cineflix-search-page-active {
+        inset-block-start: 60px !important;
+        padding: 20px 14px 40px !important;
+    }
+
+    #searchSection.cineflix-search-page-active .section-header {
+        align-items: flex-start;
+    }
+
+    #searchSection.cineflix-search-page-active #searchResults {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 16px 10px !important;
+    }
+
+    #searchSection .cineflix-search-feature {
+        grid-template-columns: 100px minmax(0, 1fr);
+    }
+
+    #searchSection .cineflix-search-feature .poster {
+        min-height: 150px;
+    }
+
+    #searchSection .cineflix-search-feature .cineflix-search-card-copy {
+        padding: 12px;
+    }
+
+    .cineflix-search-filters {
+        width: 100%;
+    }
+}
 </style>
 
 </head>
@@ -6736,6 +7012,10 @@ body.cineflix-detail-page-active .tv-show-details > button {
 
 const TMDB_TOKEN =
 "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkNDljZmM1OTk1N2FjNzI4NzFhY2YyN2RjYmJmMTU3MyIsIm5iZiI6MTc4NzE0MjM4OC41NDgsInN1YiI6IjZhODVhMGY0Njg5NTliNGNiNmIwZDAzMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.asrcFA9Urtkdyls-B7HoJkLGuKg0k7L1Lvorb0C1N34";
+
+const OMDB_API_KEY = "c9c94c48";
+const OMDB_API = "https://www.omdbapi.com/";
+
 
 
 /* =====================================================
@@ -8038,7 +8318,125 @@ function applyGenre(){
    CINEFLIX — SEARCH MOVIES, TV SHOWS & ANIME
 ===================================================== */
 
+function cineflixNormalizeMovieTitle(title) {
+    return String(title || "")
+        .toLowerCase()
+        .replace(/&amp;/g, "and")
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+}
+
+async function cineflixGetIMDbId(movieId) {
+    try {
+        const externalIds = await tmdb(`/movie/${Number(movieId)}/external_ids`);
+        return externalIds.imdb_id || null;
+    } catch (error) {
+        return null;
+    }
+}
+
+async function cineflixResolveTMDBMovieByIMDb(imdbId, title, year) {
+    if (!imdbId || !title) return null;
+
+    try {
+        const results = await tmdb(
+            `/search/movie?query=${encodeURIComponent(title)}&include_adult=false&language=en-US&page=1`
+        );
+        const candidates = (results.results || []).slice(0, 8);
+        const normalizedTitle = cineflixNormalizeMovieTitle(title);
+        const wantedYear = String(year || "").slice(0, 4);
+
+        for (const candidate of candidates) {
+            const candidateTitle = candidate.title || candidate.original_title || "";
+            const candidateYear = String(candidate.release_date || "").slice(0, 4);
+            if (cineflixNormalizeMovieTitle(candidateTitle) !== normalizedTitle) continue;
+            if (wantedYear && candidateYear && wantedYear !== candidateYear) continue;
+
+            const candidateIMDbId = await cineflixGetIMDbId(candidate.id);
+            if (candidateIMDbId === imdbId) return candidate;
+        }
+    } catch (error) {
+        console.warn("Could not match OMDb title to a TMDB movie:", error);
+    }
+
+    return null;
+}
+
+async function openOmdbMovie(imdbId) {
+    if (!/^tt\d+$/.test(String(imdbId || ""))) return;
+
+    const modal = document.getElementById("movieModal");
+    const title = document.getElementById("modalTitle");
+    const info = document.getElementById("modalInfo");
+    const description = document.getElementById("modalDescription");
+    const backdrop = document.getElementById("modalBackdrop");
+    const trailerButton = document.getElementById("watchButton");
+    const whereToWatchButton = document.getElementById("whereToWatchButton");
+    const cineflixWatchButton = document.getElementById("cineflixWatchButton");
+
+    modal.style.display = "block";
+    document.body.style.overflow = "hidden";
+    title.textContent = "Loading...";
+    info.textContent = "";
+    description.textContent = "";
+    trailerButton.disabled = true;
+    trailerButton.textContent = "TRAILER UNAVAILABLE";
+    whereToWatchButton.disabled = true;
+    whereToWatchButton.textContent = "📺 PROVIDERS UNAVAILABLE";
+
+    try {
+        const response = await fetch(
+            `${OMDB_API}?apikey=${encodeURIComponent(OMDB_API_KEY)}&i=${encodeURIComponent(imdbId)}&plot=full`
+        );
+        if (!response.ok) throw new Error("OMDb movie lookup failed.");
+
+        const movie = await response.json();
+        if (movie.Response !== "True") throw new Error(movie.Error || "Movie not found.");
+
+        const tmdbMatch = await cineflixResolveTMDBMovieByIMDb(
+            imdbId,
+            movie.Title,
+            movie.Year
+        );
+        const poster = movie.Poster && movie.Poster !== "N/A" ? movie.Poster : "";
+        const displayTitle = movie.Title || "Unknown Movie";
+
+        window.cineflixCurrentMovie = {
+            tmdb_id: tmdbMatch?.id || null,
+            imdb_id: imdbId,
+            media_type: "movie",
+            title: displayTitle,
+            poster_path: tmdbMatch?.poster_path || poster || null,
+            omdb_poster: poster,
+            year: movie.Year || "N/A"
+        };
+
+        title.textContent = displayTitle;
+        info.textContent = `${movie.Year || "N/A"} · ${movie.Rated || "NR"} · ★ ${movie.imdbRating || "N/A"}`;
+        description.textContent = movie.Plot || "No description available.";
+        backdrop.style.backgroundImage = poster ? `url("${poster}")` : "none";
+
+        cineflixSetContentURL("movie", tmdbMatch?.id || imdbId, displayTitle);
+
+        cineflixWatchButton.disabled = false;
+        cineflixWatchButton.textContent = "▶ WATCH ON CINEFLIX";
+        cineflixWatchButton.onclick = function () {
+            modal.style.display = "none";
+            openCineflixPlayer(
+                tmdbMatch?.id || null,
+                imdbId,
+                { title: displayTitle, poster, year: movie.Year || "N/A" }
+            );
+        };
+    } catch (error) {
+        console.error("OMDb movie details error:", error);
+        title.textContent = "Unable to load movie";
+        description.textContent = error.message || "Could not load movie details.";
+    }
+}
+
 async function searchMovies(query) {
+
 
     query = String(query || "").trim();
 
@@ -8070,14 +8468,29 @@ async function searchMovies(query) {
            SEARCH TMDB MOVIES
         ============================================= */
 
-        const movieData = await tmdb(
+                const movieData = await tmdb(
             "/search/movie?query=" +
             encodeURIComponent(query) +
             "&include_adult=false&language=en-US&page=1"
         );
 
+        /* OMDb supplements the TMDB movie search; it does not provide streams. */
+        let omdbResults = [];
+        try {
+            const omdbResponse = await fetch(
+                `${OMDB_API}?apikey=${encodeURIComponent(OMDB_API_KEY)}&s=${encodeURIComponent(query)}&type=movie&page=1`
+            );
+            if (omdbResponse.ok) {
+                const omdbData = await omdbResponse.json();
+                if (omdbData.Response === "True") omdbResults = omdbData.Search || [];
+            }
+        } catch (omdbError) {
+            console.warn("OMDb search unavailable:", omdbError);
+        }
+
         /* =============================================
            SEARCH TMDB TV SHOWS
+
         ============================================= */
 
         const tvData = await tmdb(
@@ -8151,14 +8564,64 @@ async function searchMovies(query) {
             throw new Error(animeResult.errors[0].message);
         }
 
+                /* =============================================
+           MATCH TMDB AND OMDb MOVIES BY IMDb ID
+        ============================================= */
+
+        const tmdbMovies = movieData.results || [];
+        const tmdbMovieIMDbIds = omdbResults.length
+            ? await Promise.all(
+                tmdbMovies.slice(0, 10).map(movie => cineflixGetIMDbId(movie.id))
+            )
+            : [];
+        const tmdbByIMDbId = new Map();
+        tmdbMovies.slice(0, 10).forEach((movie, index) => {
+            if (tmdbMovieIMDbIds[index]) tmdbByIMDbId.set(tmdbMovieIMDbIds[index], movie);
+        });
+
+        const matchedTMDBIds = new Set();
+        const omdbOnlyMovies = [];
+        omdbResults.forEach(omdbMovie => {
+            const imdbId = omdbMovie.imdbID;
+            let match = imdbId ? tmdbByIMDbId.get(imdbId) : null;
+
+            if (!match) {
+                const omdbTitle = cineflixNormalizeMovieTitle(omdbMovie.Title);
+                const omdbYear = String(omdbMovie.Year || "").slice(0, 4);
+                match = tmdbMovies.find(candidate => {
+                    const candidateTitle = cineflixNormalizeMovieTitle(
+                        candidate.title || candidate.original_title
+                    );
+                    const candidateYear = String(candidate.release_date || "").slice(0, 4);
+                    return candidateTitle === omdbTitle &&
+                        (!omdbYear || !candidateYear || omdbYear === candidateYear);
+                });
+            }
+
+            if (match) {
+                if (imdbId) match.imdb_id = imdbId;
+                matchedTMDBIds.add(Number(match.id));
+            } else if (imdbId && !omdbOnlyMovies.some(item => item.imdb_id === imdbId)) {
+                omdbOnlyMovies.push({
+                    id: imdbId,
+                    imdb_id: imdbId,
+                    title: omdbMovie.Title || "Unknown Movie",
+                    poster: omdbMovie.Poster && omdbMovie.Poster !== "N/A" ? omdbMovie.Poster : "",
+                    year: omdbMovie.Year || "N/A",
+                    media_type: "omdb-movie"
+                });
+            }
+        });
+
         /* =============================================
            FORMAT MOVIE RESULTS
         ============================================= */
 
-        const movies = (movieData.results || []).map(movie => ({
-            ...movie,
-            media_type: "movie"
-        }));
+        const movies = [
+            ...tmdbMovies.map(movie => ({ ...movie, media_type: "movie" })),
+            ...omdbOnlyMovies
+        ];
+
 
         /* =============================================
            FORMAT TV RESULTS
@@ -8249,10 +8712,26 @@ async function searchMovies(query) {
 
 results.innerHTML = found.map(function(item) {
 
-    /* MOVIE */
+        /* TMDB movies retain the existing details flow; OMDb-only titles use IMDb IDs. */
     if (item.media_type === "movie") {
         return movieCard(item);
     }
+
+    if (item.media_type === "omdb-movie") {
+        const poster = item.poster ||
+            "https://placehold.co/500x750/111/fff?text=No+Poster";
+        return `
+            <div class="movie" data-cineflix-media-type="movie" data-cineflix-imdb-id="${escapeHTML(item.imdb_id)}" onclick="openOmdbMovie('${escapeHTML(item.imdb_id)}')" style="cursor:pointer;">
+                <div class="poster">
+                    <img src="${escapeHTML(poster)}" alt="${escapeHTML(item.title)}" loading="lazy" onerror="this.src='https://placehold.co/500x750/111/fff?text=No+Poster'">
+                    <div class="rating">IMDb</div>
+                </div>
+                <div class="movie-title">${escapeHTML(item.title)}</div>
+                <div class="movie-year">${escapeHTML(item.year)}</div>
+            </div>
+        `;
+    }
+
 
     /* ANIME */
     if (item.media_type === "anime") {
@@ -8488,30 +8967,454 @@ function openCineFlixAnimeFromSearch(animeId) {
     }, 100);
 }
 
+/* =====================================================
+   CINEFLIX FAST, POPULARITY-RANKED UNIVERSAL SEARCH
+===================================================== */
+
+const cineflixSearchCache = new Map();
+let cineflixSearchSequence = 0;
+let cineflixSearchItems = [];
+let cineflixSearchQuery = "";
+let cineflixSearchEnterPending = false;
+let cineflixSearchSelectedItem = null;
+
+function cineflixSearchTitle(item) {
+    return item.title || item.name || item.original_title || item.original_name || "Untitled";
+}
+
+function cineflixSearchKey(item) {
+    return `${item.media_type}:${item.imdb_id || item.id}`;
+}
+
+function cineflixSearchRank(item, query) {
+    const title = cineflixNormalizeMovieTitle(cineflixSearchTitle(item));
+    const needle = cineflixNormalizeMovieTitle(query);
+    const popularity = Math.log1p(Number(item.popularity) || 0) * 12;
+    const votes = Math.log1p(Number(item.vote_count) || 0) * 3;
+    const rating = (Number(item.vote_average) || 0) * 1.5;
+    const relevance = title === needle ? 70 : title.startsWith(needle) ? 35 : title.includes(needle) ? 12 : 0;
+    return popularity + votes + rating + relevance;
+}
+
+function cineflixRankSearchItems(items, query) {
+    return items.sort((a, b) => cineflixSearchRank(b, query) - cineflixSearchRank(a, query));
+}
+
+async function cineflixLoadSearchBase(query) {
+    const key = query.toLowerCase();
+    if (cineflixSearchCache.has(key)) return cineflixSearchCache.get(key);
+
+    const animeQuery = `query ($search: String) {
+        Page(page: 1, perPage: 18) {
+            media(search: $search, type: ANIME, isAdult: false, sort: SEARCH_MATCH) {
+                id
+                title { romaji english native }
+                coverImage { large }
+                averageScore
+                popularity
+                seasonYear
+                episodes
+                format
+            }
+        }
+    }`;
+
+    const [movieResponse, tvResponse, animeResponse] = await Promise.allSettled([
+        tmdb(`/search/movie?query=${encodeURIComponent(query)}&include_adult=false&language=en-US&page=1`),
+        tmdb(`/search/tv?query=${encodeURIComponent(query)}&language=en-US&page=1`),
+        fetch(CINEFLIX_ANILIST_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify({ query: animeQuery, variables: { search: query } })
+        }).then(response => {
+            if (!response.ok) throw new Error(`AniList search failed: ${response.status}`);
+            return response.json();
+        })
+    ]);
+
+    const items = [];
+    if (movieResponse.status === "fulfilled") {
+        (movieResponse.value.results || []).forEach(movie => items.push({ ...movie, media_type: "movie" }));
+    }
+    if (tvResponse.status === "fulfilled") {
+        (tvResponse.value.results || []).filter(show => {
+            const japaneseAnimation = (show.genre_ids || []).includes(16) &&
+                (show.original_language === "ja" || (show.origin_country || []).includes("JP"));
+            return !japaneseAnimation;
+        }).forEach(show => items.push({ ...show, media_type: "tv" }));
+    }
+    if (animeResponse.status === "fulfilled") {
+        (animeResponse.value.data?.Page?.media || []).forEach(anime => items.push({
+            id: anime.id,
+            title: anime.title?.english || anime.title?.romaji || anime.title?.native || "Unknown Anime",
+            poster: anime.coverImage?.large || "",
+            vote_average: anime.averageScore ? anime.averageScore / 10 : 0,
+            vote_count: 0,
+            popularity: anime.popularity || 0,
+            year: anime.seasonYear || "N/A",
+            episodes: anime.episodes,
+            format: anime.format,
+            media_type: "anime"
+        }));
+    }
+
+    if (!items.length) {
+        throw new Error("The movie, TV and anime search services are unavailable.");
+    }
+
+    const ranked = cineflixRankSearchItems(items, query);
+    cineflixSearchCache.set(key, ranked);
+    return ranked;
+}
+
+async function cineflixAddOmdbSearchResults(query, items) {
+    try {
+        const response = await fetch(
+            `${OMDB_API}?apikey=${encodeURIComponent(OMDB_API_KEY)}&s=${encodeURIComponent(query)}&type=movie&page=1`
+        );
+        if (!response.ok) return items;
+        const data = await response.json();
+        if (data.Response !== "True") return items;
+
+        const tmdbMovies = items.filter(item => item.media_type === "movie");
+        (data.Search || []).forEach(movie => {
+            const titleKey = cineflixNormalizeMovieTitle(movie.Title);
+            const year = String(movie.Year || "").slice(0, 4);
+            const match = tmdbMovies.find(candidate => {
+                const candidateYear = String(candidate.release_date || "").slice(0, 4);
+                return cineflixNormalizeMovieTitle(cineflixSearchTitle(candidate)) === titleKey &&
+                    (!year || !candidateYear || year === candidateYear);
+            });
+
+            if (match) {
+                match.imdb_id = movie.imdbID || match.imdb_id;
+                return;
+            }
+
+            if (movie.imdbID && !items.some(item => item.imdb_id === movie.imdbID)) {
+                items.push({
+                    id: movie.imdbID,
+                    imdb_id: movie.imdbID,
+                    title: movie.Title || "Unknown Movie",
+                    poster: movie.Poster && movie.Poster !== "N/A" ? movie.Poster : "",
+                    year: year || "N/A",
+                    media_type: "omdb-movie",
+                    popularity: 0
+                });
+            }
+        });
+        return cineflixRankSearchItems(items, query);
+    } catch (error) {
+        console.warn("OMDb search unavailable:", error);
+        return items;
+    }
+}
+
+function cineflixHideSearchSuggestions() {
+    const dropdown = document.getElementById("liveSearchResults");
+    if (dropdown) {
+        dropdown.classList.remove("active");
+        dropdown.innerHTML = "";
+    }
+}
+
+function cineflixRenderSearchSuggestions(items, query) {
+    const dropdown = document.getElementById("liveSearchResults");
+    if (!dropdown) return;
+    if (!items.length) {
+        dropdown.innerHTML = '<div class="loading">No matching titles found.</div>';
+        dropdown.classList.add("active");
+        return;
+    }
+
+    dropdown.innerHTML = items.slice(0, 8).map((item, index) => {
+        const title = cineflixSearchTitle(item);
+        const year = item.year || String(item.release_date || item.first_air_date || "").slice(0, 4) || "N/A";
+        const poster = item.poster || (item.poster_path ? POSTER + item.poster_path : "https://placehold.co/500x750/111/fff?text=No+Poster");
+        const type = item.media_type === "anime" ? "Anime" : item.media_type === "tv" ? "TV" : "Movie";
+        return `<div class="movie" role="option" aria-selected="false" data-live-index="${index}">
+            <img src="${escapeHTML(poster)}" alt="" loading="lazy" onerror="this.src='https://placehold.co/500x750/111/fff?text=No+Poster'">
+            <div><div class="movie-title">${escapeHTML(title)}</div><div class="movie-year">${escapeHTML(String(year))}</div></div>
+            <span class="cineflix-live-type">${type}</span>
+        </div>`;
+    }).join("");
+    dropdown.classList.add("active");
+}
+
+function cineflixSearchCardMarkup(item, index, featured = false) {
+    const title = cineflixSearchTitle(item);
+    const year = item.year || String(item.release_date || item.first_air_date || "").slice(0, 4) || "N/A";
+    const poster = item.poster || (item.poster_path ? POSTER + item.poster_path : "https://placehold.co/500x750/111/fff?text=No+Poster");
+    const rating = item.media_type === "omdb-movie" ? "IMDb" :
+        item.vote_average ? Number(item.vote_average).toFixed(1) : "N/A";
+    const type = item.media_type === "anime" ? `Anime · ${year}` : item.media_type === "tv" ? `TV · ${year}` : `Movie · ${year}`;
+    const summary = item.overview || (item.media_type === "anime" ? `${item.format || "Anime"}${item.episodes ? ` · ${item.episodes} episodes` : ""}` : "Discover this title on CineFlix.");
+    return `<div class="movie cineflix-search-card${featured ? " cineflix-search-feature" : ""}" data-search-card-index="${index}" role="button" tabindex="0" aria-label="Open ${escapeHTML(title)} details">
+        <div class="poster"><img src="${escapeHTML(poster)}" alt="${escapeHTML(title)}" loading="lazy" onerror="this.src='https://placehold.co/500x750/111/fff?text=No+Poster'"><div class="rating">★ ${escapeHTML(String(rating))}</div></div>
+        <div class="cineflix-search-card-copy">
+            <div class="movie-title">${escapeHTML(title)}</div>
+            <div class="movie-year">${escapeHTML(type)}</div>
+            ${featured ? `<p class="cineflix-search-card-summary">${escapeHTML(summary)}</p>` : ""}
+            <span class="cineflix-search-watch">Watch now <span aria-hidden="true">→</span></span>
+        </div>
+    </div>`;
+}
+
+function cineflixShowSearchHome(query, selectedItem, category = "all") {
+    const section = document.getElementById("searchSection");
+    const results = document.getElementById("searchResults");
+    const header = section?.querySelector(".section-header");
+    if (!section || !results || !header || !selectedItem) return;
+
+    cineflixHideSearchSuggestions();
+    cineflixSearchSelectedItem = selectedItem;
+    const hiddenSections = ["trending", "homeTVShows", "homeAnime", "homepageDiscovery", "latest", "popular", "toprated", "genres", "movies", "tvshows", "anime"];
+    hiddenSections.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.style.display = "none";
+    });
+    const hero = document.getElementById("hero");
+    if (hero) hero.style.display = "none";
+
+    section.style.display = "block";
+    section.classList.add("cineflix-search-page-active");
+    header.innerHTML = `
+        <div class="cineflix-search-page-heading">
+            <button class="cineflix-search-home-button" type="button" data-search-home>← Home</button>
+            <p class="cineflix-search-eyebrow">CINEFLIX SEARCH</p>
+            <h1>Search results for “${escapeHTML(query)}”</h1>
+            <p class="cineflix-search-caption">Popular movies, series, and anime matching your search.</p>
+        </div>
+        <div class="cineflix-search-filters" role="group" aria-label="Filter search results">
+            ${[["all", "All"], ["tv", "Series"], ["movie", "Movies"], ["anime", "Anime"]].map(([value, label]) =>
+                `<button type="button" class="cineflix-search-filter${category === value ? " active" : ""}" data-search-filter="${value}" aria-pressed="${category === value}">${label}</button>`
+            ).join("")}
+        </div>
+    `;
+
+    if (header.dataset.searchControlsReady !== "true") {
+        header.dataset.searchControlsReady = "true";
+        header.addEventListener("click", function(event) {
+            const homeButton = event.target.closest("[data-search-home]");
+            if (homeButton) {
+                section.classList.remove("cineflix-search-page-active");
+                results.innerHTML = "";
+                const input = document.getElementById("searchInput");
+                if (input) input.value = "";
+                cineflixSearchItems = [];
+                cineflixSearchSelectedItem = null;
+                cineflixRestoreHome();
+                return;
+            }
+
+            const filterButton = event.target.closest("[data-search-filter]");
+            if (filterButton && cineflixSearchSelectedItem) {
+                cineflixShowSearchHome(
+                    query,
+                    cineflixSearchSelectedItem,
+                    filterButton.dataset.searchFilter
+                );
+            }
+        });
+    }
+
+    let ordered = [selectedItem, ...cineflixSearchItems.filter(item =>
+        cineflixSearchKey(item) !== cineflixSearchKey(selectedItem)
+    )];
+    if (category !== "all") {
+        ordered = ordered.filter(item =>
+            category === "movie"
+                ? item.media_type === "movie" || item.media_type === "omdb-movie"
+                : item.media_type === category
+        );
+    }
+
+    if (!ordered.length) {
+        results.innerHTML = '<div class="loading">No results in this category.</div>';
+    } else {
+        results.innerHTML = ordered.map(item => {
+            const sourceIndex = cineflixSearchItems.findIndex(candidate =>
+                cineflixSearchKey(candidate) === cineflixSearchKey(item)
+            );
+            return cineflixSearchCardMarkup(item, sourceIndex, category === "all" && cineflixSearchKey(item) === cineflixSearchKey(selectedItem));
+        }).join("");
+    }
+
+    section.scrollTop = 0;
+}
+
+async function searchMovies(query, selectedItem = null) {
+    query = String(query || "").trim();
+    if (!query) return;
+    const results = document.getElementById("searchResults");
+    const section = document.getElementById("searchSection");
+    if (!results || !section) return;
+
+    try {
+        const key = query.toLowerCase();
+        cineflixSearchItems = await cineflixLoadSearchBase(query);
+        if (selectedItem) {
+            selectedItem = cineflixSearchItems.find(item => cineflixSearchKey(item) === cineflixSearchKey(selectedItem)) || selectedItem;
+        } else {
+            selectedItem = cineflixSearchItems[0];
+        }
+        cineflixShowSearchHome(query, selectedItem);
+
+        cineflixAddOmdbSearchResults(query, cineflixSearchItems).then(updatedItems => {
+            cineflixSearchItems = updatedItems;
+            cineflixSearchCache.set(key, updatedItems);
+            if (document.getElementById("searchInput")?.value.trim().toLowerCase() === key &&
+                section.style.display !== "none" && cineflixSearchSelectedItem) {
+                cineflixShowSearchHome(query, cineflixSearchSelectedItem);
+            }
+        });
+    } catch (error) {
+        results.innerHTML = `<div class="loading">Search failed. ${escapeHTML(error.message || "Please try again.")}</div>`;
+        section.style.display = "block";
+    }
+}
+
+async function cineflixUpdateLiveSearch(query) {
+    const cleanQuery = String(query || "").trim();
+    const dropdown = document.getElementById("liveSearchResults");
+    const section = document.getElementById("searchSection");
+    if (!cleanQuery) {
+        cineflixSearchSequence++;
+        cineflixSearchEnterPending = false;
+        cineflixHideSearchSuggestions();
+        if (section && !document.body.classList.contains("cineflix-detail-page-active")) {
+            section.style.display = "none";
+            section.classList.remove("cineflix-search-page-active");
+            cineflixRestoreHome();
+        }
+        return;
+    }
+
+    cineflixSearchQuery = cleanQuery;
+    const sequence = ++cineflixSearchSequence;
+    cineflixSearchEnterPending = false;
+    if (dropdown) {
+        dropdown.innerHTML = '<div class="loading">Searching movies, TV and anime…</div>';
+        dropdown.classList.add("active");
+    }
+    try {
+        cineflixSearchItems = await cineflixLoadSearchBase(cleanQuery);
+        if (sequence !== cineflixSearchSequence) return;
+        cineflixRenderSearchSuggestions(cineflixSearchItems, cleanQuery);
+
+        cineflixAddOmdbSearchResults(cleanQuery, cineflixSearchItems).then(updatedItems => {
+            if (sequence !== cineflixSearchSequence) return;
+            cineflixSearchItems = updatedItems;
+            cineflixSearchCache.set(cleanQuery.toLowerCase(), updatedItems);
+            cineflixRenderSearchSuggestions(updatedItems, cleanQuery);
+        });
+
+        if (cineflixSearchEnterPending) {
+            cineflixSearchEnterPending = false;
+            searchMovies(cleanQuery, cineflixSearchItems[0]);
+        }
+    } catch (error) {
+        if (sequence !== cineflixSearchSequence) return;
+        if (dropdown) {
+            dropdown.innerHTML = `<div class="loading">Search unavailable: ${escapeHTML(error.message || "Try again.")}</div>`;
+            dropdown.classList.add("active");
+        }
+    }
+}
+
+const searchInput = document.getElementById("searchInput");
+
+if (searchInput) {
+    const liveResults = document.getElementById("liveSearchResults");
+    searchInput.setAttribute("role", "combobox");
+    searchInput.setAttribute("aria-autocomplete", "list");
+    searchInput.setAttribute("aria-controls", "liveSearchResults");
+
+    searchInput.addEventListener("input", function() {
+        clearTimeout(searchTimer);
+        const query = this.value;
+        searchTimer = setTimeout(() => cineflixUpdateLiveSearch(query), 180);
+    });
+
+    searchInput.addEventListener("keydown", function(event) {
+        if (event.key === "Escape") {
+            cineflixHideSearchSuggestions();
+            return;
+        }
+        if (event.key === "ArrowDown" && cineflixSearchItems.length) {
+            event.preventDefault();
+            const first = liveResults?.querySelector('[data-live-index="0"]');
+            first?.focus();
+            return;
+        }
+        if (event.key === "Enter") {
+            event.preventDefault();
+            const query = this.value.trim();
+            if (!query) return;
+            if (cineflixSearchItems.length && cineflixSearchQuery.toLowerCase() === query.toLowerCase()) {
+                searchMovies(query, cineflixSearchItems[0]);
+            } else {
+                cineflixSearchEnterPending = true;
+                cineflixUpdateLiveSearch(query);
+            }
+        }
+    });
+
+    liveResults?.addEventListener("click", function(event) {
+        const option = event.target.closest("[data-live-index]");
+        if (!option) return;
+        const item = cineflixSearchItems[Number(option.dataset.liveIndex)];
+        if (item) searchMovies(cineflixSearchQuery, item);
+    });
+
+    liveResults?.addEventListener("keydown", function(event) {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        const option = event.target.closest("[data-live-index]");
+        if (option) {
+            event.preventDefault();
+            option.click();
+        }
+    });
+
+    document.addEventListener("click", function(event) {
+        if (!event.target.closest(".navbar-search-row .search")) cineflixHideSearchSuggestions();
+    });
+}
+
+const cineflixSearchResults = document.getElementById("searchResults");
+if (cineflixSearchResults) {
+    cineflixSearchResults.addEventListener("click", function(event) {
+        const card = event.target.closest("[data-search-card-index]");
+        if (!card) return;
+        const item = cineflixSearchItems[Number(card.dataset.searchCardIndex)];
+        if (!item) return;
+
+        if (item.media_type === "movie") {
+            openMovie(Number(item.id));
+        } else if (item.media_type === "omdb-movie") {
+            openOmdbMovie(item.imdb_id);
+        } else if (item.media_type === "tv") {
+            openCineFlixTVShowFromSearch(Number(item.id), "search");
+        } else if (item.media_type === "anime") {
+            window.cineflixAniListOpenedFromSearch = true;
+            window.cineflixDetailPageSource = "search";
+            recordCineFlixAnimeView(Number(item.id), cineflixSearchTitle(item));
+            openCineFlixAniListDetails(Number(item.id));
+        }
+    });
+    cineflixSearchResults.addEventListener("keydown", function(event) {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        const card = event.target.closest("[data-search-card-index]");
+        if (card) {
+            event.preventDefault();
+            card.click();
+        }
+    });
+}
+
 /* SEARCH BOX */
 
-const searchInput =
-    document.getElementById("searchInput");
 
-if(searchInput){
-
-    searchInput.addEventListener(
-        "input",
-        function(){
-
-            clearTimeout(searchTimer);
-
-            const query =
-                this.value;
-
-            searchTimer =
-                setTimeout(
-                    () => searchMovies(query),
-                    500
-                );
-        }
-    );
-}
 /* =====================================================
    CINEFLIX — SAVE WATCH HISTORY
 ===================================================== */
@@ -8682,10 +9585,13 @@ async function openMovie(id){
             );
 
 
-        window.cineflixCurrentMovie = {
+                window.cineflixCurrentMovie = {
 
             tmdb_id:
                 movie.id,
+
+            imdb_id:
+                await cineflixGetIMDbId(movie.id),
 
             media_type:
                 "movie",
@@ -8700,6 +9606,7 @@ async function openMovie(id){
                 null
 
         };
+
 
 
         console.log(
@@ -8784,7 +9691,11 @@ if (cineflixWatchButton) {
                OPEN CINEFLIX PLAYER
             ============================================= */
 
-            openCineflixPlayer(id);
+                        openCineflixPlayer(
+                id,
+                window.cineflixCurrentMovie?.imdb_id || null
+            );
+
 
             /* =============================================
                LOAD RELATED MOVIES
@@ -12570,12 +13481,17 @@ async function loadMyList() {
             const card = document.createElement("div");
             card.className = "cineflix-mylist-card";
 
-            const image = document.createElement("img");
+                        const image = document.createElement("img");
             image.alt = favorite.title || "CineFlix title";
 
-            if (favorite.poster_path) {
-                image.src = "https://image.tmdb.org/t/p/w500" + favorite.poster_path;
+            if (favorite.omdb_poster) {
+                image.src = favorite.omdb_poster;
+            } else if (favorite.poster_path) {
+                image.src = String(favorite.poster_path).startsWith("http")
+                    ? favorite.poster_path
+                    : "https://image.tmdb.org/t/p/w500" + favorite.poster_path;
             }
+
 
             const info = document.createElement("div");
             info.className = "cineflix-mylist-card-info";
@@ -12647,12 +13563,17 @@ async function loadMyList() {
                 const card = document.createElement("div");
                 card.className = "cineflix-mylist-card";
 
-                const image = document.createElement("img");
-                image.alt = favorite.title || "CineFlix title";
+                            const image = document.createElement("img");
+            image.alt = favorite.title || "CineFlix title";
 
-                if (favorite.poster_path) {
-                    image.src = "https://image.tmdb.org/t/p/w500" + favorite.poster_path;
-                }
+            if (favorite.omdb_poster) {
+                image.src = favorite.omdb_poster;
+            } else if (favorite.poster_path) {
+                image.src = String(favorite.poster_path).startsWith("http")
+                    ? favorite.poster_path
+                    : "https://image.tmdb.org/t/p/w500" + favorite.poster_path;
+            }
+
 
                 const info = document.createElement("div");
                 info.className = "cineflix-mylist-card-info";
@@ -12799,11 +13720,13 @@ async function loadMyList() {
 
 
                                 /* Save locally so the title appears in My List immediately. */
-                const localList = cineflixGetLocalMyList();
+                            const localList = cineflixGetLocalMyList();
                 const alreadySavedLocally = localList.some(item =>
-                    Number(item.tmdb_id) === Number(movie.tmdb_id) &&
-                    (item.media_type || "movie") === (movie.media_type || "movie")
+                    (movie.imdb_id && item.imdb_id === movie.imdb_id) ||
+                    (Number(item.tmdb_id) === Number(movie.tmdb_id) &&
+                     (item.media_type || "movie") === (movie.media_type || "movie"))
                 );
+
 
                 if (!alreadySavedLocally) {
                     localList.push(movie);
@@ -18955,11 +19878,12 @@ function cineflixGetPlayerURL(content) {
                 encodeURIComponent(content.episode);
         }
 
-        return "https://vidly.pro/movie/" +
-            encodeURIComponent(content.id);
+            return "https://vidly.pro/movie/" +
+        encodeURIComponent(content.tmdbId || content.id || content.imdbId);
+
     }
 
-    if (cineflixSelectedServer === "server1") {
+        if (cineflixSelectedServer === "server1") {
         if (content.type === "tv") {
             return "https://cinesrc.st/embed/tv/" +
                 encodeURIComponent(content.id) +
@@ -18967,9 +19891,11 @@ function cineflixGetPlayerURL(content) {
                 "&e=" + encodeURIComponent(content.episode);
         }
 
+        /* CineSrc receives TMDB IDs when matched, or IMDb IDs for OMDb-only titles. */
         return "https://cinesrc.st/embed/movie/" +
-            encodeURIComponent(content.id);
+            encodeURIComponent(content.tmdbId || content.id || content.imdbId);
     }
+
 
     
 
@@ -18981,9 +19907,10 @@ function cineflixGetPlayerURL(content) {
             CINEZO_PLAYER_OPTIONS;
     }
 
-    return "https://player.cinezo.live/embed/movie/" +
-        encodeURIComponent(content.id) +
+        return "https://player.cinezo.live/embed/movie/" +
+        encodeURIComponent(content.tmdbId || content.id || content.imdbId) +
         CINEZO_PLAYER_OPTIONS;
+
 }
 
 
@@ -20345,7 +21272,8 @@ if (document.readyState === "loading") {
    OPEN CINEFLIX PLAYER
 ===================================================== */
 
-function openCineflixPlayer(tmdbId) {
+function openCineflixPlayer(tmdbId, imdbId = null, movieMetadata = null) {
+
 
     const modal =
         document.getElementById("cineflixPlayerModal");
@@ -20384,24 +21312,21 @@ if (!modal || !player) {
        CHECK TMDB ID
     ================================================= */
 
-    if (!tmdbId) {
+        if (!tmdbId && !imdbId) {
 
         console.error(
-            "No TMDB movie ID was provided."
+            "No TMDB or IMDb movie ID was provided."
         );
 
         if (loading) {
-
             loading.style.display = "flex";
-
-            loading.textContent =
-                "Unable to load this movie.";
-
+            loading.textContent = "Unable to load this movie.";
         }
 
         return;
 
     }
+
 
 
     /* =================================================
@@ -20418,10 +21343,15 @@ if (!modal || !player) {
        BUILD CINESRC URL
     ================================================= */
 
-        const playerContent = {
+                const playerContent = {
         type: "movie",
-        id: tmdbId
+        id: tmdbId || imdbId,
+        tmdbId: tmdbId || null,
+        imdbId: imdbId || null,
+        title: movieMetadata?.title || window.cineflixCurrentMovie?.title || "",
+        year: movieMetadata?.year || ""
     };
+
 
     const embedUrl =
         cineflixGetPlayerURL(playerContent);
@@ -20437,9 +21367,10 @@ if (!modal || !player) {
 const poster =
     document.getElementById("cineflixPlayerPoster");
 
-if (poster) {
+if (poster && tmdbId) {
 
     fetch(
+
         "https://api.themoviedb.org/3/movie/" +
         encodeURIComponent(tmdbId),
         {
@@ -20507,11 +21438,18 @@ if (poster) {
 }
 
 
+        if (movieMetadata) {
+        if (poster && movieMetadata.poster) poster.src = movieMetadata.poster;
+        const playerTitle = document.getElementById("cineflixPlayerTitle");
+        if (playerTitle) playerTitle.textContent = movieMetadata.title || "Unknown Movie";
+    }
+
     /* =================================================
        SHOW LOADING
     ================================================= */
 
     if (loading) {
+
 
         loading.style.display = "flex";
 
