@@ -19952,15 +19952,7 @@ async function cineflixResolveAniListId(content) {
 
 function cineflixApplyPlayerSandbox(player) {
     if (!player) return;
-
-    if (cineflixSelectedServer === "server3") {
-        player.removeAttribute("sandbox");
-    } else {
-        player.setAttribute(
-            "sandbox",
-            "allow-scripts allow-same-origin allow-forms allow-presentation"
-        );
-    }
+    player.removeAttribute("sandbox");
 }
 
 async function cineflixSetPlayerContent(content) {
@@ -22277,7 +22269,7 @@ h3 {
 <iframe
     id="cineflixPlayer"
     src=""
-    sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
+    
     allow="autoplay; fullscreen; picture-in-picture"
     allowfullscreen
     frameborder="0"
