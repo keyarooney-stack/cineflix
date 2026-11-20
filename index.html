@@ -22093,12 +22093,56 @@ h3 {
 
 /* X close button */
 .cineflix-player-topbar button {
+    width: clamp(36px, 4vw, 42px) !important;
+    height: clamp(36px, 4vw, 42px) !important;
     font-size: clamp(20px, 2vw, 26px) !important;
-
     flex-shrink: 0 !important;
-
     position: relative !important;
     z-index: 101 !important;
+}
+
+/* Keep the CineFlix bar precisely above the responsive 16:9 player. */
+.cineflix-player-topbar {
+    left: 50% !important;
+    top: calc(50% - min(239.0625px, 26.4375vw) - 52px) !important;
+    transform: translateX(-50%) !important;
+    width: min(850px, 94vw) !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    padding: 0 clamp(10px, 2vw, 18px) !important;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+.cineflix-player-topbar .cineflix-player-logo {
+    font-size: clamp(15px, 1.5vw, 21px) !important;
+}
+
+@media (max-width: 600px) {
+    .cineflix-player-topbar {
+        top: calc(50% - min(239.0625px, 26.4375vw) - 48px) !important;
+        width: 94vw !important;
+        height: 48px !important;
+        min-height: 48px !important;
+        padding: 0 10px !important;
+        border-radius: 7px 7px 0 0 !important;
+    }
+}
+
+/* Reserve a responsive row beneath the video for the server controls. */
+#cineflixServerButtons {
+    position: absolute !important;
+    top: calc(50% + min(239.0625px, 26.4375vw) + 12px) !important;
+    bottom: auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: min(850px, 94vw) !important;
+    max-width: 94vw !important;
+    box-sizing: border-box !important;
+}
+
+/* Start related titles below the player and its server controls. */
+#cineflixRelatedSection {
+    top: calc(50% + min(239.0625px, 26.4375vw) + 170px) !important;
 }
 
 </style>
@@ -22216,6 +22260,7 @@ h3 {
 <iframe
     id="cineflixPlayer"
     src=""
+    sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
     allow="autoplay; fullscreen; picture-in-picture"
     allowfullscreen
     frameborder="0"
