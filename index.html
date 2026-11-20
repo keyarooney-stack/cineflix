@@ -19950,6 +19950,19 @@ async function cineflixResolveAniListId(content) {
     return anilistId;
 }
 
+function cineflixApplyPlayerSandbox(player) {
+    if (!player) return;
+
+    if (cineflixSelectedServer === "server3") {
+        player.removeAttribute("sandbox");
+    } else {
+        player.setAttribute(
+            "sandbox",
+            "allow-scripts allow-same-origin allow-forms allow-presentation"
+        );
+    }
+}
+
 async function cineflixSetPlayerContent(content) {
     window.cineflixActivePlayerContent = content;
 
@@ -19977,8 +19990,10 @@ async function cineflixSetPlayerContent(content) {
         }
     });
 
-    const player = document.getElementById("cineflixPlayer");
+        const player = document.getElementById("cineflixPlayer");
     if (!player) return;
+
+    cineflixApplyPlayerSandbox(player);
 
     if (isAnime) {
         player.src = "";
@@ -20029,8 +20044,10 @@ async function cineflixSelectServer(server) {
     });
 
         if (window.cineflixActivePlayerContent) {
-        const player = document.getElementById("cineflixPlayer");
+                const player = document.getElementById("cineflixPlayer");
         const content = window.cineflixActivePlayerContent;
+
+        cineflixApplyPlayerSandbox(player);
 
         if (player && server === "server4" && content.anime) {
             player.src = "";
