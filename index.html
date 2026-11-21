@@ -740,6 +740,55 @@ body{
     gap:8px;
 }
 
+.hero-control {
+    position: absolute;
+    top: 50%;
+    z-index: 4;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-50%);
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 50%;
+    background: rgba(0,0,0,.55);
+    color: #fff;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease;
+}
+
+.hero-control:hover {
+    background: #e50914;
+    border-color: #e50914;
+}
+
+.hero-control-prev {
+    left: 18px;
+}
+
+.hero-control-next {
+    right: 18px;
+}
+
+@media (max-width: 600px) {
+    .hero-control {
+        width: 40px;
+        height: 40px;
+        font-size: 23px;
+    }
+
+    .hero-control-prev {
+        left: 10px;
+    }
+
+    .hero-control-next {
+        right: 10px;
+    }
+}
+
 .hero-dot{
     width:9px;
     height:9px;
@@ -6416,7 +6465,9 @@ body.cineflix-detail-page-active .tv-show-details > button {
 
     </div>
 
-    <!-- FEATURED MOVIE NAVIGATION -->
+        <!-- FEATURED MOVIE NAVIGATION -->
+    <button class="hero-control hero-control-prev" type="button" aria-label="Previous featured movie" onclick="changeHero(-1)">‹</button>
+    <button class="hero-control hero-control-next" type="button" aria-label="Next featured movie" onclick="changeHero(1)">›</button>
     <div class="hero-dots" id="heroDots"></div>
 
 </section>
@@ -7401,9 +7452,9 @@ document.addEventListener("pointerover", function(event) {
     if (!card || card.contains(event.relatedTarget)) return;
 
     clearTimeout(card.cineflixPreviewTimer);
-    card.cineflixPreviewTimer = setTimeout(function() {
+        card.cineflixPreviewTimer = setTimeout(function() {
         showCineFlixMovieTrailerPreview(card);
-    }, 450);
+    }, 5000);
 });
 
 document.addEventListener("pointerout", function(event) {
@@ -10863,6 +10914,14 @@ function selectHero(index){
 
     updateHero();
 
+}
+
+function changeHero(direction) {
+    if (!heroMovies.length) return;
+
+    heroIndex = (heroIndex + direction + heroMovies.length) % heroMovies.length;
+    heroMovie = heroMovies[heroIndex];
+    updateHero();
 }
 
 
@@ -22948,4 +23007,3 @@ h3 {
 </div>
 </body>
 </html>
-
