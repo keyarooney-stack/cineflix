@@ -7898,8 +7898,26 @@ async function loadHomepageDiscoveryShelves() {
 
     const results = await Promise.all(shelves.map(async shelf => {
         try {
-            const data = await tmdb(shelf.endpoint);
-            return renderShelf(shelf.title, shelf.type, data.results || []);
+                        const data = await tmdb(shelf.endpoint);
+            let items = data.results || [];
+
+            if (shelf.title === "Animated Series") {
+                const invincibleData = await tmdb(
+                    "/search/tv?query=Invincible&language=en-US&page=1"
+                );
+                const invincible = (invincibleData.results || []).find(show =>
+                    String(show.name || show.original_name || "").trim().toLowerCase() === "invincible"
+                );
+
+                if (invincible) {
+                    items = [
+                        invincible,
+                        ...items.filter(show => Number(show.id) !== Number(invincible.id))
+                    ];
+                }
+            }
+
+            return renderShelf(shelf.title, shelf.type, items);
         } catch (error) {
             console.warn("Could not load homepage shelf:", shelf.title, error);
             return "";
