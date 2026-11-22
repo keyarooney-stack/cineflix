@@ -3351,6 +3351,12 @@ footer{
         430px,
         100%
     );
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
+    min-height: 0;
+    overflow-x: hidden;
+        overflow-y: auto;
+    overscroll-behavior: contain;
 
     padding: 30px;
 
@@ -3371,7 +3377,8 @@ footer{
         0 30px 90px rgba(0,0,0,.75),
         0 0 45px rgba(229,9,20,.08);
 
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 
     transform:
         translateY(18px)
@@ -3815,9 +3822,12 @@ footer{
 
     .cineflix-auth-overlay {
         padding: 12px;
+        overflow-y: auto;
     }
 
     .cineflix-auth-panel {
+        max-height: calc(100vh - 24px);
+        max-height: calc(100dvh - 24px);
         padding: 24px 20px;
 
         border-radius: 20px;
@@ -6042,6 +6052,206 @@ body.cineflix-detail-page-active .tv-show-details > button {
         width: 100%;
     }
 }
+
+/* Cinematic About page */
+body.cineflix-about-page-active > .navbar,
+body.cineflix-about-page-active > .mobile-app-header {
+    z-index: 1200;
+}
+
+body.cineflix-about-page-active > #hero,
+body.cineflix-about-page-active > main > section:not(#aboutSection),
+body.cineflix-about-page-active > section.section,
+body.cineflix-about-page-active > footer {
+    display: none !important;
+}
+
+#aboutSection.cineflix-about-page {
+    display: none;
+    position: fixed;
+    inset: 162px 0 0;
+    z-index: 950;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 clamp(16px, 5vw, 76px) 60px;
+    overflow-y: auto;
+    background: #080808;
+    box-sizing: border-box;
+}
+
+body.cineflix-about-page-active #aboutSection.cineflix-about-page {
+    display: block !important;
+}
+
+.about-cinematic-hero {
+    position: relative;
+    isolation: isolate;
+    min-height: 380px;
+    display: flex;
+    align-items: center;
+    margin: 0 calc(clamp(16px, 5vw, 76px) * -1) 42px;
+    padding: 64px clamp(24px, 8vw, 120px);
+    overflow: hidden;
+    background:
+        linear-gradient(90deg, rgba(0,0,0,.94), rgba(0,0,0,.57) 58%, rgba(0,0,0,.25)),
+        radial-gradient(ellipse at 75% 20%, rgba(229,9,20,.42), transparent 38%),
+        linear-gradient(135deg, #241014, #090909 68%);
+}
+
+.about-cinematic-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 150px;
+    z-index: -1;
+    background: linear-gradient(transparent, #080808);
+}
+
+.about-cinematic-copy {
+    max-width: 780px;
+}
+
+.about-eyebrow {
+    color: #ff4652;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+}
+
+.about-cinematic-copy h1 {
+    margin: 15px 0;
+    font-size: clamp(38px, 7vw, 76px);
+    line-height: .98;
+}
+
+.about-cinematic-copy p {
+    max-width: 640px;
+    color: #d0d0d0;
+    font-size: clamp(15px, 1.5vw, 18px);
+    line-height: 1.7;
+}
+
+.about-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.about-actions button {
+    min-height: 46px;
+    padding: 0 19px;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 7px;
+    background: #e50914;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.about-actions button:hover {
+    background: #ff1724;
+}
+
+.about-actions .about-secondary-action {
+    background: rgba(255,255,255,.1);
+}
+
+.about-content {
+    width: min(1180px, 100%);
+    margin: 0 auto;
+}
+
+.about-content > h2 {
+    margin-bottom: 10px;
+    font-size: clamp(25px, 3vw, 34px);
+}
+
+.about-intro {
+    max-width: 760px;
+    margin-bottom: 25px;
+    color: #aaa;
+    line-height: 1.7;
+}
+
+.about-value-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.about-value-card {
+    padding: 24px;
+    border: 1px solid #242424;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #171717, #0d0d0d);
+}
+
+.about-value-icon {
+    display: inline-grid;
+    width: 42px;
+    height: 42px;
+    margin-bottom: 16px;
+    place-items: center;
+    border-radius: 10px;
+    background: rgba(229,9,20,.14);
+    color: #ff4652;
+    font-size: 21px;
+}
+
+.about-value-card h3 {
+    margin-bottom: 9px;
+    font-size: 18px;
+}
+
+.about-value-card p,
+.about-trust-note p {
+    color: #aaa;
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.about-trust-note {
+    margin-top: 22px;
+    padding: 22px 24px;
+    border-left: 3px solid #e50914;
+    border-radius: 0 10px 10px 0;
+    background: #121212;
+}
+
+.about-trust-note h3 {
+    margin-bottom: 8px;
+}
+
+@media (max-width: 850px) {
+    #aboutSection.cineflix-about-page {
+        inset-block-start: 142px;
+    }
+}
+
+@media (max-width: 600px) {
+    #aboutSection.cineflix-about-page {
+        inset-block-start: 100px;
+        padding: 0 14px 40px;
+    }
+
+    .about-cinematic-hero {
+        min-height: 360px;
+        margin: 0 -14px 32px;
+        padding: 44px 22px;
+    }
+
+    .about-value-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .about-value-card {
+        padding: 20px;
+    }
+}
 </style>
 
 </head>
@@ -6172,8 +6382,8 @@ body.cineflix-detail-page-active .tv-show-details > button {
                 TV SHOWS
             </a>
 
-            <a href="#trending">
-                TRENDING
+                        <a href="#about" id="aboutNavButton">
+                ABOUT
             </a>
 
             <a href="#latest">
@@ -6474,6 +6684,48 @@ body.cineflix-detail-page-active .tv-show-details > button {
 
 
 <main class="container">
+<section id="aboutSection" class="section cineflix-about-page" aria-labelledby="aboutPageTitle">
+    <div class="about-cinematic-hero">
+        <div class="about-cinematic-copy">
+            <span class="about-eyebrow">ABOUT CINEFLIX</span>
+            <h1 id="aboutPageTitle">Stories worth watching.<br>A better way to discover.</h1>
+            <p>CineFlix brings movies, series, and anime together in one place, helping you find your next favorite and keep the titles you care about close.</p>
+            <div class="about-actions">
+                <button type="button" onclick="document.getElementById('cineflixAuthOverlay')?.classList.add('active')">Create an account</button>
+                <button type="button" class="about-secondary-action" onclick="document.getElementById('cineflixAuthOverlay')?.classList.add('active')">Sign in</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-content">
+        <h2>Make CineFlix yours</h2>
+        <p class="about-intro">An account gives you useful ways to make your CineFlix experience feel more personal and easier to pick up again.</p>
+
+        <div class="about-value-grid">
+            <article class="about-value-card">
+                <span class="about-value-icon" aria-hidden="true">♡</span>
+                <h3>Your list, ready when you are</h3>
+                <p>Save movies and shows to My List. When signed in, your saved titles can sync with your account so it is easier to find them again.</p>
+            </article>
+            <article class="about-value-card">
+                <span class="about-value-icon" aria-hidden="true">◷</span>
+                <h3>Pick up where you left off</h3>
+                <p>Keep a watch history associated with your account, making it easier to remember the movies, series, and episodes you have watched.</p>
+            </article>
+            <article class="about-value-card">
+                <span class="about-value-icon" aria-hidden="true">✦</span>
+                <h3>A profile that feels like yours</h3>
+                <p>Choose a display name and profile photo, and manage your account from the CineFlix profile menu.</p>
+            </article>
+        </div>
+
+        <div class="about-trust-note">
+            <h3>Privacy, trust, and reliability</h3>
+            <p>Your account features are designed to keep personal profile details within your account experience—not on public movie pages. Sign-in is handled through our account service, and CineFlix uses account data to provide features such as your profile, saved list, and watch history. We aim to make browsing dependable, but catalogs and account features can depend on your internet connection and the availability of external services.</p>
+        </div>
+    </div>
+</section>
+
 <!-- =====================================================
      CINEFLIX SEARCH RESULTS
 ===================================================== -->
@@ -16248,7 +16500,7 @@ async function loadMyList() {
    CINEFLIX — MOVIE BACKDROP BACKGROUND
 ===================================================== */
 
-.cineflix-player-modal::before {
+ .cineflix-player-modal::before {
     content: "";
 
     position: absolute !important;
@@ -16257,11 +16509,12 @@ async function loadMyList() {
 
     background-image:
         linear-gradient(
-            to right,
-            rgba(0, 0, 0, 0.88),
-            rgba(0, 0, 0, 0.58),
+            90deg,
+            rgba(0, 0, 0, 0.82),
+            rgba(0, 0, 0, 0.56) 50%,
             rgba(0, 0, 0, 0.82)
         ),
+        linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.72)),
         var(--cineflix-backdrop) !important;
 
     background-size: cover !important;
@@ -16270,7 +16523,7 @@ async function loadMyList() {
 
     background-repeat: no-repeat !important;
 
-    filter: blur(3px) !important;
+    filter: blur(2px) !important;
 
     transform: scale(1.04) !important;
 
@@ -19811,6 +20064,10 @@ document.addEventListener(
 
 function cineflixRestoreHome() {
 
+    document.body.classList.remove("cineflix-about-page-active");
+    const aboutSection = document.getElementById("aboutSection");
+    if (aboutSection) aboutSection.style.display = "none";
+
     /* HIDE TV SECTION */
 
     const tvSection =
@@ -20845,11 +21102,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const tvSection =
         document.getElementById("tvshows");
 
-    const animeButton =
+        const animeButton =
         document.getElementById("animeNavButton");
 
     const animeSection =
         document.getElementById("anime");
+
+    const aboutButton =
+        document.getElementById("aboutNavButton");
+
+    const aboutSection =
+        document.getElementById("aboutSection");
 
     const homeButton =
         document.querySelector('.nav a[href="#"]');
@@ -20875,9 +21138,11 @@ document.addEventListener("DOMContentLoaded", function () {
        HIDE ALL SPECIAL SECTIONS
     ================================================= */
 
-    function hideSpecialSections() {
+        function hideSpecialSections() {
         tvSection.style.display = "none";
         animeSection.style.display = "none";
+        if (aboutSection) aboutSection.style.display = "none";
+        document.body.classList.remove("cineflix-about-page-active");
     }
 
     /* =================================================
@@ -20918,6 +21183,30 @@ document.addEventListener("DOMContentLoaded", function () {
         homeButton.addEventListener("click", function (event) {
             event.preventDefault();
             showCineFlixHome();
+        });
+    }
+
+        /* =================================================
+       ABOUT PAGE
+    ================================================= */
+
+    if (aboutButton && aboutSection) {
+        aboutButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            hideSpecialSections();
+            document.body.classList.remove("cineflix-detail-page-active");
+            document.getElementById("tvshows")?.classList.remove("details-page-open");
+            document.getElementById("anime")?.classList.remove("details-page-open");
+            movieSections.forEach(function (id) {
+                const section = document.getElementById(id);
+                if (section) section.style.display = "none";
+            });
+            const hero = document.getElementById("hero");
+            if (hero) hero.style.display = "none";
+            aboutSection.style.display = "block";
+            document.body.classList.add("cineflix-about-page-active");
+            window.history.pushState({ cineflixPage: "about" }, "", "#about");
+            aboutSection.scrollTop = 0;
         });
     }
 
@@ -21367,9 +21656,20 @@ function openCineflixPlayer(tmdbId, imdbId = null, movieMetadata = null) {
     const player =
         document.getElementById("cineflixPlayer");
 
-    const loading =
+        const loading =
         document.getElementById("cineflixPlayerLoading");
 
+    const initialArtwork = movieMetadata?.poster ||
+        window.cineflixCurrentMovie?.omdb_poster ||
+        (window.cineflixCurrentMovie?.poster_path
+            ? (String(window.cineflixCurrentMovie.poster_path).startsWith("http")
+                ? window.cineflixCurrentMovie.poster_path
+                : BACKDROP + window.cineflixCurrentMovie.poster_path)
+            : "");
+
+    if (initialArtwork) {
+        modal?.style.setProperty("--cineflix-backdrop", `url("${initialArtwork}")`);
+    }
 
     /* =================================================
        CHECK PLAYER HTML
@@ -21477,9 +21777,21 @@ if (poster && tmdbId) {
         return response.json();
 
     })
-   .then(movie => {
+       .then(movie => {
 
     poster.src = getPoster(movie);
+
+    if (movie.backdrop_path) {
+        modal.style.setProperty(
+            "--cineflix-backdrop",
+            `url("${BACKDROP + movie.backdrop_path}")`
+        );
+    } else if (movie.poster_path) {
+        modal.style.setProperty(
+            "--cineflix-backdrop",
+            `url("${POSTER + movie.poster_path}")`
+        );
+    }
 
     const title =
         document.getElementById("cineflixPlayerTitle");
@@ -21489,12 +21801,9 @@ if (poster && tmdbId) {
             movie.title || movie.name || "Unknown Movie";
     }
 
-    /* =================================================
+        /* =================================================
        SET MOVIE BACKDROP
     ================================================= */
-
-    const modal =
-        document.getElementById("cineflixPlayerModal");
 
     if (modal && movie.backdrop_path) {
 
