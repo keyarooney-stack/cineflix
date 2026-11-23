@@ -20913,41 +20913,37 @@ window.cineflixAccountSupabase =
 
 
 
-    /* =================================================
-       FULLSCREEN EXIT
-    ================================================= */
+        /* Rotate phone playback to landscape while fullscreen is active. */
+    function cineflixHandleFullscreenOrientation() {
+        const fullscreenElement =
+            document.fullscreenElement || document.webkitFullscreenElement;
+        const isPhone = window.matchMedia(
+            "(pointer: coarse) and (max-width: 1000px)"
+        ).matches;
 
-    document.addEventListener(
-        "fullscreenchange",
-        function () {
+        if (fullscreenElement && isPhone) {
+            document.body.classList.add("cineflix-mobile-fullscreen");
 
-            if (document.fullscreenElement) {
-                return;
+            if (screen.orientation && typeof screen.orientation.lock === "function") {
+                screen.orientation.lock("landscape").catch(function (error) {
+                    console.info("Landscape lock is unavailable; device rotation can still control playback.", error);
+                });
             }
-
-
-            try {
-
-                if (
-                    screen.orientation &&
-                    typeof screen.orientation.unlock ===
-                        "function"
-                ) {
-
-                    screen.orientation.unlock();
-
-                }
-
-            } catch (error) {
-
-                console.log(
-                    "Orientation unlock unavailable."
-                );
-
-            }
-
+            return;
         }
-    );
+
+        document.body.classList.remove("cineflix-mobile-fullscreen");
+        if (screen.orientation && typeof screen.orientation.unlock === "function") {
+            try {
+                screen.orientation.unlock();
+            } catch (error) {
+                console.info("Orientation unlock is unavailable.", error);
+            }
+        }
+    }
+
+    document.addEventListener("fullscreenchange", cineflixHandleFullscreenOrientation);
+    document.addEventListener("webkitfullscreenchange", cineflixHandleFullscreenOrientation);
 /* =====================================================
    CINEFLIX — MAIN NAVIGATION
 ===================================================== */
@@ -21847,32 +21843,20 @@ document.addEventListener("keydown", function(event) {
 
     if (!player) return;
 
-    document.addEventListener(
-        "fullscreenchange",
-        function () {
+        function updateCineflixMobileFullscreenClass() {
+        if (window.innerWidth > 1000) return;
 
-            /* MOBILE ONLY */
+        const isFullscreen =
+            document.fullscreenElement || document.webkitFullscreenElement;
 
-            if (window.innerWidth > 1000) {
-                return;
-            }
+        document.body.classList.toggle(
+            "cineflix-mobile-fullscreen",
+            Boolean(isFullscreen)
+        );
+    }
 
-            if (document.fullscreenElement) {
-
-                document.body.classList.add(
-                    "cineflix-mobile-fullscreen"
-                );
-
-            } else {
-
-                document.body.classList.remove(
-                    "cineflix-mobile-fullscreen"
-                );
-
-            }
-
-        }
-    );
+    document.addEventListener("fullscreenchange", updateCineflixMobileFullscreenClass);
+    document.addEventListener("webkitfullscreenchange", updateCineflixMobileFullscreenClass);
 
 })();
 </script>
