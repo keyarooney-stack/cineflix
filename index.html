@@ -16566,49 +16566,7 @@ async function loadMyList() {
 
 }
 
-/* =====================================================
-   CINEFLIX — MOBILE FULLSCREEN BUTTON
-===================================================== */
 
-/* Hidden everywhere by default */
-#cineflixMobileFullscreen {
-    display: none;
-}
-
-
-/* Phone only */
-@media (max-width: 600px) {
-
-    #cineflixMobileFullscreen {
-        display: flex !important;
-
-        position: absolute !important;
-
-        right: 5vw !important;
-        top: calc(50% + 210px) !important;
-
-        width: 44px !important;
-        height: 44px !important;
-
-        align-items: center !important;
-        justify-content: center !important;
-
-        padding: 0 !important;
-
-        border: 0 !important;
-        border-radius: 7px !important;
-
-        background: rgba(0, 0, 0, 0.82) !important;
-        color: #fff !important;
-
-        font-size: 27px !important;
-
-        cursor: pointer !important;
-
-        z-index: 500 !important;
-    }
-
-}
 /* =====================================================
    CINEFLIX — OWN PHONE FULLSCREEN LAYOUT
    DESKTOP / LARGE SCREENS UNTOUCHED
@@ -20952,108 +20910,7 @@ window.cineflixAccountSupabase =
 
 })();
 
-/* =====================================================
-   CINEFLIX — OWN MOBILE FULLSCREEN
-===================================================== */
 
-document.addEventListener("DOMContentLoaded", function () {
-
-    const button =
-        document.getElementById("cineflixMobileFullscreen");
-
-    const modal =
-        document.getElementById("cineflixPlayerModal");
-
-    if (!button || !modal) {
-
-        console.error(
-            "CineFlix fullscreen button or modal not found."
-        );
-
-        return;
-    }
-
-
-    button.addEventListener("click", async function () {
-
-        /* PHONE ONLY */
-
-        if (
-            !window.matchMedia("(max-width: 600px)").matches
-        ) {
-            return;
-        }
-
-
-        console.log(
-            "CineFlix mobile fullscreen button pressed."
-        );
-
-
-        try {
-
-            /* =========================================
-               ENTER FULLSCREEN
-            ========================================= */
-
-            if (modal.requestFullscreen) {
-
-                await modal.requestFullscreen();
-
-            } else if (modal.webkitRequestFullscreen) {
-
-                modal.webkitRequestFullscreen();
-
-            } else {
-
-                console.error(
-                    "Fullscreen API is not supported."
-                );
-
-                return;
-            }
-
-
-            /* =========================================
-               REQUEST LANDSCAPE
-            ========================================= */
-
-            try {
-
-                if (
-                    screen.orientation &&
-                    typeof screen.orientation.lock ===
-                        "function"
-                ) {
-
-                    await screen.orientation.lock(
-                        "landscape"
-                    );
-
-                }
-
-            } catch (orientationError) {
-
-                console.log(
-                    "Landscape lock was refused:",
-                    orientationError
-                );
-
-            }
-
-
-        } catch (fullscreenError) {
-
-            console.error(
-                "CineFlix fullscreen failed:",
-                fullscreenError
-            );
-
-        }
-
-    });
-
-});
 
 
     /* =================================================
@@ -22780,18 +22637,6 @@ h3 {
     </button>
 
 </div>
-    <!-- =====================================================
-     CINEFLIX MOBILE FULLSCREEN BUTTON
-===================================================== -->
-
-<button
-    id="cineflixMobileFullscreen"
-    type="button"
-    aria-label="Fullscreen"
->
-    ⛶
-</button>
-
 
     <!-- =====================================================
          RELATED MOVIES
@@ -23359,8 +23204,8 @@ h3 {
     margin-bottom: 14px;
 }
 
-@media (max-width: 600px) {
-    /* On phones, give the embedded player the entire visible screen. */
+@media (orientation: landscape) and (max-height: 600px) and (pointer: coarse) {
+    /* Switch to edge-to-edge playback when a phone is tilted sideways. */
     #cineflixPlayerModal.active {
         position: fixed !important;
         inset: 0 !important;
@@ -23401,8 +23246,7 @@ h3 {
 
     #cineflixPlayerModal.active #cineflixServerButtons,
     #cineflixPlayerModal.active #cineflixRelatedSection,
-    #cineflixPlayerModal.active .cineflix-player-info,
-    #cineflixPlayerModal.active #cineflixMobileFullscreen {
+    #cineflixPlayerModal.active .cineflix-player-info {
         display: none !important;
     }
 }
