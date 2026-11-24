@@ -87,7 +87,9 @@ async function fetchAniList(page) {
 
 export async function onRequestGet({ env }) {
     try {
-        const token = env.TMDB_TOKEN;
+        const token =
+    env?.TMDB_TOKEN ||
+    env?.TMDB_READ_ACCESS_TOKEN;
 
         if (!token) {
             return new Response("TMDB_TOKEN is not configured.", {
