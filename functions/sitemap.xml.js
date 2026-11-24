@@ -79,7 +79,7 @@ async function fetchAniList(page) {
     const result = await response.json();
 
     if (result.errors || !result.data?.Page) {
-        throw new Error("AniList returned an error.");
+        throw new Error("AniList returned a GraphQL error.");
     }
 
     return result.data.Page.media || [];
@@ -88,20 +88,22 @@ async function fetchAniList(page) {
 export async function onRequestGet({ env }) {
     try {
         const token =
-    env?.TMDB_TOKEN ||
-    env?.TMDB_READ_ACCESS_TOKEN;
+            env?.TMDB_TOKEN ||
+            env?.TMDB_READ_ACCESS_TOKEN;
 
         if (!token) {
-            return new Response("TMDB_TOKEN is not configured.", {
-                status: 500
-            });
+            return new Response(
+                "TMDB_TOKEN is not configured.",
+                { status: 500 }
+            );
         }
 
         const urls = new Set();
 
+        // Homepage
         urls.add(urlEntry("/"));
 
-        // TMDB movies
+        // MOVIES
         for (let page = 1; page <= 5; page++) {
             const data = await fetchTMDB(
                 `/discover/movie?include_adult=false&language=en-US&sort_by=popularity.desc&page=${page}`,
@@ -118,7 +120,7 @@ export async function onRequestGet({ env }) {
             }
         }
 
-        // TMDB TV shows
+        // TV SHOWS
         for (let page = 1; page <= 5; page++) {
             const data = await fetchTMDB(
                 `/discover/tv?include_adult=false&language=en-US&sort_by=popularity.desc&page=${page}`,
@@ -135,40 +137,63 @@ export async function onRequestGet({ env }) {
             }
         }
 
-        // AniList anime
-        for (let page = 1; page <= 5; page++) {
-            const animeList = await fetchAniList(page);
+        // ANIME
+        // AniList errors are handled separately so they
+        // cannot stop the movie and TV sitemap.
 
-            for (const anime of animeList) {
-                const title =
-                    anime.title.english ||
-                    anime.title.romaji ||
-                    anime.title.native ||
-                    "Unknown Anime";
+        let animeAdded = 0;
 
-                const slug = slugify(title);
+        try {
+            for (let page = 1; page <= 5; page++) {
+                const animeList = await fetchAniList(page);
 
-                if (slug && anime.id) {
-                    urls.add(
-                        urlEntry(`/anime/${slug}-${Number(anime.id)}`)
-                    );
+                for (const anime of animeList) {
+                    const title =
+                        anime.title?.english ||
+                        anime.title?.romaji ||
+                        anime.title?.native ||
+                        "Unknown Anime";
+
+                    const slug = slugify(title);
+
+                    if (slug && anime.id) {
+                        urls.add(
+                            urlEntry(
+                                `/anime/${slug}-${Number(anime.id)}`
+                            )
+                        );
+
+                        animeAdded++;
+                    }
                 }
             }
+
+            console.log(
+                `CineFlix sitemap: Added ${animeAdded} anime URLs.`
+            );
+
+        } catch (animeError) {
+            console.error(
+                "CineFlix AniList warning:",
+                animeError.message || String(animeError)
+            );
         }
 
+        // BUILD XML
         const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${Array.from(urls).join("\n")}
 </urlset>`;
 
         return new Response(xml, {
+            status: 200,
             headers: {
                 "Content-Type": "application/xml; charset=utf-8",
                 "Cache-Control": "public, max-age=3600"
             }
         });
 
-     } catch (error) {
+    } catch (error) {
         console.error("CineFlix sitemap error:", error);
 
         return new Response(
