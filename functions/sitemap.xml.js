@@ -168,11 +168,16 @@ ${Array.from(urls).join("\n")}
             }
         });
 
-    } catch (error) {
-        console.error("CineFlix sitemap error:", error);
+  } catch (error) {
+    console.error("CineFlix sitemap error:", error);
 
-        return new Response("Could not generate CineFlix sitemap.", {
-            status: 500
-        });
-    }
+    return new Response(
+        `CineFlix sitemap error: ${error.message || String(error)}`,
+        {
+            status: 500,
+            headers: {
+                "Content-Type": "text/plain; charset=utf-8"
+            }
+        }
+    );
 }
