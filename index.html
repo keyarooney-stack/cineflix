@@ -6,17 +6,39 @@
 <meta name="application-name" content="CineFlix">
 <meta property="og:site_name" content="CineFlix">
 
+<link rel="canonical" href="https://www.cineflix.qd.je/">
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "CineFlix",
-  "alternateName": "CineFlix — Watch & Discover Movies",
-  "url": "https://www.cineflix.qd.je/",
-  "publisher": {
-    "@type": "Organization",
-    "name": "CineFlix"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.cineflix.qd.je/#organization",
+      "name": "CineFlix",
+      "url": "https://www.cineflix.qd.je/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://i.ibb.co/ccyx1CsT/icon-512.png",
+        "width": 512,
+        "height": 512
+      },
+      "sameAs": [
+        "https://www.instagram.com/cineflix_uk/"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.cineflix.qd.je/#website",
+      "name": "CineFlix",
+      "alternateName": "CineFlix — Watch & Discover Movies",
+      "url": "https://www.cineflix.qd.je/",
+      "description": "Discover movies, TV shows, and anime, explore details and trailers, and save titles to your list.",
+      "publisher": {
+        "@id": "https://www.cineflix.qd.je/#organization"
+      }
+    }
+  ]
 }
 </script>
 
@@ -52,8 +74,8 @@
 
     <title>CineFlix — Watch & Discover Movies</title>
 
-    <meta name="description"
-          content="CineFlix — discover trending, popular, latest and top-rated movies. Browse thousands of movies and discover what's worth watching.">
+        <meta name="description"
+          content="CineFlix helps you discover movies, TV shows, and anime. Explore trending and popular titles, view details and trailers, and save favorites to your list.">
 
     <meta name="theme-color" content="#e50914">
 <!-- =====================================================
@@ -63,6 +85,10 @@
 <link rel="icon"
       type="image/png"
       sizes="512x512"
+      href="https://i.ibb.co/ccyx1CsT/icon-512.png">
+<link rel="icon"
+      type="image/png"
+      sizes="192x192"
       href="https://i.ibb.co/ccyx1CsT/icon-512.png">
 
 <link rel="shortcut icon"
@@ -82,7 +108,8 @@
          GOOGLE / SOCIAL PREVIEW
     ====================================================== -->
 
-    <meta property="og:type" content="website">
+        <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.cineflix.qd.je/">
 
     <meta property="og:title"
           content="CineFlix — Watch & Discover Movies">
