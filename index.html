@@ -7443,8 +7443,8 @@ async function tmdb(endpoint){
                 data.status_message || "No additional details provided.";
 
             if (response.status === 401) {
-                throw new Error(
-                    "TMDB rejected the API token (401). Replace TMDB_TOKEN with a valid, active TMDB API Read Access Token. " +
+                                throw new Error(
+                    "TMDB rejected the API token (401). The token may be invalid, expired, or not active yet. Issue a new active TMDB API Read Access Token and replace TMDB_TOKEN. This token is embedded in the page, so revoke it and issue a replacement if it has been publicly shared. " +
                     detail
                 );
             }
